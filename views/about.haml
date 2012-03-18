@@ -1,0 +1,18 @@
+%html
+  %head
+    %title
+      About Hubboard
+    %link{:media => 'screen',
+          :type => 'text/css',
+          :rel => 'stylesheet',
+          :href => "/css/hub.css?cachebust=#{Time.now.to_i}"}
+  %body
+    %center
+      %h1
+        About Hubboard
+    %br/
+    %blockquote.about_text
+      Hubboard is a fairly simple Kan Ban board for GitHub Issues. It relies wholly on the GitHub v3 API and uses OAuth to authenticate you.
+      %br/
+      %br/
+      The code for Hubboard <a href="https://github.com/rtyler/Hubboard">can be found here</a>.
