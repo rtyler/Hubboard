@@ -6,10 +6,10 @@ require 'json'
 require 'httparty'
 require 'resin/app/app'
 
-if ENV['RACK_ENV'] = 'production'
-  MYSELF = 'http://hubboard.herokuapp.com'
-else
+if ENV['RACK_ENV'] != 'production'
   MYSELF = 'http://localhost:4567'
+else
+  MYSELF = 'http://hubboard.herokuapp.com'
 end
 
 API_URL = 'https://api.github.com'
@@ -24,7 +24,6 @@ end
 
 module Hubboard
   class Server < Resin::Server
-    set :port, ENV['PORT'] || 4567
     set :sessions, true
 
     get '/oauth' do
