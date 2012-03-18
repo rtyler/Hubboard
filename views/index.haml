@@ -13,17 +13,17 @@
       %div{:style => 'float: right'}
         %button{:onclick => 'smalltalk.Browser._open();'}
           Run Amber IDE
-    %div.issuecolumn
+    %div.column
       %div.header
         Open
-      %div#openissues
-    %div.issuecolumn
+      %div.issuecolumn#openissues
+    %div.column
       %div.header
         In Progress
-      %div#inprogressissues
-    %div.issuecolumn
+      %div.issuecolumn#inprogressissues
+    %div.column
       %div.header
         Closed/Resolved
-      %div#closedissues
+      %div.issuecolumn#closedissues
 
     = embed_amber(:on_ready => 'smalltalk.HubboardApp._current()._bootstrap();')

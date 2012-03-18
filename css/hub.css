@@ -4,7 +4,7 @@ body {
   font-family: helvetica, sans-serif;
 }
 
-.issuecolumn {
+.column {
   width: 30%;
   height: 100%;
   float: left;
@@ -12,13 +12,17 @@ body {
   border-bottom: 1px solid #333;
 }
 
-.issuecolumn .header {
+.column .header {
   text-align: center;
   font-weight: bold;
   background: #333;
   margin-left: 5px;
   margin-right: 5px;
   color: #e7e7e7;
+}
+
+.issuecolumn {
+  height: 80%;
 }
 
 .issuetile {
