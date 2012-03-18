@@ -1,1 +1,1 @@
-web: bundle exec ./hubboard.rb
+web: bundle exec ruby hubboard.rb
