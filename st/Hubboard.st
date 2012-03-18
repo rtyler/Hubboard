@@ -115,7 +115,7 @@ renderOn: html
 					html a href: (raw at: 'html_url'); target: '_blank'; with: ('#', number asString).
 					html with: ' in '.
 					html a href: ('https://github.com/', projectOwner); with: projectOwner.
-					html with: '/'.
+					html with: ' / '.
 					html  a href: ('https://github.com/', projectOwner, '/', project); with: project.
 				].
 			html span class: 'title'; with: title.
