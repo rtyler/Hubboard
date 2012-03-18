@@ -1,66 +1,4 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
-Object subclass: #HubboardApp
-	instanceVariableNames: 'token'
-	category: 'Hubboard'!
-
-!HubboardApp methodsFor: 'not yet classified'!
-
-initialize
-	token := window at: 'github_access_token'.
-!
-
-bootstrap
-	| api |
-	api := Issues new setToken: token.
-	api issues: [ :issues |
-		issues do: [ :issue |
-			| tile |
-			tile := IssueTile new withData: issue.
-			(self inProgress: (issue at: 'labels'))
-					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
-					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ]
-	]] loadAll: false.
-
-	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
-		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
-!
-
-inProgress: arrayOfLabels
-	"Return true if we find the 'in-progress' label"
-	arrayOfLabels ifNil: [ ^ false ].
-
-	arrayOfLabels do: [ :label |
-		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
-	].
-	^ false.
-!
-
-handleDrop: theEvent with: aWidget
-	" This function should handle the initial drop of one IssueTile onto a new column "
-	| tile currentParent newParent |
-	tile := aWidget draggable.
-	"jQuery is going to give this to us in an array, how annoying"
-	currentParent := (tile parent at: 0) at: 'id'. 
-	newParent := theEvent target at: 'id'.
-
-	tile css: 'position' is:'static'.
-
-	"We will receive drag events onto the same column, don't do anything in that case"
-	currentParent = newParent ifTrue: [ ^ true ].
-	('#', newParent) asJQuery append: (tile detach).
-
-	console log: ((tile at: 0) at: 'id').
-	console log: ('Moved to: ', newParent).
-! !
-
-HubboardApp class instanceVariableNames: 'current'!
-
-!HubboardApp class methodsFor: 'not yet classified'!
-
-current
-	^ current ifNil: [ current := super new ].
-! !
-
 Widget subclass: #IssueTile
 	instanceVariableNames: 'raw title body issueId number project projectOwner issueStatus'
 	category: 'Hubboard'!
@@ -92,7 +30,7 @@ renderOn: html
 		].
 
 	"After we render, we should probably make this sucker draggable"
-	self asJQuery draggable: #{'zIndex' -> '10000' }.
+	self asJQuery draggable: #{'zIndex' -> '10000'. 'snap' -> true }.
 !
 
 withData: dataHash
@@ -134,5 +72,93 @@ asJQuery
 
 elementId
 	^ 'issuetile_', issueId asString.
+!
+
+moveTo: aColumnId
+	"Handle the invocation of the right callbacks when we move from one column to another
+	 The lines blur a bit here on 'view' versus 'controller'"
+
+	aColumnId = 'inprogressissues' ifTrue: [
+		jQuery ajax: ('/repos/', projectOwner, '/', project, '/issues/', number, '/labels')
+				options: #{
+					'type' -> 'POST'.
+					'dataType' -> 'json'.
+					'data' -> 'in-progress'.
+					'success' -> [ console log: 'win' ].
+					'error' -> [ console log: 'fail']
+					}.
+		^ true.
+	].
+
+	aColumnId = 'openissues' ifTrue: [
+		^  true.
+	].
+
+	aColumnId = 'closedissues' ifTrue: [
+		^ true.
+	].
+! !
+
+Object subclass: #HubboardApp
+	instanceVariableNames: 'token issueMap'
+	category: 'Hubboard'!
+
+!HubboardApp methodsFor: 'not yet classified'!
+
+initialize
+	token := window at: 'github_access_token'.
+	issueMap := Dictionary new.
+!
+
+bootstrap
+	| api |
+	api := Issues new setToken: token.
+	api issues: [ :issues |
+		issues do: [ :issue |
+			| tile |
+			tile := IssueTile new withData: issue.
+			issueMap at: (tile elementId) put: tile.
+			(self inProgress: (issue at: 'labels'))
+					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
+					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ]
+	]] loadAll: false.
+
+	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
+		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
+!
+
+inProgress: arrayOfLabels
+	"Return true if we find the 'in-progress' label"
+	arrayOfLabels ifNil: [ ^ false ].
+
+	arrayOfLabels do: [ :label |
+		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
+	].
+	^ false.
+!
+
+handleDrop: theEvent with: aWidget
+	" This function should handle the initial drop of one IssueTile onto a new column "
+	| tile currentParent newParent |
+	tile := issueMap at: ((aWidget draggable at: 0) at: 'id').
+	"jQuery is going to give this to us in an array, how annoying"
+	currentParent := (tile asJQuery parent at: 0) at: 'id'. 
+	newParent := theEvent target at: 'id'.
+
+	tile asJQuery css: 'position' is:'static'.
+
+	"We will receive drag events onto the same column, don't do anything in that case"
+	currentParent = newParent ifTrue: [ ^ true ].
+	('#', newParent) asJQuery append: (tile asJQuery detach).
+
+	tile moveTo: newParent.
+! !
+
+HubboardApp class instanceVariableNames: 'current'!
+
+!HubboardApp class methodsFor: 'not yet classified'!
+
+current
+	^ current ifNil: [ current := super new ].
 ! !
 

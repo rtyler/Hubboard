@@ -2,10 +2,12 @@
 
 require 'rubygems'
 require 'cgi'
+require 'json'
 require 'httparty'
 require 'resin/app/app'
 
 
+API_URL = 'https://api.github.com'
 $config = YAML::load(File.open(File.expand_path(File.dirname(__FILE__) + '/config/config.yml')))
 
 module Hubboard
@@ -39,11 +41,34 @@ module Hubboard
     get '/' do
       token = session[:access_token]
       if token.nil? or token.empty?
-        redirect '/login'
+        redirect 'https://github.com/login/oauth/authorize?client_id=4f2316de665c34682d33&scope=repo&redirect_uri=http://localhost:4567/oauth'
+      end
+      haml :index, :locals => {:access_token => token}
+    end
+
+
+    post '/repos/:user/:repo/issues/:number/labels' do |user, repo, number|
+      token = session[:access_token]
+      if token.nil? or token.empty?
+        halt 400
+      end
+      data = request.body.read
+      url = API_URL + "/repos/#{user}/#{repo}/issues/#{number}"
+      response = HTTParty.post(url + '/labels', :headers => {'Authorization' => "token #{token}"},
+                                    :body => JSON.dump([data]))
+
+      unless response.code == 200
+        halt 500
       end
 
-      puts "token: #{token}"
-      haml :index, :locals => {:access_token => token}
+      HTTParty.post(url + '/comments', :headers => {'Authorization' => "token #{token}"},
+                                       :body => JSON.dump({:body => <<-END
+Starting work on this now.
+
+(*This message brought to you by [Hubboard](https://github.com/rtyler/Hubboard)*)
+END
+}))
+      '{}'
     end
   end
 end
