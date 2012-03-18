@@ -1,0 +1,12 @@
+%html
+  %head
+    %title
+      Hubboard
+    %link{:media => 'screen',
+          :type => 'text/css',
+          :rel => 'stylesheet',
+          :href => '/css/login.css'}
+  %body
+    %div.login_box
+      %a{:href => 'https://github.com/login/oauth/authorize?client_id=4f2316de665c34682d33&scope=repo&redirect_uri=http://localhost:4567/oauth'}
+        Login with GitHub

@@ -1,0 +1,29 @@
+%html
+  %head
+    %title
+      Hubboard
+    %script{:type => 'text/javascript'}
+      window.github_access_token = "#{access_token}";
+    %link{:media => 'screen',
+          :type => 'text/css',
+          :rel => 'stylesheet',
+          :href => "/css/hub.css?cachebust=#{Time.now.to_i}"}
+  %body
+    - if Resin.development?
+      %div{:style => 'float: right'}
+        %button{:onclick => 'smalltalk.Browser._open();'}
+          Run Amber IDE
+    %div.issuecolumn
+      %div.header
+        Open
+      %div#openissues
+    %div.issuecolumn
+      %div.header
+        In Progress
+      %div#inprogressissues
+    %div.issuecolumn
+      %div.header
+        Closed/Resolved
+      %div#closedissues
+
+    = embed_amber(:on_ready => 'smalltalk.HubboardApp._current()._bootstrap();')

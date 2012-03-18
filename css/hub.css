@@ -1,0 +1,53 @@
+body {
+  background: #e7e7e7;
+  background: url('/images/bg.png');
+  font-family: helvetica, sans-serif;
+}
+
+.issuecolumn {
+  width: 30%;
+  height: 100%;
+  float: left;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.issuecolumn .header {
+  text-align: center;
+  font-weight: bold;
+  background: #333;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: #e7e7e7;
+}
+
+.issuetile {
+  margin: 10px;
+  padding: 5px;
+  border: 2px solid #333;
+  font-weight: bold;
+  background: #e7e7e7;
+}
+
+.issuetile .title {
+  font-size: 0.8em;
+}
+
+.issuetile .number {
+  font-size: 0.7em;
+  padding: 4px;
+}
+
+.issuetile .number .open {
+}
+
+.issuetile .inprogress {
+  background: #bbefbe;
+}
+
+.issuetile .number .closed {
+}
+
+.issuetile .number a:link, .issuetile .number a:visited {
+  color: inherit;
+}
