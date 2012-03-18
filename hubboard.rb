@@ -7,6 +7,12 @@ require 'httparty'
 require 'resin/app/app'
 
 
+if ENV['RACK_ENV'] = 'production'
+  MYSELF = 'http://hubboard.herokuapp.com'
+else
+  MYSELF = 'http://localhost:4567'
+end
+
 API_URL = 'https://api.github.com'
 CONFIG_FILE = File.expand_path(File.dirname(__FILE__) + '/config/config.yml')
 
@@ -48,7 +54,7 @@ module Hubboard
     get '/' do
       token = session[:access_token]
       if token.nil? or token.empty?
-        redirect 'https://github.com/login/oauth/authorize?client_id=4f2316de665c34682d33&scope=repo&redirect_uri=http://localhost:4567/oauth'
+        redirect "https://github.com/login/oauth/authorize?client_id=#{$config['github']['id']}&scope=repo&redirect_uri=#{MYSELF}/oauth"
       end
       haml :index, :locals => {:access_token => token}
     end
@@ -72,7 +78,7 @@ module Hubboard
                                        :body => JSON.dump({:body => <<-END
 Starting work on this now.
 
-(*This message brought to you by [Hubboard](https://github.com/rtyler/Hubboard)*)
+(*This message brought to you by [Hubboard](http://hubboard.herokuapp.com/about)*)
 END
 }))
       '{}'
