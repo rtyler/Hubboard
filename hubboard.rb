@@ -8,7 +8,14 @@ require 'resin/app/app'
 
 
 API_URL = 'https://api.github.com'
-$config = YAML::load(File.open(File.expand_path(File.dirname(__FILE__) + '/config/config.yml')))
+CONFIG_FILE = File.expand_path(File.dirname(__FILE__) + '/config/config.yml')
+
+if File.exists? CONFIG_FILE
+  $config = YAML::load(File.open(File.expand_path(File.dirname(__FILE__) + '/config/config.yml')))
+else
+  $config = {}
+  $config['github'] = {'id' => ENV['GITHUB_OAUTH_ID'], 'secret' => ENV['GITHUB_OAUTH_SECRET']}
+end
 
 module Hubboard
   class Server < Resin::Server
