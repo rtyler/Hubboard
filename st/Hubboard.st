@@ -9,7 +9,24 @@ renderOn: html
 	html div
 		at: 'title' put: 'Create a new issue';
 		class: 'new_issue';
-		with: 'This feature is coming soon'.
+		with: [
+			html form name: 'new_issue_form'; onSubmit: [ :event | window alert: 'Submitting'. event preventDefault ]; with: [
+				html label for: 'assignee'; with: 'Assign to: '.
+				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
+				html strong with: (HubboardApp current user at: 'login').
+				html br.
+				html label for: 'project'; with: 'Project: '.
+				html select
+					name: 'project';
+					with: [
+						HubboardApp current knownRepos do: [ :repo | html option value: repo; with: repo ]].
+				html br.
+				html label for: 'title'; with: 'Title: '.
+				html input name: 'title'; at: 'size' put: '50'.
+				html br.
+				html button type: 'submit'; with: 'Create'.
+			]
+	].
 
 	self becomeDialog.
 !
@@ -17,6 +34,7 @@ renderOn: html
 becomeDialog
 	'.new_issue' asJQuery dialog: #{
 			'modal' -> true.
+			'minWidth' -> '450'.
 			'close' -> [ :event :ui |
 				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
 				'.ui-dialog' asJQuery remove.
@@ -136,10 +154,18 @@ moveTo: aColumnId
 setClosed
 	"Set this issue as a closed issue, should not be draggable as a result"
 	issueStatus := #closed.
+!
+
+project
+	^ project.
+!
+
+projectOwner
+	^ projectOwner.
 ! !
 
 Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap api'
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData'
 	category: 'Hubboard'!
 
 !HubboardApp methodsFor: 'not yet classified'!
@@ -147,10 +173,13 @@ Object subclass: #HubboardApp
 initialize
 	token := window at: 'github_access_token'.
 	issueMap := Dictionary new.
+	knownRepos := Set new.
 !
 
 bootstrap
-	api := Issues new setToken: token.
+	issueApi := Issues new setToken: token.
+	userApi := Users new setToken: token.
+	userApi fetchCurrent: [ :data | userData := data ].
 	self refresh.
 	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
 		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
@@ -187,23 +216,36 @@ refresh
 	'#openissues' asJQuery empty.
 	'#inprogressissues' asJQuery empty.
 	'#closedissues' asJQuery empty.
-	api issues: [ :issues |
+	issueApi issues: [ :issues |
 		issues do: [ :issue |
 			| tile |
 			tile := IssueTile new withData: issue.
 			issueMap at: (tile elementId) put: tile.
+			knownRepos add: (tile projectOwner), '/', (tile project).
 			(self inProgress: (issue at: 'labels'))
 					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
 					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ]
 	]] loadAll: false.
 
-	api recentlyClosed: [ :issues |
+	issueApi recentlyClosed: [ :issues |
 		issues do: [ :issue |
 			| tile |
 			tile := IssueTile new withData: issue.
 			tile setClosed.
 			tile appendToJQuery: ('#closedissues' asJQuery).
 	]] loadAll: false.
+!
+
+knownRepos
+	^ knownRepos.
+!
+
+issueMap
+	^ issueMap.
+!
+
+user
+	^ userData.
 ! !
 
 HubboardApp class instanceVariableNames: 'current'!

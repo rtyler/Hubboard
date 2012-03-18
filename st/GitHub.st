@@ -1,9 +1,9 @@
 Smalltalk current createPackage: 'GitHub' properties: #{}!
-Object subclass: #Issues
+Object subclass: #APIBase
 	instanceVariableNames: 'token authenticated'
 	category: 'GitHub'!
 
-!Issues methodsFor: 'not yet classified'!
+!APIBase methodsFor: 'not yet classified'!
 
 baseUrl
 	"Return the GitHub API url base"
@@ -16,18 +16,41 @@ setToken: anAccessToken
 	authenticated := true.
 !
 
+initialize
+	authenticated := false.
+	token := nil.
+!
+
 apiUrlFor: apiString
 	"Return the combined URL with an access token if we have one"
 	| url |
 	url := '', (self baseUrl), apiString.
 	authenticated ifTrue: [ url := '', url, '?access_token=', token ].
 	^ url.
-!
+! !
 
-initialize
-	authenticated := false.
-	token := nil.
-!
+APIBase subclass: #Users
+	instanceVariableNames: ''
+	category: 'GitHub'!
+
+!Users methodsFor: 'not yet classified'!
+
+fetchCurrent: andCallback
+	"Fetch info about the current authenticated user"
+	authenticated ifFalse: [ console log: 'Cannot load user information unless we have an access token'. ^ false ].
+
+	jQuery ajax: (self apiUrlFor: '/user') options: #{
+			'dataType' -> 'jsonp'.
+			'success' -> [ :result |
+				andCallback value: (result data) ]}.
+	^ true.
+! !
+
+APIBase subclass: #Issues
+	instanceVariableNames: ''
+	category: 'GitHub'!
+
+!Issues methodsFor: 'not yet classified'!
 
 issues: aPageCallback loadAll: shouldLoadAll
 	"Call aPageCallback with every page of issues loaded from GitHub"

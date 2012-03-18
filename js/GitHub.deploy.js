@@ -1,5 +1,5 @@
 smalltalk.addPackage('GitHub', {});
-smalltalk.addClass('Issues', smalltalk.Object, ['token', 'authenticated'], 'GitHub');
+smalltalk.addClass('APIBase', smalltalk.Object, ['token', 'authenticated'], 'GitHub');
 smalltalk.addMethod(
 unescape('_baseUrl'),
 smalltalk.method({
@@ -9,7 +9,7 @@ var self=this;
 return unescape("https%3A//api.github.com");
 return self;}
 }),
-smalltalk.Issues);
+smalltalk.APIBase);
 
 smalltalk.addMethod(
 unescape('_setToken_'),
@@ -21,7 +21,19 @@ var self=this;
 (self['@authenticated']=true);
 return self;}
 }),
-smalltalk.Issues);
+smalltalk.APIBase);
+
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+fn: function (){
+var self=this;
+(self['@authenticated']=false);
+(self['@token']=nil);
+return self;}
+}),
+smalltalk.APIBase);
 
 smalltalk.addMethod(
 unescape('_apiUrlFor_'),
@@ -35,20 +47,28 @@ var url=nil;
 return url;
 return self;}
 }),
-smalltalk.Issues);
+smalltalk.APIBase);
 
+
+
+smalltalk.addClass('Users', smalltalk.APIBase, [], 'GitHub');
 smalltalk.addMethod(
-unescape('_initialize'),
+unescape('_fetchCurrent_'),
 smalltalk.method({
-selector: unescape('initialize'),
-fn: function (){
+selector: unescape('fetchCurrent%3A'),
+fn: function (andCallback){
 var self=this;
-(self['@authenticated']=false);
-(self['@token']=nil);
-return self;}
+try{((($receiver = self['@authenticated']).klass === smalltalk.Boolean) ? (! $receiver ? (function(){smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", ["Cannot load user information unless we have an access token"]);return (function(){throw({name: 'stReturn', selector: '_fetchCurrent_', fn: function(){return false}})})();})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", ["Cannot load user information unless we have an access token"]);return (function(){throw({name: 'stReturn', selector: '_fetchCurrent_', fn: function(){return false}})})();})]));
+smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [smalltalk.send(self, "_apiUrlFor_", [unescape("/user")]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("dataType", "__minus_gt", ["jsonp"]),smalltalk.send("success", "__minus_gt", [(function(result){return smalltalk.send(andCallback, "_value_", [smalltalk.send(result, "_data", [])]);})])])]);
+(function(){throw({name: 'stReturn', selector: '_fetchCurrent_', fn: function(){return true}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_fetchCurrent_'){return e.fn()} throw(e)}}
 }),
-smalltalk.Issues);
+smalltalk.Users);
 
+
+
+smalltalk.addClass('Issues', smalltalk.APIBase, [], 'GitHub');
 smalltalk.addMethod(
 unescape('_issues_loadAll_'),
 smalltalk.method({

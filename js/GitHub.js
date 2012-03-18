@@ -1,5 +1,5 @@
 smalltalk.addPackage('GitHub', {});
-smalltalk.addClass('Issues', smalltalk.Object, ['token', 'authenticated'], 'GitHub');
+smalltalk.addClass('APIBase', smalltalk.Object, ['token', 'authenticated'], 'GitHub');
 smalltalk.addMethod(
 unescape('_baseUrl'),
 smalltalk.method({
@@ -14,7 +14,7 @@ source: unescape('baseUrl%0A%09%22Return%20the%20GitHub%20API%20url%20base%22%0A
 messageSends: [],
 referencedClasses: []
 }),
-smalltalk.Issues);
+smalltalk.APIBase);
 
 smalltalk.addMethod(
 unescape('_setToken_'),
@@ -31,7 +31,24 @@ source: unescape('setToken%3A%20anAccessToken%0A%09%22Set%20the%20OAuth%20token%
 messageSends: [],
 referencedClasses: []
 }),
-smalltalk.Issues);
+smalltalk.APIBase);
+
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+category: 'not yet classified',
+fn: function (){
+var self=this;
+(self['@authenticated']=false);
+(self['@token']=nil);
+return self;},
+args: [],
+source: unescape('initialize%0A%09authenticated%20%3A%3D%20false.%0A%09token%20%3A%3D%20nil.'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.APIBase);
 
 smalltalk.addMethod(
 unescape('_apiUrlFor_'),
@@ -50,25 +67,33 @@ source: unescape('apiUrlFor%3A%20apiString%0A%09%22Return%20the%20combined%20URL
 messageSends: [unescape("%2C"), "baseUrl", "ifTrue:"],
 referencedClasses: []
 }),
-smalltalk.Issues);
+smalltalk.APIBase);
 
+
+
+smalltalk.addClass('Users', smalltalk.APIBase, [], 'GitHub');
 smalltalk.addMethod(
-unescape('_initialize'),
+unescape('_fetchCurrent_'),
 smalltalk.method({
-selector: unescape('initialize'),
+selector: unescape('fetchCurrent%3A'),
 category: 'not yet classified',
-fn: function (){
+fn: function (andCallback){
 var self=this;
-(self['@authenticated']=false);
-(self['@token']=nil);
-return self;},
-args: [],
-source: unescape('initialize%0A%09authenticated%20%3A%3D%20false.%0A%09token%20%3A%3D%20nil.'),
-messageSends: [],
+try{((($receiver = self['@authenticated']).klass === smalltalk.Boolean) ? (! $receiver ? (function(){smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", ["Cannot load user information unless we have an access token"]);return (function(){throw({name: 'stReturn', selector: '_fetchCurrent_', fn: function(){return false}})})();})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", ["Cannot load user information unless we have an access token"]);return (function(){throw({name: 'stReturn', selector: '_fetchCurrent_', fn: function(){return false}})})();})]));
+smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [smalltalk.send(self, "_apiUrlFor_", [unescape("/user")]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("dataType", "__minus_gt", ["jsonp"]),smalltalk.send("success", "__minus_gt", [(function(result){return smalltalk.send(andCallback, "_value_", [smalltalk.send(result, "_data", [])]);})])])]);
+(function(){throw({name: 'stReturn', selector: '_fetchCurrent_', fn: function(){return true}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_fetchCurrent_'){return e.fn()} throw(e)}},
+args: ["andCallback"],
+source: unescape('fetchCurrent%3A%20andCallback%0A%09%22Fetch%20info%20about%20the%20current%20authenticated%20user%22%0A%09authenticated%20ifFalse%3A%20%5B%20console%20log%3A%20%27Cannot%20load%20user%20information%20unless%20we%20have%20an%20access%20token%27.%20%5E%20false%20%5D.%0A%0A%09jQuery%20ajax%3A%20%28self%20apiUrlFor%3A%20%27/user%27%29%20options%3A%20%23%7B%0A%09%09%09%27dataType%27%20-%3E%20%27jsonp%27.%0A%09%09%09%27success%27%20-%3E%20%5B%20%3Aresult%20%7C%0A%09%09%09%09andCallback%20value%3A%20%28result%20data%29%20%5D%7D.%0A%09%5E%20true.%20'),
+messageSends: ["ifFalse:", "log:", "ajax:options:", "apiUrlFor:", unescape("-%3E"), "value:", "data"],
 referencedClasses: []
 }),
-smalltalk.Issues);
+smalltalk.Users);
 
+
+
+smalltalk.addClass('Issues', smalltalk.APIBase, [], 'GitHub');
 smalltalk.addMethod(
 unescape('_issues_loadAll_'),
 smalltalk.method({
