@@ -1,1 +1,1 @@
-web: PORT=$PORT bundle exec ruby hubboard.rb
+web: bundle exec ruby hubboard.rb
