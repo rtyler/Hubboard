@@ -8,7 +8,7 @@ ban](http://en.wikipedia.org/wiki/Kan_ban)" board for GitHub Issues.
 
 
 
-![Work in progress](http://strongspace.com/rtyler/public/hubboard-2012.03.18-04.35.png)
+![Work in progress](http://strongspace.com/rtyler/public/hubboard-2012.03.18-06.45.png)
 
 
 ### Running
