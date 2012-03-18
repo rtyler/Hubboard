@@ -59,22 +59,31 @@ module Hubboard
     end
 
 
+    # This entire function is a mess and I hate it already
     post '/repos/:user/:repo/issues/:number/labels' do |user, repo, number|
       token = session[:access_token]
       if token.nil? or token.empty?
         halt 400
       end
-      data = request.body.read
+      label = 'in-progress'
+      headers = {'Authorization' => "token #{token}"}
+      check_url = API_URL + "/repos/#{user}/#{repo}/labels/#{label}"
+      response = HTTParty.get(check_url, headers)
+      unless response.code == 200
+        HTTParty.post(API_URL + "/repos/#{user}/#{repo}/labels", :headers => headers,
+                      :body => JSON.dump({:name => label, :color => '02e10c'}))
+      end
+
       url = API_URL + "/repos/#{user}/#{repo}/issues/#{number}"
-      response = HTTParty.post(url + '/labels', :headers => {'Authorization' => "token #{token}"},
-                                    :body => JSON.dump([data]))
+      response = HTTParty.post(url + '/labels', :headers => headers,
+                              :body => JSON.dump([label]))
 
       unless response.code == 200
         halt 500
       end
 
-      HTTParty.post(url + '/comments', :headers => {'Authorization' => "token #{token}"},
-                                       :body => JSON.dump({:body => <<-END
+      HTTParty.post(url + '/comments', :headers => headers,
+                    :body => JSON.dump({:body => <<-END
 Starting work on this now.
 
 (*This message brought to you by [Hubboard](http://hubboard.herokuapp.com/about)*)
