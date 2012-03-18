@@ -48,7 +48,7 @@ recentlyClosed: aPageCallback loadAll: shouldLoadAll
 	"Call aPageCallback with pages of issues that have been closed in the last week "
 	authenticated ifFalse: [ console log: 'Cannot load issues unless we have an access token'. ^ false ].
 
-	jQuery ajax: ((self apiUrlFor: '/issues'), '&state=closed&per_page=10') options: #{
+	jQuery ajax: ((self apiUrlFor: '/issues'), '&state=closed&per_page=15') options: #{
 			'dataType' -> 'jsonp'.
 			'success' -> [ :result |
 				console log: (result meta).
