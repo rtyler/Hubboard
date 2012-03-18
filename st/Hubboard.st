@@ -177,7 +177,9 @@ moveTo: aColumnId
 					'type' -> 'POST'.
 					'dataType' -> 'json'.
 					'data' -> 'in-progress'.
-					'success' -> [ console log: 'win' ].
+					'success' -> [
+						('#', self elementId, ' > div.number') asJQuery addClass: 'inprogress'.
+					].
 					'error' -> [ console log: 'fail']
 					}.
 		^ true.
