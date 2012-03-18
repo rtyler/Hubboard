@@ -1,4 +1,58 @@
 smalltalk.addPackage('Hubboard', {});
+smalltalk.addClass('NewIssueDialog', smalltalk.Widget, [], 'Hubboard');
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'not yet classified',
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_at_put_", ["title", "Create a new issue"]);smalltalk.send($rec, "_class_", ["new_issue"]);return smalltalk.send($rec, "_with_", ["This feature is coming soon"]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_becomeDialog", []);
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27Create%20a%20new%20issue%27%3B%0A%09%09class%3A%20%27new_issue%27%3B%0A%09%09with%3A%20%27This%20feature%20is%20coming%20soon%27.%0A%0A%09self%20becomeDialog.'),
+messageSends: ["at:put:", "class:", "with:", "div", "becomeDialog"],
+referencedClasses: []
+}),
+smalltalk.NewIssueDialog);
+
+smalltalk.addMethod(
+unescape('_becomeDialog'),
+smalltalk.method({
+selector: unescape('becomeDialog'),
+category: 'not yet classified',
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
+return self;},
+args: [],
+source: unescape('becomeDialog%0A%09%27.new_issue%27%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20true.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09%27.new_issue%27%20asJQuery%20remove.%0A%09%09%09%5D%7D.'),
+messageSends: ["dialog:", "asJQuery", unescape("-%3E"), "remove"],
+referencedClasses: []
+}),
+smalltalk.NewIssueDialog);
+
+
+smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+category: 'not yet classified',
+fn: function (){
+var self=this;
+var dialog=nil;
+(dialog=smalltalk.send(self, "_new", [], smalltalk.Widget.klass));
+smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
+return self;},
+args: [],
+source: unescape('show%0A%09%22%20Creates%20and%20adds%20the%20DOM%20elements%20to%20the%20body%20tag%20%22%0A%09%7C%20dialog%20%7C%0A%09dialog%20%3A%3D%20super%20new.%0A%09dialog%20appendToJQuery%3A%20%28%27body%27%20asJQuery%29.'),
+messageSends: ["new", "appendToJQuery:", "asJQuery"],
+referencedClasses: []
+}),
+smalltalk.NewIssueDialog.klass);
+
+
 smalltalk.addClass('IssueTile', smalltalk.Widget, ['raw', 'title', 'body', 'issueId', 'number', 'project', 'projectOwner', 'issueStatus'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_renderOn_'),

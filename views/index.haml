@@ -8,6 +8,10 @@
           :type => 'text/css',
           :rel => 'stylesheet',
           :href => "/css/hub.css?cachebust=#{Time.now.to_i}"}
+    %link{:media => 'screen',
+          :type => 'text/css',
+          :rel => 'stylesheet',
+          :href => "/css/ui-lightness/jquery-ui-1.8.18.custom.css"}
   %body
     %div.actionbar
       - if Resin.development?
@@ -16,6 +20,9 @@
             Run Amber IDE
       %button{:onclick => 'smalltalk.HubboardApp._current()._refresh()'}
         Refresh
+      %button{:onclick => 'smalltalk.NewIssueDialog._show();'}
+        Create Issue
+
     %div.column
       %div.header
         Open

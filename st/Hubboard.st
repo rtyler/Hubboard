@@ -1,4 +1,38 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
+Widget subclass: #NewIssueDialog
+	instanceVariableNames: ''
+	category: 'Hubboard'!
+
+!NewIssueDialog methodsFor: 'not yet classified'!
+
+renderOn: html
+	html div
+		at: 'title' put: 'Create a new issue';
+		class: 'new_issue';
+		with: 'This feature is coming soon'.
+
+	self becomeDialog.
+!
+
+becomeDialog
+	'.new_issue' asJQuery dialog: #{
+			'modal' -> true.
+			'close' -> [ :event :ui |
+				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
+				'.ui-dialog' asJQuery remove.
+				'.new_issue' asJQuery remove.
+			]}.
+! !
+
+!NewIssueDialog class methodsFor: 'not yet classified'!
+
+show
+	" Creates and adds the DOM elements to the body tag "
+	| dialog |
+	dialog := super new.
+	dialog appendToJQuery: ('body' asJQuery).
+! !
+
 Widget subclass: #IssueTile
 	instanceVariableNames: 'raw title body issueId number project projectOwner issueStatus'
 	category: 'Hubboard'!

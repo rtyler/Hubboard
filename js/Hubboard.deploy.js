@@ -1,4 +1,43 @@
 smalltalk.addPackage('Hubboard', {});
+smalltalk.addClass('NewIssueDialog', smalltalk.Widget, [], 'Hubboard');
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_at_put_", ["title", "Create a new issue"]);smalltalk.send($rec, "_class_", ["new_issue"]);return smalltalk.send($rec, "_with_", ["This feature is coming soon"]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_becomeDialog", []);
+return self;}
+}),
+smalltalk.NewIssueDialog);
+
+smalltalk.addMethod(
+unescape('_becomeDialog'),
+smalltalk.method({
+selector: unescape('becomeDialog'),
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
+return self;}
+}),
+smalltalk.NewIssueDialog);
+
+
+smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+fn: function (){
+var self=this;
+var dialog=nil;
+(dialog=smalltalk.send(self, "_new", [], smalltalk.Widget.klass));
+smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
+return self;}
+}),
+smalltalk.NewIssueDialog.klass);
+
+
 smalltalk.addClass('IssueTile', smalltalk.Widget, ['raw', 'title', 'body', 'issueId', 'number', 'project', 'projectOwner', 'issueStatus'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_renderOn_'),
