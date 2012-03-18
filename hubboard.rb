@@ -25,6 +25,7 @@ end
 module Hubboard
   class Server < Resin::Server
     set :sessions, true
+    set :session_secret, 'the-secret-hubboard-project'
 
     get '/oauth' do
       unless params.has_key? 'code'
