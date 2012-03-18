@@ -9,10 +9,13 @@
           :rel => 'stylesheet',
           :href => "/css/hub.css?cachebust=#{Time.now.to_i}"}
   %body
-    - if Resin.development?
-      %div{:style => 'float: right'}
-        %button{:onclick => 'smalltalk.Browser._open();'}
-          Run Amber IDE
+    %div.actionbar
+      - if Resin.development?
+        %div{:style => 'float: right'}
+          %button{:onclick => 'smalltalk.Browser._open();'}
+            Run Amber IDE
+      %button{:onclick => 'smalltalk.HubboardApp._current()._refresh()'}
+        Refresh
     %div.column
       %div.header
         Open

@@ -4,6 +4,13 @@ body {
   font-family: helvetica, sans-serif;
 }
 
+.actionbar {
+  height: 30px;
+  width: 100%;
+  border-bottom: 1px dashed #333;
+  margin-bottom: 10px;
+}
+
 .column {
   width: 30%;
   height: 100%;
