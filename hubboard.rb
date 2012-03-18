@@ -58,6 +58,23 @@ module Hubboard
       haml :index, :locals => {:access_token => token}
     end
 
+    post '/issues/create' do
+      token = session[:access_token]
+      if token.nil? or token.empty?
+        halt 400
+      end
+      headers = {'Authorization' => "token #{token}"}
+      raw_data = request.body.read
+      data = JSON.parse(raw_data)
+
+      if data['project'].nil? or data['project'].empty?
+        halt 500
+      end
+
+      HTTParty.post(API_URL + "/repos/#{data['project']}/issues", :headers => headers,
+                    :body => raw_data)
+      '{}'
+    end
 
     # This entire function is a mess and I hate it already
     post '/repos/:user/:repo/issues/:number/labels' do |user, repo, number|

@@ -10,7 +10,7 @@ renderOn: html
 		at: 'title' put: 'Create a new issue';
 		class: 'new_issue';
 		with: [
-			html form name: 'new_issue_form'; onSubmit: [ :event | window alert: 'Submitting'. event preventDefault ]; with: [
+			html form name: 'new_issue_form'; onSubmit: [ :event | self submit. event preventDefault ]; with: [
 				html label for: 'assignee'; with: 'Assign to: '.
 				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
 				html strong with: (HubboardApp current user at: 'login').
@@ -40,6 +40,23 @@ becomeDialog
 				'.ui-dialog' asJQuery remove.
 				'.new_issue' asJQuery remove.
 			]}.
+!
+
+submit
+	"Take the values out of the form and actually submit them"
+	| data |
+	data := #{
+		'title' -> ':input[name=title]' asJQuery val.
+		'assignee' -> ':input[name=assignee]' asJQuery val.
+		'project' -> ':input[name=project]' asJQuery val
+	}.
+
+	((data at: 'title') size) = 0 ifTrue: [ window alert: 'You should probably add a title'. ^ false ].
+
+	jQuery ajax: '/issues/create' options: #{'type' -> 'POST'.
+			'dataType' -> 'json'.
+			'data' -> data asJSONString.
+			'success' -> [ '.new_issue' asJQuery dialog: 'close'. HubboardApp current refresh.]}.
 ! !
 
 !NewIssueDialog class methodsFor: 'not yet classified'!

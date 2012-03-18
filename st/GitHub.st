@@ -59,8 +59,6 @@ issues: aPageCallback loadAll: shouldLoadAll
 	jQuery ajax: (self apiUrlFor: '/issues') options: #{
 			'dataType' -> 'jsonp'.
 			'success' -> [ :result |
-				console log: (result meta).
-				console log: (result data).
 				aPageCallback value: (result data).
 			]
 	}.
