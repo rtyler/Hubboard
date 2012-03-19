@@ -8,7 +8,7 @@ you to rapidly interact with issues that are assigned to you on GitHub.
 
 
 
-![Work in progress](http://strongspace.com/rtyler/public/hubboard-2012.03.18-17.50.png)
+![Work in progress](http://strongspace.com/rtyler/public/hubboard-2012.03.19-12.00.png)
 
 
 ### Running
