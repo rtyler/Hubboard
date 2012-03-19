@@ -224,7 +224,7 @@ bootstrap
 	userApi := Users new setToken: token.
 	userApi fetchCurrent: [ :data | userData := data ].
 	self refresh.
-	refreshIntervalId := window setInterval: [ self refresh ] every: 60000.
+	refreshIntervalId := window setInterval: [ self refresh ] every: 120000.
 	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
 		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
 !

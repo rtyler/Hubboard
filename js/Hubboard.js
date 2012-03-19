@@ -322,11 +322,11 @@ var self=this;
 (self['@userApi']=smalltalk.send(smalltalk.send((smalltalk.Users || Users), "_new", []), "_setToken_", [self['@token']]));
 smalltalk.send(self['@userApi'], "_fetchCurrent_", [(function(data){return (self['@userData']=data);})]);
 smalltalk.send(self, "_refresh", []);
-(self['@refreshIntervalId']=smalltalk.send((typeof window == 'undefined' ? nil : window), "_setInterval_every_", [(function(){return smalltalk.send(self, "_refresh", []);}), (60000)]));
+(self['@refreshIntervalId']=smalltalk.send((typeof window == 'undefined' ? nil : window), "_setInterval_every_", [(function(){return smalltalk.send(self, "_refresh", []);}), (120000)]));
 smalltalk.send(smalltalk.send(".issuecolumn", "_asJQuery", []), "_droppable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("tolerance", "__minus_gt", ["pointer"]),smalltalk.send("drop", "__minus_gt", [(function(event, ui){return smalltalk.send(self, "_handleDrop_with_", [event, ui]);})])])]);
 return self;},
 args: [],
-source: unescape('bootstrap%0A%09issueApi%20%3A%3D%20Issues%20new%20setToken%3A%20token.%0A%09userApi%20%3A%3D%20Users%20new%20setToken%3A%20token.%0A%09userApi%20fetchCurrent%3A%20%5B%20%3Adata%20%7C%20userData%20%3A%3D%20data%20%5D.%0A%09self%20refresh.%0A%09refreshIntervalId%20%3A%3D%20window%20setInterval%3A%20%5B%20self%20refresh%20%5D%20every%3A%2060000.%0A%09%27.issuecolumn%27%20asJQuery%20droppable%3A%20%23%7B%27tolerance%27%20-%3E%20%27pointer%27.%0A%09%09%27drop%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%20self%20handleDrop%3A%20event%20with%3A%20ui%5D%7D.'),
+source: unescape('bootstrap%0A%09issueApi%20%3A%3D%20Issues%20new%20setToken%3A%20token.%0A%09userApi%20%3A%3D%20Users%20new%20setToken%3A%20token.%0A%09userApi%20fetchCurrent%3A%20%5B%20%3Adata%20%7C%20userData%20%3A%3D%20data%20%5D.%0A%09self%20refresh.%0A%09refreshIntervalId%20%3A%3D%20window%20setInterval%3A%20%5B%20self%20refresh%20%5D%20every%3A%20120000.%0A%09%27.issuecolumn%27%20asJQuery%20droppable%3A%20%23%7B%27tolerance%27%20-%3E%20%27pointer%27.%0A%09%09%27drop%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%20self%20handleDrop%3A%20event%20with%3A%20ui%5D%7D.'),
 messageSends: ["setToken:", "new", "fetchCurrent:", "refresh", "setInterval:every:", "droppable:", "asJQuery", unescape("-%3E"), "handleDrop:with:"],
 referencedClasses: ["Issues", "Users"]
 }),
