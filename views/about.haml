@@ -6,13 +6,73 @@
           :type => 'text/css',
           :rel => 'stylesheet',
           :href => "/css/hub.css?cachebust=#{Time.now.to_i}"}
+    %style{:type => 'text/css'}
+      \.abouttile {
+      width: 45%;
+      padding: 20px;
+      text-align: left;
+      }
+      \.abouttile a:link, .abouttile a:visited {
+      color: inherit;
+      }
   %body
-    %center
-      %h1
-        About Hubboard
+    %div.actionbar
+      %span.logo
+        %a{:href => '/about', :target => '_blank'}
+          %img{:src => '/images/logo.png', :alt => 'Hub board', :title => 'Hub board'}
     %br/
-    %blockquote.about_text
-      Hubboard is a fairly simple Kan Ban board for GitHub Issues. It relies wholly on the GitHub v3 API and uses OAuth to authenticate you.
+    %br/
+    %center
+      %div.issuetile.abouttile
+        Hub board is a fairly straight-foward 
+        %a{:href => "http://en.wikipedia.org/wiki/Kan_ban"}
+          kan ban
+        board, built on top of the 
+        %a{:href => "http://developer.github.com/v3"}
+          GitHub v3 API
+        \.
+        %br/
+        %br/
+        The goal of Hub board is to help you rapidly interact with issues assigned to you in
+        the various repositories you may work with.
       %br/
+      %div.issuetile.abouttile
+        Hub board is an open source project built with the following:
+        %ul
+          %li
+            %a{:href => 'http://sinatrarb.com'}
+              Sinatra
+            \ - 
+            %em
+              A supremely useful library for building web servers in Ruby
+          %li
+            %a{:href => 'http://amber-lang.net'}
+              Amber
+            \ - 
+            %em
+              JavaScript-based implementation of Smalltalk
+          %li
+            %a{:href => 'http://httparty.rubyforge.org/'}
+              HTTParty
+            \ - 
+            %em
+              Simple gem for maknig HTTP calls in Ruby
+        If you are interested in contributing, or have any other questions, feel free to stop
+        by the 
+        %monospace
+          \#hubboard
+        channel on the 
+        %a{:href => 'http://freenode.net'}
+          Freenode network.
+        %br/
+        %br/
+        If you find a bug in Hub board, please file it on the 
+        %a{:href => 'https://github.com/rtyler/Hubboard/issues'}
+          issues page.
       %br/
-      The code for Hubboard <a href="https://github.com/rtyler/Hubboard">can be found here</a>.
+      %div.issuetile.abouttile{:style => 'text-align: center;'}
+        &copy; 2012 
+        %a{:href => 'https://github.com/rtyler'}
+          R. Tyler Croy
+        %a{:href => 'https://twitter.com/agentdero'}
+          %img{:src => '/images/twitter.png', :hspace => 10, :align => 'absmiddle'}
