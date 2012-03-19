@@ -13,6 +13,12 @@ body {
   padding: 10px;
 }
 
+.logo {
+  float: left;
+  margin-right: 20px;
+  border-right: 1px solid #e7e7e7;
+}
+
 .column {
   width: 33%;
   height: 95%;

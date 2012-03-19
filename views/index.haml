@@ -22,6 +22,10 @@
         %a{:href => 'https://github.com/rtyler/Hubboard/issues',
            :target => '_blank'}
           Known Issues
+      %span.logo
+        %a{:href => '/about', :target => '_blank'}
+          %img{:src => '/images/logo.png', :alt => 'Hub board', :title => 'Hub board'}
+
       %button{:onclick => 'smalltalk.HubboardApp._current()._refresh()'}
         Refresh
       %button{:onclick => 'smalltalk.NewIssueDialog._show();'}
