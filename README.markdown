@@ -1,18 +1,18 @@
-# Hubboard
+# Hub board
+
+
+Hub board is a web application built on top of the GitHub v3 API using
+[Amber](http://amber-lang.net). It provides a "[kan
+ban](http://en.wikipedia.org/wiki/Kan_ban)" board for GitHub Issues, and allows
+you to rapidly interact with issues that are assigned to you on GitHub.
 
 
 
-This is an experimental (read: ugly) project to create an
-[Amber](http://amber-lang.net)-based "[kan
-ban](http://en.wikipedia.org/wiki/Kan_ban)" board for GitHub Issues.
-
-
-
-![Work in progress](http://strongspace.com/rtyler/public/hubboard-2012.03.18-06.45.png)
+![Work in progress](http://strongspace.com/rtyler/public/hubboard-2012.03.18-17.50.png)
 
 
 ### Running
 
-* Make sure you have the gems installed in the Gemfile (`bundle install`
+* Make sure you have the gems installed in the Gemfile (`bundle install`)
 * Run `ruby hubboard.rb`
-* Go to your browser dummy
+* Go to your browser and start playing around
