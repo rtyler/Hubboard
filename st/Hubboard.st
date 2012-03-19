@@ -85,6 +85,7 @@ renderOn: html
 	html div
 		class: 'issuetile';
 		id: self elementId;
+		at: 'data-project' put: self fullProjectName;
 		with: [
 			html div
 				class: numberClass;
@@ -93,7 +94,7 @@ renderOn: html
 					html with: ' in '.
 					html a href: ('https://github.com/', projectOwner); with: projectOwner.
 					html with: ' / '.
-					html  a href: ('https://github.com/', projectOwner, '/', project); with: project.
+					html  a href: ('https://github.com/', self fullProjectName); with: project.
 				].
 			html span class: 'title'; with: title.
 			html br.
@@ -149,7 +150,7 @@ moveTo: aColumnId
 	 The lines blur a bit here on 'view' versus 'controller'"
 
 	aColumnId = 'inprogressissues' ifTrue: [
-		jQuery ajax: ('/repos/', projectOwner, '/', project, '/issues/', number, '/labels')
+		jQuery ajax: ('/repos/', self fullProjectName, '/issues/', number, '/labels')
 				options: #{
 					'type' -> 'POST'.
 					'dataType' -> 'json'.
@@ -169,7 +170,7 @@ moveTo: aColumnId
 
 	aColumnId = 'closedissues' ifTrue: [
 		| data |
-		data := #{'project' -> (projectOwner, '/', project)}.
+		data := #{'project' -> self fullProjectName}.
 		jQuery ajax: ('/issues/', number, '/close')
 				options: #{
 					'type' -> 'POST'.
@@ -200,10 +201,14 @@ project
 
 projectOwner
 	^ projectOwner.
+!
+
+fullProjectName
+	^ projectOwner, '/', project.
 ! !
 
 Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId'
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject'
 	category: 'Hubboard'!
 
 !HubboardApp methodsFor: 'not yet classified'!
@@ -255,16 +260,23 @@ refresh
 	'#openissues' asJQuery empty.
 	'#inprogressissues' asJQuery empty.
 	'#closedissues' asJQuery empty.
+
 	issueApi issues: [ :issues |
 		issues do: [ :issue |
 			| tile |
 			tile := IssueTile new withData: issue.
 			issueMap at: (tile elementId) put: tile.
-			knownRepos add: (tile projectOwner), '/', (tile project).
+			knownRepos add: (tile fullProjectName).
 			(self inProgress: (issue at: 'labels'))
 					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
-					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ]
-	]] loadAll: false.
+					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ].
+			currentProject ifNotNil: [
+				currentProject = (tile fullProjectName) ifFalse: [tile asJQuery hide].
+			].
+		].
+		" Once we've loaded all our knownRepos up, we can update the filter"
+		self updateFilter.
+	] loadAll: false.
 
 	issueApi recentlyClosed: [ :issues |
 		issues do: [ :issue |
@@ -272,6 +284,9 @@ refresh
 			tile := IssueTile new withData: issue.
 			tile setClosed.
 			tile appendToJQuery: ('#closedissues' asJQuery).
+			currentProject ifNotNil: [
+				currentProject = (tile fullProjectName) ifFalse: [tile asJQuery hide].
+			].
 	]] loadAll: false.
 !
 
@@ -285,6 +300,47 @@ issueMap
 
 user
 	^ userData.
+!
+
+updateFilter
+	| element |
+
+	" If we have a currently selected project, no sense in running the rest of this code "
+	currentProject ifNotNil: [ ^ true ].
+
+	element := '.projectselect' asJQuery.
+	element change: [ :event |
+		| project |
+		console log: 'calling change event'.
+		project := element val.
+		project = 'All'
+			ifTrue: [ self showAll ]
+			ifFalse: [ self showOnly: project ].
+	].
+
+	element empty.
+
+	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
+	knownRepos do: [ :project |
+		[ :html | html option value: project; with: project ] appendToJQuery: element.
+	].
+!
+
+showAll
+	"Make sure all issue tiles are visible"
+	currentProject := nil.
+	'.issuetile' asJQuery show.
+!
+
+showOnly: aProjectName
+	"Only show tiles with data-project=aProjectName"
+	currentProject := aProjectName.
+	'.issueTile' asJQuery each: [ :index :tile |
+		| tileProject |
+		tile := window jQuery: tile.
+		tileProject := tile attr: 'data-project'.
+		tileProject = aProjectName ifFalse: [ tile hide ].
+	].
 ! !
 
 HubboardApp class instanceVariableNames: 'current'!
