@@ -27,15 +27,15 @@
       %button{:onclick => 'smalltalk.NewIssueDialog._show();'}
         Create Issue
 
-    %div.column
+    %div.column.opencolumn
       %div.header
         Open
       %div.issuecolumn#openissues
-    %div.column
+    %div.column.inprogresscolumn
       %div.header
         In Progress
       %div.issuecolumn#inprogressissues
-    %div.column
+    %div.column.closedcolumn
       %div.header
         Closed/Resolved
       %div.issuecolumn#closedissues

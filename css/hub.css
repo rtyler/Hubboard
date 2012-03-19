@@ -2,21 +2,27 @@ body {
   background: #e7e7e7;
   background: url('/images/bg.png');
   font-family: helvetica, sans-serif;
+  margin: 0px;
 }
 
 .actionbar {
   height: 30px;
-  width: 100%;
   border-bottom: 1px dashed #333;
   margin-bottom: 10px;
+  background: #ffffff;
+  padding: 10px;
 }
 
 .column {
-  width: 30%;
-  height: 100%;
+  width: 33%;
+  height: 95%;
   float: left;
   border-right: 1px solid #333;
-  border-bottom: 1px solid #333;
+}
+
+/* Disable the right border for the closed column */
+.closedcolumn {
+  border-right: 0px;
 }
 
 .column .header {
