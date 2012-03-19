@@ -6,14 +6,16 @@ require 'json'
 require 'httparty'
 require 'resin/app/app'
 
-if ENV['RACK_ENV'] != 'production'
+API_URL = 'https://api.github.com'
+CONFIG_FILE = File.expand_path(File.dirname(__FILE__) + '/config/config.yml')
+INPROGRESS_LABEL = 'in-progress'
+COMMENT_FOOTER = "(*This message brought to you by [Hub board](http://hubboard.herokuapp.com/about)*)"
+
+if Resin.development?
   MYSELF = 'http://localhost:4567'
 else
   MYSELF = 'http://hubboard.herokuapp.com'
 end
-
-API_URL = 'https://api.github.com'
-CONFIG_FILE = File.expand_path(File.dirname(__FILE__) + '/config/config.yml')
 
 if File.exists? CONFIG_FILE
   $config = YAML::load(File.open(File.expand_path(File.dirname(__FILE__) + '/config/config.yml')))
@@ -34,7 +36,9 @@ module Hubboard
 
     def call_github(token, method, url, body=nil)
       headers = {'Authorization' => "token #{token}"}
-      method_map = {:post => Net::HTTP::Post, :get => Net::HTTP::Get}
+      method_map = {:post => Net::HTTP::Post,
+                    :get => Net::HTTP::Get,
+                    :delete => Net::HTTP::Delete}
 
       if body.instance_of?(Hash) || body.instance_of?(Array)
         body = JSON.dump(body)
@@ -120,7 +124,7 @@ module Hubboard
       call_github(token, :post, issue_url + '/comments', {:body => <<-END
 This work is complete.
 
-(*This message brought to you by [Hubboard](http://hubboard.herokuapp.com/about)*)
+#{COMMENT_FOOTER}
 END
       })
       call_github(token, :post, issue_url, {:state => 'closed'})
@@ -131,20 +135,19 @@ END
       token = validate_token
       data = parse_post_json
       validate_project(data[:data])
-      label = 'in-progress'
       project = data[:data][:project]
 
       # First make sure the label exists in this repo
-      response = call_github(token, :get, API_URL + "/repos/#{project}/labels/#{label}")
+      response = call_github(token, :get, API_URL + "/repos/#{project}/labels/#{INPROGRESS_LABEL}")
       unless response.code == 200
         # We couldn't find the label so let's make it!
         call_github(token, :post, API_URL + "/repos/#{project}/labels",
-                    {:name => label, :color => '02e10c'})
+                    {:name => INPROGRESS_LABEL, :color => '02e10c'})
       end
 
       # Second, let's add the label to the issue
       issue_url = API_URL + "/repos/#{project}/issues/#{number}"
-      response = call_github(token, :post, issue_url + '/labels', [label])
+      response = call_github(token, :post, issue_url + '/labels', [INPROGRESS_LABEL])
       unless response.code == 200
         puts response.inspect
         halt 500
@@ -155,9 +158,32 @@ END
                   {:body => <<-END
 Starting work on this now.
 
-(*This message brought to you by [Hubboard](http://hubboard.herokuapp.com/about)*)
+#{COMMENT_FOOTER}
 END
       })
+      '{}'
+    end
+
+    post '/issues/:number/revert' do |number|
+      token = validate_token
+      data = parse_post_json
+      validate_project(data[:data])
+
+      issue_url = API_URL + "/repos/#{data[:data][:project]}/issues/#{number}"
+      response = call_github(token, :delete, issue_url + "/labels/#{INPROGRESS_LABEL}")
+      unless response.code == 200
+        halt 500
+      end
+
+      # Add a comment to let people know this is going back on the back-burner
+      call_github(token, :post, issue_url + '/comments',
+                  {:body => <<-END
+Putting this issue back on the back-burner.
+
+#{COMMENT_FOOTER}
+END
+      })
+
       '{}'
     end
   end
