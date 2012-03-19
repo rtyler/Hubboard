@@ -23,7 +23,49 @@ else
 end
 
 module Hubboard
+  module Helpers
+    def validate_token
+      token = session[:access_token]
+      if token.nil? or token.empty?
+        halt 400
+      end
+      token
+    end
+
+    def call_github(token, method, url, body=nil)
+      headers = {'Authorization' => "token #{token}"}
+      method_map = {:post => Net::HTTP::Post, :get => Net::HTTP::Get}
+
+      if body.instance_of?(Hash) || body.instance_of?(Array)
+        body = JSON.dump(body)
+      end
+
+      if Resin.development?
+        puts ">> Calling GitHub[#{method}] -> #{url}"
+      end
+
+      request = HTTParty::Request.new(method_map[method], url,
+                            :headers => headers,
+                            :body => body)
+      request.perform
+    end
+
+    def parse_post_json
+      raw = request.body.read
+      data = JSON.parse(raw, {:symbolize_names => true})
+      return {:raw => raw, :data => data}
+    end
+
+    def validate_project(data)
+      if data[:project].nil? or data[:project].empty?
+        halt 500
+      end
+    end
+  end
+
+
   class Server < Resin::Server
+    include Helpers
     set :sessions, true
     set :session_secret, 'the-secret-hubboard-project'
 
@@ -60,82 +102,62 @@ module Hubboard
     end
 
     post '/issues/create' do
-      token = session[:access_token]
-      if token.nil? or token.empty?
-        halt 400
-      end
-      headers = {'Authorization' => "token #{token}"}
-      raw_data = request.body.read
-      data = JSON.parse(raw_data)
+      token = validate_token
+      data = parse_post_json
+      validate_project(data[:data])
 
-      if data['project'].nil? or data['project'].empty?
-        halt 500
-      end
-
-      HTTParty.post(API_URL + "/repos/#{data['project']}/issues", :headers => headers,
-                    :body => raw_data)
+      call_github(token, :post, API_URL + "/repos/#{data['project']}/issues", data[:raw])
       '{}'
     end
 
     post '/issues/:number/close' do |number|
-      token = session[:access_token]
-      if token.nil? or token.empty?
-        halt 400
-      end
+      token = validate_token
+      data = parse_post_json
+      validate_project(data[:data])
 
-      raw_data = request.body.read
-      data = JSON.parse(raw_data)
-
-      if data['project'].nil? or data['project'].empty?
-        halt 500
-      end
-      headers = {'Authorization' => "token #{token}"}
       issue_url = API_URL + "/repos/#{data['project']}/issues/#{number}"
 
-      HTTParty.post(issue_url + '/comments', :headers => headers,
-                    :body => JSON.dump({:body => <<-END
+      call_github(token, :post, issue_url + '/comments', {:body => <<-END
 This work is complete.
 
 (*This message brought to you by [Hubboard](http://hubboard.herokuapp.com/about)*)
 END
-}))
-
-    HTTParty.post(issue_url, :headers => headers, :http_method => 'patch',
-                    :body => JSON.dump({:state => 'closed'}))
-
-    '{}'
+      })
+      call_github(token, :post, issue_url, {:state => 'closed'})
+      '{}'
     end
 
-    # This entire function is a mess and I hate it already
-    post '/repos/:user/:repo/issues/:number/labels' do |user, repo, number|
-      token = session[:access_token]
-      if token.nil? or token.empty?
-        halt 400
-      end
+    post '/issues/:number/label' do |number|
+      token = validate_token
+      data = parse_post_json
+      validate_project(data[:data])
       label = 'in-progress'
-      headers = {'Authorization' => "token #{token}"}
-      check_url = API_URL + "/repos/#{user}/#{repo}/labels/#{label}"
-      response = HTTParty.get(check_url, headers)
+      project = data[:data][:project]
+
+      # First make sure the label exists in this repo
+      response = call_github(token, :get, API_URL + "/repos/#{project}/labels/#{label}")
       unless response.code == 200
-        HTTParty.post(API_URL + "/repos/#{user}/#{repo}/labels", :headers => headers,
-                      :body => JSON.dump({:name => label, :color => '02e10c'}))
+        # We couldn't find the label so let's make it!
+        call_github(token, :post, API_URL + "/repos/#{project}/labels",
+                    {:name => label, :color => '02e10c'})
       end
 
-      url = API_URL + "/repos/#{user}/#{repo}/issues/#{number}"
-      response = HTTParty.post(url + '/labels', :headers => headers,
-                              :body => JSON.dump([label]))
-
+      # Second, let's add the label to the issue
+      issue_url = API_URL + "/repos/#{project}/issues/#{number}"
+      response = call_github(token, :post, issue_url + '/labels', [label])
       unless response.code == 200
+        puts response.inspect
         halt 500
       end
 
-      HTTParty.post(url + '/comments', :headers => headers,
-                    :body => JSON.dump({:body => <<-END
+      # Now that it's labelled appropriately, let's post a comment
+      call_github(token, :post, issue_url + '/comments',
+                  {:body => <<-END
 Starting work on this now.
 
 (*This message brought to you by [Hubboard](http://hubboard.herokuapp.com/about)*)
 END
-}))
+      })
       '{}'
     end
   end
