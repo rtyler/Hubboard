@@ -46,8 +46,6 @@ body {
 
 .issuetile {
   margin: 10px;
-  padding: 5px;
-  border: 2px solid #e1e1e1;
   font-weight: bold;
   background: #ffffff;
   -webkit-border-radius: 5px;
@@ -60,21 +58,25 @@ body {
 
 .issuetile .title {
   font-size: 0.8em;
+  padding: 5px;
 }
 
 .issuetile .number {
   font-size: 0.7em;
   padding: 4px;
+  border-bottom: 1px solid #333;
 }
 
-.issuetile .number .open {
+.issuetile .open {
+  background: #B7CDE5;
 }
 
 .issuetile .inprogress {
   background: #bbefbe;
 }
 
-.issuetile .number .closed {
+#closedissues .issuetile {
+  opacity: 0.8;
 }
 
 .issuetile .number a:link, .issuetile .number a:visited {

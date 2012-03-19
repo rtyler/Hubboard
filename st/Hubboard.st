@@ -96,8 +96,7 @@ renderOn: html
 					html with: ' / '.
 					html  a href: ('https://github.com/', self fullProjectName); with: project.
 				].
-			html span class: 'title'; with: title.
-			html br.
+			html div class: 'title'; with: title.
 		].
 
 	"After we render, we should probably make this sucker draggable"
