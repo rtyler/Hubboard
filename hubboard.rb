@@ -111,7 +111,7 @@ module Hubboard
       data = parse_post_json
       validate_project(data[:data])
 
-      call_github(token, :post, API_URL + "/repos/#{data['project']}/issues", data[:raw])
+      call_github(token, :post, API_URL + "/repos/#{data[:data][:project]}/issues", data[:raw])
       '{}'
     end
 
