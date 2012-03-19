@@ -46,6 +46,7 @@ module Hubboard
 
       if Resin.development?
         puts ">> Calling GitHub[#{method}] -> #{url}"
+        puts body
       end
 
       request = HTTParty::Request.new(method_map[method], url,
@@ -119,7 +120,7 @@ module Hubboard
       data = parse_post_json
       validate_project(data[:data])
 
-      issue_url = API_URL + "/repos/#{data['project']}/issues/#{number}"
+      issue_url = API_URL + "/repos/#{data[:data][:project]}/issues/#{number}"
 
       call_github(token, :post, issue_url + '/comments', {:body => <<-END
 This work is complete.
