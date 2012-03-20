@@ -1,4 +1,33 @@
 smalltalk.addPackage('Hubboard-Tests', {});
+smalltalk.addClass('IssueTileTests', smalltalk.TestCase, ['object'], 'Hubboard-Tests');
+smalltalk.addMethod(
+unescape('_testParsingProjectFromUrl'),
+smalltalk.method({
+selector: unescape('testParsingProjectFromUrl'),
+fn: function (){
+var self=this;
+var url=nil;
+(url=unescape("https%3A//github.com/rtyler/resin/issues/1"));
+(result=smalltalk.send(self['@object'], "_parseUrl_", [url]));
+smalltalk.send(self, "_assert_equals_", ["rtyler", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["owner"])]);
+smalltalk.send(self, "_assert_equals_", ["resin", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["project"])]);
+return self;}
+}),
+smalltalk.IssueTileTests);
+
+smalltalk.addMethod(
+unescape('_setUp'),
+smalltalk.method({
+selector: unescape('setUp'),
+fn: function (){
+var self=this;
+(self['@object']=smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []));
+return self;}
+}),
+smalltalk.IssueTileTests);
+
+
+
 smalltalk.addClass('HubboardAppTests', smalltalk.TestCase, [], 'Hubboard-Tests');
 smalltalk.addMethod(
 unescape('_testIsInProgressWithNoLabels'),
@@ -27,35 +56,6 @@ smalltalk.send(self, "_assert_equals_", [true, result]);
 return self;}
 }),
 smalltalk.HubboardAppTests);
-
-
-
-smalltalk.addClass('IssueTileTests', smalltalk.TestCase, ['object'], 'Hubboard-Tests');
-smalltalk.addMethod(
-unescape('_testParsingProjectFromUrl'),
-smalltalk.method({
-selector: unescape('testParsingProjectFromUrl'),
-fn: function (){
-var self=this;
-var url=nil;
-(url=unescape("https%3A//github.com/rtyler/resin/issues/1"));
-(result=smalltalk.send(self['@object'], "_parseUrl_", [url]));
-smalltalk.send(self, "_assert_equals_", ["rtyler", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["owner"])]);
-smalltalk.send(self, "_assert_equals_", ["resin", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["project"])]);
-return self;}
-}),
-smalltalk.IssueTileTests);
-
-smalltalk.addMethod(
-unescape('_setUp'),
-smalltalk.method({
-selector: unescape('setUp'),
-fn: function (){
-var self=this;
-(self['@object']=smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []));
-return self;}
-}),
-smalltalk.IssueTileTests);
 
 
 

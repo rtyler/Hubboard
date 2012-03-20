@@ -1,25 +1,4 @@
 Smalltalk current createPackage: 'Hubboard-Tests' properties: #{}!
-TestCase subclass: #HubboardAppTests
-	instanceVariableNames: ''
-	category: 'Hubboard-Tests'!
-
-!HubboardAppTests methodsFor: 'not yet classified'!
-
-testIsInProgressWithNoLabels
-	"Verify we say that this thing is not in progress if there are no labels"
-	| result |
-	result := HubboardApp current inProgress: (Array new).
-	self assert: false equals: result.
-!
-
-testIsInProgressWithLabels
-	"Verify we say that this thing is not in progress if there are no labels"
-	| result mocklabel |
-	mocklabel := Dictionary new at: 'name' put: 'in-progress'; yourself.
-	result := HubboardApp current inProgress: (Array new add: mocklabel; yourself).
-	self assert: true equals: result.
-! !
-
 TestCase subclass: #IssueTileTests
 	instanceVariableNames: 'object'
 	category: 'Hubboard-Tests'!
@@ -37,5 +16,26 @@ testParsingProjectFromUrl
 
 setUp
 	object := IssueTile new.
+! !
+
+TestCase subclass: #HubboardAppTests
+	instanceVariableNames: ''
+	category: 'Hubboard-Tests'!
+
+!HubboardAppTests methodsFor: 'testcase'!
+
+testIsInProgressWithNoLabels
+	"Verify we say that this thing is not in progress if there are no labels"
+	| result |
+	result := HubboardApp current inProgress: (Array new).
+	self assert: false equals: result.
+!
+
+testIsInProgressWithLabels
+	"Verify we say that this thing is not in progress if there are no labels"
+	| result mocklabel |
+	mocklabel := Dictionary new at: 'name' put: 'in-progress'; yourself.
+	result := HubboardApp current inProgress: (Array new add: mocklabel; yourself).
+	self assert: true equals: result.
 ! !
 

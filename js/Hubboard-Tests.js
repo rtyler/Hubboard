@@ -1,45 +1,4 @@
 smalltalk.addPackage('Hubboard-Tests', {});
-smalltalk.addClass('HubboardAppTests', smalltalk.TestCase, [], 'Hubboard-Tests');
-smalltalk.addMethod(
-unescape('_testIsInProgressWithNoLabels'),
-smalltalk.method({
-selector: unescape('testIsInProgressWithNoLabels'),
-category: 'not yet classified',
-fn: function (){
-var self=this;
-var result=nil;
-(result=smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_inProgress_", [smalltalk.send((smalltalk.Array || Array), "_new", [])]));
-smalltalk.send(self, "_assert_equals_", [false, result]);
-return self;},
-args: [],
-source: unescape('testIsInProgressWithNoLabels%0A%09%22Verify%20we%20say%20that%20this%20thing%20is%20not%20in%20progress%20if%20there%20are%20no%20labels%22%0A%09%7C%20result%20%7C%0A%09result%20%3A%3D%20HubboardApp%20current%20inProgress%3A%20%28Array%20new%29.%0A%09self%20assert%3A%20false%20equals%3A%20result.'),
-messageSends: ["inProgress:", "current", "new", "assert:equals:"],
-referencedClasses: ["HubboardApp", "Array"]
-}),
-smalltalk.HubboardAppTests);
-
-smalltalk.addMethod(
-unescape('_testIsInProgressWithLabels'),
-smalltalk.method({
-selector: unescape('testIsInProgressWithLabels'),
-category: 'not yet classified',
-fn: function (){
-var self=this;
-var result=nil;
-var mocklabel=nil;
-(mocklabel=(function($rec){smalltalk.send($rec, "_at_put_", ["name", unescape("in-progress")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
-(result=smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_inProgress_", [(function($rec){smalltalk.send($rec, "_add_", [mocklabel]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Array || Array), "_new", []))]));
-smalltalk.send(self, "_assert_equals_", [true, result]);
-return self;},
-args: [],
-source: unescape('testIsInProgressWithLabels%0A%09%22Verify%20we%20say%20that%20this%20thing%20is%20not%20in%20progress%20if%20there%20are%20no%20labels%22%0A%09%7C%20result%20mocklabel%20%7C%0A%09mocklabel%20%3A%3D%20Dictionary%20new%20at%3A%20%27name%27%20put%3A%20%27in-progress%27%3B%20yourself.%0A%09result%20%3A%3D%20HubboardApp%20current%20inProgress%3A%20%28Array%20new%20add%3A%20mocklabel%3B%20yourself%29.%0A%09self%20assert%3A%20true%20equals%3A%20result.'),
-messageSends: ["at:put:", "yourself", "new", "inProgress:", "current", "add:", "assert:equals:"],
-referencedClasses: ["Dictionary", "HubboardApp", "Array"]
-}),
-smalltalk.HubboardAppTests);
-
-
-
 smalltalk.addClass('IssueTileTests', smalltalk.TestCase, ['object'], 'Hubboard-Tests');
 smalltalk.addMethod(
 unescape('_testParsingProjectFromUrl'),
@@ -76,6 +35,47 @@ messageSends: ["new"],
 referencedClasses: ["IssueTile"]
 }),
 smalltalk.IssueTileTests);
+
+
+
+smalltalk.addClass('HubboardAppTests', smalltalk.TestCase, [], 'Hubboard-Tests');
+smalltalk.addMethod(
+unescape('_testIsInProgressWithNoLabels'),
+smalltalk.method({
+selector: unescape('testIsInProgressWithNoLabels'),
+category: 'testcase',
+fn: function (){
+var self=this;
+var result=nil;
+(result=smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_inProgress_", [smalltalk.send((smalltalk.Array || Array), "_new", [])]));
+smalltalk.send(self, "_assert_equals_", [false, result]);
+return self;},
+args: [],
+source: unescape('testIsInProgressWithNoLabels%0A%09%22Verify%20we%20say%20that%20this%20thing%20is%20not%20in%20progress%20if%20there%20are%20no%20labels%22%0A%09%7C%20result%20%7C%0A%09result%20%3A%3D%20HubboardApp%20current%20inProgress%3A%20%28Array%20new%29.%0A%09self%20assert%3A%20false%20equals%3A%20result.'),
+messageSends: ["inProgress:", "current", "new", "assert:equals:"],
+referencedClasses: ["HubboardApp", "Array"]
+}),
+smalltalk.HubboardAppTests);
+
+smalltalk.addMethod(
+unescape('_testIsInProgressWithLabels'),
+smalltalk.method({
+selector: unescape('testIsInProgressWithLabels'),
+category: 'testcase',
+fn: function (){
+var self=this;
+var result=nil;
+var mocklabel=nil;
+(mocklabel=(function($rec){smalltalk.send($rec, "_at_put_", ["name", unescape("in-progress")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
+(result=smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_inProgress_", [(function($rec){smalltalk.send($rec, "_add_", [mocklabel]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Array || Array), "_new", []))]));
+smalltalk.send(self, "_assert_equals_", [true, result]);
+return self;},
+args: [],
+source: unescape('testIsInProgressWithLabels%0A%09%22Verify%20we%20say%20that%20this%20thing%20is%20not%20in%20progress%20if%20there%20are%20no%20labels%22%0A%09%7C%20result%20mocklabel%20%7C%0A%09mocklabel%20%3A%3D%20Dictionary%20new%20at%3A%20%27name%27%20put%3A%20%27in-progress%27%3B%20yourself.%0A%09result%20%3A%3D%20HubboardApp%20current%20inProgress%3A%20%28Array%20new%20add%3A%20mocklabel%3B%20yourself%29.%0A%09self%20assert%3A%20true%20equals%3A%20result.'),
+messageSends: ["at:put:", "yourself", "new", "inProgress:", "current", "add:", "assert:equals:"],
+referencedClasses: ["Dictionary", "HubboardApp", "Array"]
+}),
+smalltalk.HubboardAppTests);
 
 
 
