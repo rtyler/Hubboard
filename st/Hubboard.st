@@ -112,39 +112,6 @@ fullProjectName
 
 !IssueTile methodsFor: 'not yet classified'!
 
-renderOn: html
-	| numberClass |
-	numberClass := 'number'.
-
-	issueStatus = #open ifTrue: [ numberClass := numberClass, ' open' ]. 
-	issueStatus = #inprogress ifTrue: [ numberClass := numberClass, ' inprogress' ]. 
-	issueStatus = #closed ifTrue: [ numberClass := numberClass, ' closed'].
-
-	html div
-		class: 'issuetile';
-		id: self elementId;
-		at: 'data-project' put: self fullProjectName;
-		with: [
-			html div
-				class: numberClass;
-				with: [ 
-					html a href: (raw at: 'html_url'); target: '_blank'; with: ('#', number asString).
-					html with: ' in '.
-					html a href: ('https://github.com/', projectOwner); with: projectOwner.
-					html with: ' / '.
-					html  a href: ('https://github.com/', self fullProjectName); with: project.
-					html span
-						style: 'float:right;';
-						class: 'comments';
-						with: (comments asString, ' comments').
-				].
-			html div class: 'title'; with: title.
-		].
-
-	"After we render, we should probably make this sucker draggable"
-	issueStatus = #closed ifFalse: [ self asJQuery draggable: #{'zIndex' -> '10000'. 'snap' -> true }].
-!
-
 withData: dataHash
 	"Set up a the tile with data from the GitHub API"
 	| issueInfo |
@@ -249,6 +216,42 @@ setClosed
 	self asJQuery draggable: 'disable'.
 ! !
 
+!IssueTile methodsFor: 'rendering'!
+
+renderOn: html
+	| numberClass |
+	numberClass := 'number'.
+
+	issueStatus = #open ifTrue: [ numberClass := numberClass, ' open' ]. 
+	issueStatus = #inprogress ifTrue: [ numberClass := numberClass, ' inprogress' ]. 
+	issueStatus = #closed ifTrue: [ numberClass := numberClass, ' closed'].
+
+	html div
+		class: 'issuetile';
+		id: self elementId;
+		at: 'data-project' put: self fullProjectName;
+		at: 'data-issueid' put: issueId;
+		with: [
+			html div
+				class: numberClass;
+				with: [ 
+					html a href: (raw at: 'html_url'); target: '_blank'; with: ('#', number asString).
+					html with: ' in '.
+					html a href: ('https://github.com/', projectOwner); with: projectOwner.
+					html with: ' / '.
+					html  a href: ('https://github.com/', self fullProjectName); with: project.
+					html span
+						style: 'float:right;';
+						class: 'comments';
+						with: (comments asString, ' comments').
+				].
+			html div class: 'title'; with: title.
+		].
+
+	"After we render, we should probably make this sucker draggable"
+	issueStatus = #closed ifFalse: [ self asJQuery draggable: #{'zIndex' -> '10000'. 'snap' -> true }].
+! !
+
 Object subclass: #HubboardApp
 	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject'
 	category: 'Hubboard'!
@@ -301,8 +304,9 @@ inProgress: arrayOfLabels
 
 handleDrop: theEvent with: aWidget
 	" This function should handle the initial drop of one IssueTile onto a new column "
-	| tile currentParent newParent |
-	tile := issueMap at: ((aWidget draggable at: 0) at: 'id').
+	| tile currentParent newParent issueId |
+	issueId := ((aWidget draggable at: 0) at: 'id').
+	tile := issueMap at: (((issueId split: 'issuetile_') at: 2) asNumber).
 	"jQuery is going to give this to us in an array, how annoying"
 	currentParent := (tile asJQuery parent at: 0) at: 'id'. 
 	newParent := theEvent target at: 'id'.
@@ -409,5 +413,12 @@ HubboardApp class instanceVariableNames: 'current'!
 
 current
 	^ current ifNil: [ current := super new ].
+! !
+
+!String methodsFor: '*Hubboard'!
+
+split: aDelimiter
+	"Split the string based on the delimiter into an Array of sub-strings"
+	^ <self.split(aDelimiter);>.
 ! !
 
