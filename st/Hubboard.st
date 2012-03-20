@@ -340,6 +340,7 @@ becomeDialog
 	'.new_issue' asJQuery dialog: #{
 			'modal' -> true.
 			'minWidth' -> '450'.
+			'draggable' -> false.
 			'close' -> [ :event :ui |
 				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
 				'.ui-dialog' asJQuery remove.

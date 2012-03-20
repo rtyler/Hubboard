@@ -355,7 +355,7 @@ smalltalk.method({
 selector: unescape('becomeDialog'),
 fn: function (){
 var self=this;
-smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("minWidth", "__minus_gt", ["450"]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
+smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("minWidth", "__minus_gt", ["450"]),smalltalk.send("draggable", "__minus_gt", [false]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
 return self;}
 }),
 smalltalk.NewIssueDialog);

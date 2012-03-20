@@ -481,10 +481,10 @@ selector: unescape('becomeDialog'),
 category: 'not yet classified',
 fn: function (){
 var self=this;
-smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("minWidth", "__minus_gt", ["450"]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
+smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("minWidth", "__minus_gt", ["450"]),smalltalk.send("draggable", "__minus_gt", [false]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
 return self;},
 args: [],
-source: unescape('becomeDialog%0A%09%27.new_issue%27%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20true.%0A%09%09%09%27minWidth%27%20-%3E%20%27450%27.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09%27.new_issue%27%20asJQuery%20remove.%0A%09%09%09%5D%7D.'),
+source: unescape('becomeDialog%0A%09%27.new_issue%27%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20true.%0A%09%09%09%27minWidth%27%20-%3E%20%27450%27.%0A%09%09%09%27draggable%27%20-%3E%20false.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09%27.new_issue%27%20asJQuery%20remove.%0A%09%09%09%5D%7D.'),
 messageSends: ["dialog:", "asJQuery", unescape("-%3E"), "remove"],
 referencedClasses: []
 }),
