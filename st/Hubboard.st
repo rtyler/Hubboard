@@ -1,82 +1,158 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
-Widget subclass: #NewIssueDialog
-	instanceVariableNames: ''
+Object subclass: #HubboardApp
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject'
 	category: 'Hubboard'!
 
-!NewIssueDialog methodsFor: 'not yet classified'!
+!HubboardApp methodsFor: 'not yet classified'!
 
-renderOn: html
-	html div
-		at: 'title' put: 'Create a new issue';
-		class: 'new_issue';
-		with: [
-			html form name: 'new_issue_form'; onSubmit: [ :event | self submit. event preventDefault ]; with: [
-				html label for: 'assignee'; with: 'Assign to: '.
-				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
-				html strong with: (HubboardApp current user at: 'login').
-				html br.
-				html label for: 'project'; with: 'Project: '.
-				html select
-					name: 'project';
-					with: [
-						HubboardApp current knownRepos do: [ :repo | html option value: repo; with: repo ]].
-				html br.
-				html label for: 'title'; with: 'Title: '.
-				html input name: 'title'; at: 'size' put: '50'.
-				html br.
-				html a with: 'Add body'; class: 'dialog-add-body'; onClick: [ '#dialog-body' asJQuery show ].
-				html br.
-				html div
-					id: 'dialog-body';
-					style: 'display: none;';
-					with: [
-						html textarea name: 'body'; at: 'cols' put: 50; at: 'rows' put: 6.
-						html br.
-					].
-				html button style: 'float: right;'; type: 'submit'; with: 'Create'.
-			]
+initialize
+	token := window at: 'github_access_token'.
+	issueMap := Dictionary new.
+	knownRepos := Set new.
+!
+
+bootstrap
+	issueApi := Issues new setToken: token.
+	userApi := Users new setToken: token.
+	userApi fetchCurrent: [ :data | userData := data ].
+	self refresh.
+	refreshIntervalId := window setInterval: [ self refresh ] every: 120000.
+	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
+		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
+!
+
+inProgress: arrayOfLabels
+	"Return true if we find the 'in-progress' label"
+	arrayOfLabels ifNil: [ ^ false ].
+
+	arrayOfLabels do: [ :label |
+		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
+	].
+	^ false.
+!
+
+handleDrop: theEvent with: aWidget
+	" This function should handle the initial drop of one IssueTile onto a new column "
+	| tile currentParent newParent |
+	tile := issueMap at: ((aWidget draggable at: 0) at: 'id').
+	"jQuery is going to give this to us in an array, how annoying"
+	currentParent := (tile asJQuery parent at: 0) at: 'id'. 
+	newParent := theEvent target at: 'id'.
+
+	tile asJQuery css: 'position' is:'static'.
+
+	"We will receive drag events onto the same column, don't do anything in that case"
+	currentParent = newParent ifTrue: [ ^ true ].
+	('#', newParent) asJQuery append: (tile asJQuery detach).
+
+	tile moveTo: newParent.
+!
+
+refresh
+	| clearBlock |
+	clearBlock := [ :index :element |
+		| item |
+		item := window jQuery: element.
+		item draggable: 'destroy'.
+		item remove removeData.
+	].
+	'#openissues > *' asJQuery each: clearBlock.
+	'#inprogressissues > *' asJQuery each: clearBlock.
+	'#closedissues > *' asJQuery each: clearBlock.
+
+	issueApi issues: [ :issues |
+		issues do: [ :issue |
+			| tile issueId |
+			issueId := issue at: 'id'.
+			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
+			tile withData: issue.
+			issueMap at: issueId put: tile.
+			knownRepos add: (tile fullProjectName).
+			(self inProgress: (issue at: 'labels'))
+					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
+					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ].
+			currentProject ifNotNil: [
+				currentProject = (tile fullProjectName) ifFalse: [tile asJQuery hide].
+			].
+		].
+		" Once we've loaded all our knownRepos up, we can update the filter"
+		self updateFilter.
+	] loadAll: false.
+
+	issueApi recentlyClosed: [ :issues |
+		issues do: [ :issue |
+			| tile issueId |
+			issueId := issue at: 'id'.
+			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
+			tile withData: issue.
+			tile setClosed.
+			tile appendToJQuery: ('#closedissues' asJQuery).
+			currentProject ifNotNil: [
+				currentProject = (tile fullProjectName) ifFalse: [tile asJQuery hide].
+			].
+	]] loadAll: false.
+!
+
+knownRepos
+	^ knownRepos.
+!
+
+issueMap
+	^ issueMap.
+!
+
+user
+	^ userData.
+!
+
+updateFilter
+	| element |
+
+	" If we have a currently selected project, no sense in running the rest of this code "
+	currentProject ifNotNil: [ ^ true ].
+
+	element := '.projectselect' asJQuery.
+	element change: [ :event |
+		| project |
+		project := element val.
+		project = 'All'
+			ifTrue: [ self showAll ]
+			ifFalse: [ self showOnly: project ].
 	].
 
-	self becomeDialog.
+	element empty.
+
+	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
+	knownRepos do: [ :project |
+		[ :html | html option value: project; with: project ] appendToJQuery: element.
+	].
 !
 
-becomeDialog
-	'.new_issue' asJQuery dialog: #{
-			'modal' -> true.
-			'minWidth' -> '450'.
-			'draggable' -> false.
-			'close' -> [ :event :ui |
-				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
-				'.ui-dialog' asJQuery remove.
-				'.new_issue' asJQuery remove.
-			]}.
+showAll
+	"Make sure all issue tiles are visible"
+	currentProject := nil.
+	'.issuetile' asJQuery show.
 !
 
-submit
-	"Take the values out of the form and actually submit them"
-	| data |
-	data := #{
-		'title' -> ':input[name=title]' asJQuery val.
-		'assignee' -> ':input[name=assignee]' asJQuery val.
-		'project' -> ':input[name=project]' asJQuery val.
-		'body' -> ':input[name=body]' asJQuery val
-	}.
-
-	((data at: 'title') size) = 0 ifTrue: [ window alert: 'You should probably add a title'. ^ false ].
-
-	jQuery ajax: '/issues/create' options: #{'type' -> 'POST'.
-			'dataType' -> 'json'.
-			'data' -> data asJSONString.
-			'success' -> [ '.new_issue' asJQuery dialog: 'close'. HubboardApp current refresh.]}.
+showOnly: aProjectName
+	"Only show tiles with data-project=aProjectName"
+	currentProject := aProjectName.
+	'.issueTile' asJQuery each: [ :index :tile |
+		| tileProject |
+		tile := window jQuery: tile.
+		tileProject := tile attr: 'data-project'.
+		tileProject = aProjectName
+			ifFalse: [ tile hide ]
+			ifTrue: [ tile show ].
+	].
 ! !
 
-!NewIssueDialog class methodsFor: 'not yet classified'!
+HubboardApp class instanceVariableNames: 'current'!
 
-show
-	" Creates and adds the DOM elements to the body tag "
-	| dialog |
-	dialog := super new.
-	dialog appendToJQuery: ('body' asJQuery).
+!HubboardApp class methodsFor: 'not yet classified'!
+
+current
+	^ current ifNil: [ current := super new ].
 ! !
 
 Widget subclass: #IssueTile
@@ -238,159 +314,83 @@ fullProjectName
 	^ fullProjectName ifNil: [ fullProjectName := projectOwner, '/', project ].
 ! !
 
-Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject'
+Widget subclass: #NewIssueDialog
+	instanceVariableNames: ''
 	category: 'Hubboard'!
 
-!HubboardApp methodsFor: 'not yet classified'!
+!NewIssueDialog methodsFor: 'not yet classified'!
 
-initialize
-	token := window at: 'github_access_token'.
-	issueMap := Dictionary new.
-	knownRepos := Set new.
-!
-
-bootstrap
-	issueApi := Issues new setToken: token.
-	userApi := Users new setToken: token.
-	userApi fetchCurrent: [ :data | userData := data ].
-	self refresh.
-	refreshIntervalId := window setInterval: [ self refresh ] every: 120000.
-	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
-		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
-!
-
-inProgress: arrayOfLabels
-	"Return true if we find the 'in-progress' label"
-	arrayOfLabels ifNil: [ ^ false ].
-
-	arrayOfLabels do: [ :label |
-		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
-	].
-	^ false.
-!
-
-handleDrop: theEvent with: aWidget
-	" This function should handle the initial drop of one IssueTile onto a new column "
-	| tile currentParent newParent |
-	tile := issueMap at: ((aWidget draggable at: 0) at: 'id').
-	"jQuery is going to give this to us in an array, how annoying"
-	currentParent := (tile asJQuery parent at: 0) at: 'id'. 
-	newParent := theEvent target at: 'id'.
-
-	tile asJQuery css: 'position' is:'static'.
-
-	"We will receive drag events onto the same column, don't do anything in that case"
-	currentParent = newParent ifTrue: [ ^ true ].
-	('#', newParent) asJQuery append: (tile asJQuery detach).
-
-	tile moveTo: newParent.
-!
-
-refresh
-	| clearBlock |
-	clearBlock := [ :index :element |
-		| item |
-		item := window jQuery: element.
-		item draggable: 'destroy'.
-		item remove removeData.
-	].
-	'#openissues > *' asJQuery each: clearBlock.
-	'#inprogressissues > *' asJQuery each: clearBlock.
-	'#closedissues > *' asJQuery each: clearBlock.
-
-	issueApi issues: [ :issues |
-		issues do: [ :issue |
-			| tile issueId |
-			issueId := issue at: 'id'.
-			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
-			tile withData: issue.
-			issueMap at: issueId put: tile.
-			knownRepos add: (tile fullProjectName).
-			(self inProgress: (issue at: 'labels'))
-					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
-					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ].
-			currentProject ifNotNil: [
-				currentProject = (tile fullProjectName) ifFalse: [tile asJQuery hide].
-			].
-		].
-		" Once we've loaded all our knownRepos up, we can update the filter"
-		self updateFilter.
-	] loadAll: false.
-
-	issueApi recentlyClosed: [ :issues |
-		issues do: [ :issue |
-			| tile issueId |
-			issueId := issue at: 'id'.
-			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
-			tile withData: issue.
-			tile setClosed.
-			tile appendToJQuery: ('#closedissues' asJQuery).
-			currentProject ifNotNil: [
-				currentProject = (tile fullProjectName) ifFalse: [tile asJQuery hide].
-			].
-	]] loadAll: false.
-!
-
-knownRepos
-	^ knownRepos.
-!
-
-issueMap
-	^ issueMap.
-!
-
-user
-	^ userData.
-!
-
-updateFilter
-	| element |
-
-	" If we have a currently selected project, no sense in running the rest of this code "
-	currentProject ifNotNil: [ ^ true ].
-
-	element := '.projectselect' asJQuery.
-	element change: [ :event |
-		| project |
-		project := element val.
-		project = 'All'
-			ifTrue: [ self showAll ]
-			ifFalse: [ self showOnly: project ].
+renderOn: html
+	html div
+		at: 'title' put: 'Create a new issue';
+		class: 'new_issue';
+		with: [
+			html form name: 'new_issue_form'; onSubmit: [ :event | self submit. event preventDefault ]; with: [
+				html label for: 'assignee'; with: 'Assign to: '.
+				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
+				html strong with: (HubboardApp current user at: 'login').
+				html br.
+				html label for: 'project'; with: 'Project: '.
+				html select
+					name: 'project';
+					with: [
+						HubboardApp current knownRepos do: [ :repo | html option value: repo; with: repo ]].
+				html br.
+				html label for: 'title'; with: 'Title: '.
+				html input name: 'title'; at: 'size' put: '40'.
+				html br.
+				html a with: 'Add body'; class: 'dialog-add-body'; onClick: [ '#dialog-body' asJQuery show ].
+				html br.
+				html div
+					id: 'dialog-body';
+					style: 'display: none;';
+					with: [
+						html textarea name: 'body'; at: 'cols' put: 40; at: 'rows' put: 6.
+						html br.
+					].
+				html button style: 'float: right;'; type: 'submit'; with: 'Create'.
+			]
 	].
 
-	element empty.
-
-	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
-	knownRepos do: [ :project |
-		[ :html | html option value: project; with: project ] appendToJQuery: element.
-	].
+	self becomeDialog.
 !
 
-showAll
-	"Make sure all issue tiles are visible"
-	currentProject := nil.
-	'.issuetile' asJQuery show.
+becomeDialog
+	'.new_issue' asJQuery dialog: #{
+			'modal' -> true.
+			'minWidth' -> '450'.
+			'draggable' -> false.
+			'close' -> [ :event :ui |
+				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
+				'.ui-dialog' asJQuery remove.
+				'.new_issue' asJQuery remove.
+			]}.
 !
 
-showOnly: aProjectName
-	"Only show tiles with data-project=aProjectName"
-	currentProject := aProjectName.
-	'.issueTile' asJQuery each: [ :index :tile |
-		| tileProject |
-		tile := window jQuery: tile.
-		tileProject := tile attr: 'data-project'.
-		tileProject = aProjectName
-			ifFalse: [ tile hide ]
-			ifTrue: [ tile show ].
-	].
+submit
+	"Take the values out of the form and actually submit them"
+	| data |
+	data := #{
+		'title' -> ':input[name=title]' asJQuery val.
+		'assignee' -> ':input[name=assignee]' asJQuery val.
+		'project' -> ':input[name=project]' asJQuery val.
+		'body' -> ':input[name=body]' asJQuery val
+	}.
+
+	((data at: 'title') size) = 0 ifTrue: [ window alert: 'You should probably add a title'. ^ false ].
+
+	jQuery ajax: '/issues/create' options: #{'type' -> 'POST'.
+			'dataType' -> 'json'.
+			'data' -> data asJSONString.
+			'success' -> [ '.new_issue' asJQuery dialog: 'close'. HubboardApp current refresh.]}.
 ! !
 
-HubboardApp class instanceVariableNames: 'current'!
+!NewIssueDialog class methodsFor: 'not yet classified'!
 
-!HubboardApp class methodsFor: 'not yet classified'!
-
-current
-	^ current ifNil: [ current := super new ].
+show
+	" Creates and adds the DOM elements to the body tag "
+	| dialog |
+	dialog := super new.
+	dialog appendToJQuery: ('body' asJQuery).
 ! !
 
