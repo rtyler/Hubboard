@@ -82,3 +82,8 @@ body {
 .issuetile .number a:link, .issuetile .number a:visited {
   color: inherit;
 }
+
+.dialog-add-body {
+  font-size: 0.9em;
+  text-decoration: underline;
+}

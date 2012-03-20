@@ -329,7 +329,16 @@ renderOn: html
 				html label for: 'title'; with: 'Title: '.
 				html input name: 'title'; at: 'size' put: '50'.
 				html br.
-				html button type: 'submit'; with: 'Create'.
+				html a with: 'Add body'; class: 'dialog-add-body'; onClick: [ '#dialog-body' asJQuery show ].
+				html br.
+				html div
+					id: 'dialog-body';
+					style: 'display: none;';
+					with: [
+						html textarea name: 'body'; at: 'cols' put: 50; at: 'rows' put: 6.
+						html br.
+					].
+				html button style: 'float: right;'; type: 'submit'; with: 'Create'.
 			]
 	].
 
@@ -354,7 +363,8 @@ submit
 	data := #{
 		'title' -> ':input[name=title]' asJQuery val.
 		'assignee' -> ':input[name=assignee]' asJQuery val.
-		'project' -> ':input[name=project]' asJQuery val
+		'project' -> ':input[name=project]' asJQuery val.
+		'body' -> ':input[name=body]' asJQuery val
 	}.
 
 	((data at: 'title') size) = 0 ifTrue: [ window alert: 'You should probably add a title'. ^ false ].
