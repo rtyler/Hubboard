@@ -18,10 +18,18 @@
         %div{:style => 'float: right; margin-left: 15px'}
           %button{:onclick => 'smalltalk.Browser._open();'}
             Run Amber IDE
-      %span{:style => 'float: right'}
-        %a{:href => 'https://github.com/rtyler/Hubboard/issues',
-           :target => '_blank'}
-          Known Issues
+      %div#loggedin{:style => 'float: right'}
+        %small
+          %a{:href => '/logout'}<
+            Log out
+          %span#logout-username/
+        %br
+        %span{:style => 'float: right'}
+          %a{:href => 'https://github.com/rtyler/Hubboard/issues',
+            :style => 'font-size: 0.8em;',
+            :target => '_blank'}
+            Known Issues
+
       %span.logo
         %a{:href => '/about', :target => '_blank'}
           %img{:src => '/images/logo.png', :alt => 'Hub board', :title => 'Hub board'}

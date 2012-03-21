@@ -275,7 +275,7 @@ initialize
 bootstrap
 	issueApi := Issues new setToken: token.
 	userApi := Users new setToken: token.
-	userApi fetchCurrent: [ :data | userData := data ].
+	userApi fetchCurrent: [ :data | userData := data. '#logout-username' asJQuery text: ('(', (data at: 'login'), ')') ].
 	self refresh.
 	refreshIntervalId := window setInterval: [ self refresh ] every: 120000.
 	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.

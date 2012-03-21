@@ -106,6 +106,11 @@ module Hubboard
       redirect '/'
     end
 
+    get '/logout' do
+      session[:access_token] = nil
+      redirect '/intro'
+    end
+
     get '/' do
       token = session[:access_token]
       if token.nil? or token.empty?
