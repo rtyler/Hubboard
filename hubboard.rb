@@ -101,7 +101,7 @@ module Hubboard
     get '/login' do
       token = session[:access_token]
       if token.nil? or token.empty?
-        redirect "https://github.com/login/oauth/authorize?client_id=#{$config['github']['id']}&scope=repo&redirect_uri=#{MYSELF}/oauth"
+        redirect "https://github.com/login/oauth/authorize?client_id=#{$config['github']['id']}&scope=public_repo&redirect_uri=#{MYSELF}/oauth"
       end
       redirect '/'
     end
