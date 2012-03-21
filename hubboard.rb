@@ -98,10 +98,18 @@ module Hubboard
       redirect '/'
     end
 
-    get '/' do
+    get '/login' do
       token = session[:access_token]
       if token.nil? or token.empty?
         redirect "https://github.com/login/oauth/authorize?client_id=#{$config['github']['id']}&scope=repo&redirect_uri=#{MYSELF}/oauth"
+      end
+      redirect '/'
+    end
+
+    get '/' do
+      token = session[:access_token]
+      if token.nil? or token.empty?
+        redirect '/intro'
       end
       haml :index, :locals => {:access_token => token}
     end

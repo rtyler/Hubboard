@@ -1,0 +1,55 @@
+%html
+  %head
+    %title
+      Log in to Hubboard
+    %link{:media => 'screen',
+          :type => 'text/css',
+          :rel => 'stylesheet',
+          :href => "/css/hub.css?cachebust=#{Time.now.to_i}"}
+    %style{:type => 'text/css'}
+      \.abouttile {
+      width: 45%;
+      padding: 20px;
+      text-align: left;
+      }
+      \.abouttile a:link, .abouttile a:visited {
+      color: inherit;
+      }
+  %body
+    %br/
+    %center
+      %div.issuetile.abouttile
+        %div{:style => 'text-align: center;'}
+          %img{:src => '/images/logo.png', :alt => 'Hub board', :title => 'Hub board'}
+          %br/
+          %br/
+          %img{:src => '/images/hubboard-screenshot.png',
+              :width => '70%'}
+        %br/
+        %p
+          Hub board is a simple tool built on top of GitHub Issues to help you rapidly interact
+          with issues assigned to you. Just log in with GitHub and go!
+        %br/
+        %div{:style => 'text-align: center;'}
+          %a{:href => '/login'}
+            %img{:src => '/images/login-with-github.png'}
+        %br/
+        %br/
+        %p
+          Currently Hub board is in a "pre-alpha" state, meaning there are a
+          %a{:href => 'https://github.com/rtyler/Hubboard/issues'}
+            lot of tasks
+          still waiting to be finished up. Don't let that dissuade you though,
+          it's ready to be used today! In fact, Hub board is being used in the development of Hub board.
+        %p
+          You can read more about behind the scenes of Hub board on the
+          %a{:href => '/about'}
+            about page.
+      %br/
+      %br/
+      %div.issuetile.abouttile{:style => 'text-align: center;'}
+        &copy; 2012 
+        %a{:href => 'https://github.com/rtyler'}
+          R. Tyler Croy
+        %a{:href => 'https://twitter.com/agentdero'}
+          %img{:src => '/images/twitter.png', :hspace => 10, :align => 'absmiddle'}
