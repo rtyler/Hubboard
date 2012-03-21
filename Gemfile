@@ -1,7 +1,7 @@
 source :gemcutter
 
 gem 'rake'
-gem 'resin', '~> 0.0.7'
+gem 'resin', '~> 0.1.0'
 gem 'httparty'
 gem 'i18n'
 
