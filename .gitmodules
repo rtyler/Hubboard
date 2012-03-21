@@ -1,0 +1,3 @@
+[submodule "drops/github"]
+	path = drops/github
+	url = git://github.com/rtyler/github-resindrop.git
