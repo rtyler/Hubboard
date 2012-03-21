@@ -538,12 +538,12 @@ category: 'not yet classified',
 fn: function (aProjectName){
 var self=this;
 (self['@currentProject']=aProjectName);
-smalltalk.send(smalltalk.send(".issueTile", "_asJQuery", []), "_each_", [(function(index, tile){var tileProject=nil;
-(tile=smalltalk.send((typeof window == 'undefined' ? nil : window), "_jQuery_", [tile]));(tileProject=smalltalk.send(tile, "_attr_", [unescape("data-project")]));return ((($receiver = smalltalk.send(tileProject, "__eq", [aProjectName])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(tile, "_hide", []);})() : (function(){return smalltalk.send(tile, "_show", []);})()) : smalltalk.send($receiver, "_ifFalse_ifTrue_", [(function(){return smalltalk.send(tile, "_hide", []);}), (function(){return smalltalk.send(tile, "_show", []);})]));})]);
+smalltalk.send(smalltalk.send(".issuetile", "_asJQuery", []), "_hide", []);
+smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape(".issuetile%5Bdata-project%3D%22"), "__comma", [aProjectName]), "__comma", [unescape("%22%5D")]), "_asJQuery", []), "_show", []);
 return self;},
 args: ["aProjectName"],
-source: unescape('showOnly%3A%20aProjectName%0A%09%22Only%20show%20tiles%20with%20data-project%3DaProjectName%22%0A%09currentProject%20%3A%3D%20aProjectName.%0A%09%27.issueTile%27%20asJQuery%20each%3A%20%5B%20%3Aindex%20%3Atile%20%7C%0A%09%09%7C%20tileProject%20%7C%0A%09%09tile%20%3A%3D%20window%20jQuery%3A%20tile.%0A%09%09tileProject%20%3A%3D%20tile%20attr%3A%20%27data-project%27.%0A%09%09tileProject%20%3D%20aProjectName%0A%09%09%09ifFalse%3A%20%5B%20tile%20hide%20%5D%0A%09%09%09ifTrue%3A%20%5B%20tile%20show%20%5D.%0A%09%5D.'),
-messageSends: ["each:", "asJQuery", "jQuery:", "attr:", "ifFalse:ifTrue:", unescape("%3D"), "hide", "show"],
+source: unescape('showOnly%3A%20aProjectName%0A%09%22Only%20show%20tiles%20with%20data-project%3DaProjectName%22%0A%09currentProject%20%3A%3D%20aProjectName.%0A%09%27.issuetile%27%20asJQuery%20hide.%0A%09%28%27.issuetile%5Bdata-project%3D%22%27%2C%20aProjectName%2C%20%27%22%5D%27%29%20asJQuery%20show.'),
+messageSends: ["hide", "asJQuery", "show", unescape("%2C")],
 referencedClasses: []
 }),
 smalltalk.HubboardApp);

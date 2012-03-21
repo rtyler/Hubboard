@@ -397,8 +397,8 @@ selector: unescape('showOnly%3A'),
 fn: function (aProjectName){
 var self=this;
 (self['@currentProject']=aProjectName);
-smalltalk.send(smalltalk.send(".issueTile", "_asJQuery", []), "_each_", [(function(index, tile){var tileProject=nil;
-(tile=smalltalk.send((typeof window == 'undefined' ? nil : window), "_jQuery_", [tile]));(tileProject=smalltalk.send(tile, "_attr_", [unescape("data-project")]));return ((($receiver = smalltalk.send(tileProject, "__eq", [aProjectName])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(tile, "_hide", []);})() : (function(){return smalltalk.send(tile, "_show", []);})()) : smalltalk.send($receiver, "_ifFalse_ifTrue_", [(function(){return smalltalk.send(tile, "_hide", []);}), (function(){return smalltalk.send(tile, "_show", []);})]));})]);
+smalltalk.send(smalltalk.send(".issuetile", "_asJQuery", []), "_hide", []);
+smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape(".issuetile%5Bdata-project%3D%22"), "__comma", [aProjectName]), "__comma", [unescape("%22%5D")]), "_asJQuery", []), "_show", []);
 return self;}
 }),
 smalltalk.HubboardApp);

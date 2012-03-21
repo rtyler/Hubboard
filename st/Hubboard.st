@@ -374,14 +374,8 @@ showAll
 showOnly: aProjectName
 	"Only show tiles with data-project=aProjectName"
 	currentProject := aProjectName.
-	'.issueTile' asJQuery each: [ :index :tile |
-		| tileProject |
-		tile := window jQuery: tile.
-		tileProject := tile attr: 'data-project'.
-		tileProject = aProjectName
-			ifFalse: [ tile hide ]
-			ifTrue: [ tile show ].
-	].
+	'.issuetile' asJQuery hide.
+	('.issuetile[data-project="', aProjectName, '"]') asJQuery show.
 !
 
 flushColumns
