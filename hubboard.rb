@@ -4,7 +4,7 @@ require 'rubygems'
 require 'cgi'
 require 'json'
 require 'httparty'
-require 'resin/app/app'
+require 'resin/app'
 
 API_URL = 'https://api.github.com'
 CONFIG_FILE = File.expand_path(File.dirname(__FILE__) + '/config/config.yml')
