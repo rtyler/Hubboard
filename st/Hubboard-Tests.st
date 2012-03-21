@@ -1,24 +1,30 @@
 Smalltalk current createPackage: 'Hubboard-Tests' properties: #{}!
-TestCase subclass: #StringAdditionsTests
-	instanceVariableNames: ''
+TestCase subclass: #IssueTileTests
+	instanceVariableNames: 'object'
 	category: 'Hubboard-Tests'!
 
-!StringAdditionsTests methodsFor: 'testcases'!
+!IssueTileTests methodsFor: 'scaffolding'!
 
-testSpliting
-	"Verify that we can split a string using the native JavaScript function"
-	| result |
-	result := 'part1/part2' split: '/'.
-	self assert: 2 equals: (result size).
-	self assert: 'part1' equals: (result at: 1).
-	self assert: 'part2' equals: (result at: 2).
+setUp
+	object := IssueTile new.
+! !
+
+!IssueTileTests methodsFor: 'testcases'!
+
+testParsingProjectFromUrl
+	"Verify we can parse the html_url for an issue into the owner/project pairs"
+	| url |
+	url := 'https://github.com/rtyler/resin/issues/1'.
+	result := object parseUrl: url.
+	self assert: 'rtyler' equals: (result at: 'owner').
+	self assert: 'resin' equals: (result at: 'project').
 ! !
 
 TestCase subclass: #HubboardAppTests
 	instanceVariableNames: ''
 	category: 'Hubboard-Tests'!
 
-!HubboardAppTests methodsFor: 'testcase'!
+!HubboardAppTests methodsFor: 'testcases'!
 
 testIsInProgressWithNoLabels
 	"Verify we say that this thing is not in progress if there are no labels"
@@ -35,22 +41,18 @@ testIsInProgressWithLabels
 	self assert: true equals: result.
 ! !
 
-TestCase subclass: #IssueTileTests
-	instanceVariableNames: 'object'
+TestCase subclass: #StringAdditionsTests
+	instanceVariableNames: ''
 	category: 'Hubboard-Tests'!
 
-!IssueTileTests methodsFor: 'not yet classified'!
+!StringAdditionsTests methodsFor: 'testcases'!
 
-testParsingProjectFromUrl
-	"Verify we can parse the html_url for an issue into the owner/project pairs"
-	| url |
-	url := 'https://github.com/rtyler/resin/issues/1'.
-	result := object parseUrl: url.
-	self assert: 'rtyler' equals: (result at: 'owner').
-	self assert: 'resin' equals: (result at: 'project').
-!
-
-setUp
-	object := IssueTile new.
+testSpliting
+	"Verify that we can split a string using the native JavaScript function"
+	| result |
+	result := 'part1/part2' split: '/'.
+	self assert: 2 equals: (result size).
+	self assert: 'part1' equals: (result at: 1).
+	self assert: 'part2' equals: (result at: 2).
 ! !
 
