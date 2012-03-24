@@ -1,79 +1,4 @@
 smalltalk.addPackage('Hubboard', {});
-smalltalk.addClass('NewIssueDialog', smalltalk.Widget, [], 'Hubboard');
-smalltalk.addMethod(
-unescape('_renderOn_'),
-smalltalk.method({
-selector: unescape('renderOn%3A'),
-category: 'rendering',
-fn: function (html){
-var self=this;
-(function($rec){smalltalk.send($rec, "_at_put_", ["title", "Create a new issue"]);smalltalk.send($rec, "_class_", ["new_issue"]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_name_", ["new_issue_form"]);smalltalk.send($rec, "_onSubmit_", [(function(event){smalltalk.send(self, "_submit", []);return smalltalk.send(event, "_preventDefault", []);})]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_for_", ["assignee"]);return smalltalk.send($rec, "_with_", ["Assign to: "]);})(smalltalk.send(html, "_label", []));(function($rec){smalltalk.send($rec, "_type_", ["hidden"]);smalltalk.send($rec, "_name_", ["assignee"]);return smalltalk.send($rec, "_value_", [smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_user", []), "_at_", ["login"])]);})(smalltalk.send(html, "_input", []));smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", [smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_user", []), "_at_", ["login"])]);smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_for_", ["project"]);return smalltalk.send($rec, "_with_", ["Project: "]);})(smalltalk.send(html, "_label", []));(function($rec){smalltalk.send($rec, "_name_", ["project"]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_knownRepos", []), "_do_", [(function(repo){return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_currentProject", []), "__eq", [repo])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);smalltalk.send($rec, "_with_", [repo]);return smalltalk.send($rec, "_at_put_", ["selected", "true"]);})(smalltalk.send(html, "_option", []));})() : (function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);return smalltalk.send($rec, "_with_", [repo]);})(smalltalk.send(html, "_option", []));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);smalltalk.send($rec, "_with_", [repo]);return smalltalk.send($rec, "_at_put_", ["selected", "true"]);})(smalltalk.send(html, "_option", []));}), (function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);return smalltalk.send($rec, "_with_", [repo]);})(smalltalk.send(html, "_option", []));})]));})]);})]);})(smalltalk.send(html, "_select", []));smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_for_", ["title"]);return smalltalk.send($rec, "_with_", ["Title: "]);})(smalltalk.send(html, "_label", []));(function($rec){smalltalk.send($rec, "_name_", ["title"]);return smalltalk.send($rec, "_at_put_", ["size", "40"]);})(smalltalk.send(html, "_input", []));smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_with_", ["Add body"]);smalltalk.send($rec, "_class_", [unescape("dialog-add-body")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(smalltalk.send(unescape("%23dialog-body"), "_asJQuery", []), "_show", []);})]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_id_", [unescape("dialog-body")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20none%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_name_", ["body"]);smalltalk.send($rec, "_at_put_", ["cols", (40)]);return smalltalk.send($rec, "_at_put_", ["rows", (6)]);})(smalltalk.send(html, "_textarea", []));return smalltalk.send(html, "_br", []);})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);smalltalk.send($rec, "_type_", ["submit"]);return smalltalk.send($rec, "_with_", ["Create"]);})(smalltalk.send(html, "_button", []));})]);})(smalltalk.send(html, "_form", []));})]);})(smalltalk.send(html, "_div", []));
-smalltalk.send(self, "_becomeDialog", []);
-return self;},
-args: ["html"],
-source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27Create%20a%20new%20issue%27%3B%0A%09%09class%3A%20%27new_issue%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20form%20name%3A%20%27new_issue_form%27%3B%20onSubmit%3A%20%5B%20%3Aevent%20%7C%20self%20submit.%20event%20preventDefault%20%5D%3B%20with%3A%20%5B%0A%09%09%09%09html%20label%20for%3A%20%27assignee%27%3B%20with%3A%20%27Assign%20to%3A%20%27.%0A%09%09%09%09html%20input%20type%3A%20%27hidden%27%3B%20name%3A%20%27assignee%27%3B%20value%3A%20%28HubboardApp%20current%20user%20at%3A%20%27login%27%29.%0A%09%09%09%09html%20strong%20with%3A%20%28HubboardApp%20current%20user%20at%3A%20%27login%27%29.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20label%20for%3A%20%27project%27%3B%20with%3A%20%27Project%3A%20%27.%0A%09%09%09%09html%20select%0A%09%09%09%09%09name%3A%20%27project%27%3B%0A%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09HubboardApp%20current%20knownRepos%20do%3A%20%5B%20%3Arepo%20%7C%0A%09%09%09%09%09%09%09%28HubboardApp%20current%20currentProject%29%20%3D%20repo%0A%09%09%09%09%09%09%09%09ifTrue%3A%20%5B%20html%20option%20value%3A%20repo%3B%20with%3A%20repo%3B%20at%3A%20%27selected%27%20put%3A%20%27true%27%20%5D%0A%09%09%09%09%09%09%09%09ifFalse%3A%20%5Bhtml%20option%20value%3A%20repo%3B%20with%3A%20repo%20%5D.%0A%09%09%09%09%09%09%09%5D%0A%09%09%09%09%09%09%5D.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20label%20for%3A%20%27title%27%3B%20with%3A%20%27Title%3A%20%27.%0A%09%09%09%09html%20input%20name%3A%20%27title%27%3B%20at%3A%20%27size%27%20put%3A%20%2740%27.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20a%20with%3A%20%27Add%20body%27%3B%20class%3A%20%27dialog-add-body%27%3B%20onClick%3A%20%5B%20%27%23dialog-body%27%20asJQuery%20show%20%5D.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20div%0A%09%09%09%09%09id%3A%20%27dialog-body%27%3B%0A%09%09%09%09%09style%3A%20%27display%3A%20none%3B%27%3B%0A%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09html%20textarea%20name%3A%20%27body%27%3B%20at%3A%20%27cols%27%20put%3A%2040%3B%20at%3A%20%27rows%27%20put%3A%206.%0A%09%09%09%09%09%09html%20br.%0A%09%09%09%09%09%5D.%0A%09%09%09%09html%20button%20style%3A%20%27float%3A%20right%3B%27%3B%20type%3A%20%27submit%27%3B%20with%3A%20%27Create%27.%0A%09%09%09%5D%0A%09%5D.%0A%0A%09self%20becomeDialog.'),
-messageSends: ["at:put:", "class:", "with:", "name:", "onSubmit:", "submit", "preventDefault", "for:", "label", "type:", "value:", "at:", "user", "current", "input", "strong", "br", "do:", "knownRepos", "ifTrue:ifFalse:", unescape("%3D"), "currentProject", "option", "select", "onClick:", "show", "asJQuery", "a", "id:", "style:", "textarea", "div", "button", "form", "becomeDialog"],
-referencedClasses: ["HubboardApp"]
-}),
-smalltalk.NewIssueDialog);
-
-smalltalk.addMethod(
-unescape('_becomeDialog'),
-smalltalk.method({
-selector: unescape('becomeDialog'),
-category: 'rendering',
-fn: function (){
-var self=this;
-smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [true]),smalltalk.send("minWidth", "__minus_gt", ["450"]),smalltalk.send("draggable", "__minus_gt", [false]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_remove", []);})])])]);
-smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dtitle%5D"), "_asJQuery", []), "_focus", []);
-return self;},
-args: [],
-source: unescape('becomeDialog%0A%09%27.new_issue%27%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20true.%0A%09%09%09%27minWidth%27%20-%3E%20%27450%27.%0A%09%09%09%27draggable%27%20-%3E%20false.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09%27.new_issue%27%20asJQuery%20remove.%0A%09%09%09%5D%7D.%0A%0A%09%27%3Ainput%5Bname%3Dtitle%5D%27%20asJQuery%20focus.'),
-messageSends: ["dialog:", "asJQuery", unescape("-%3E"), "remove", "focus"],
-referencedClasses: []
-}),
-smalltalk.NewIssueDialog);
-
-smalltalk.addMethod(
-unescape('_submit'),
-smalltalk.method({
-selector: unescape('submit'),
-category: 'actions',
-fn: function (){
-var self=this;
-try{var data=nil;
-(data=smalltalk.HashedCollection._fromPairs_([smalltalk.send("title", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dtitle%5D"), "_asJQuery", []), "_val", [])]),smalltalk.send("assignee", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dassignee%5D"), "_asJQuery", []), "_val", [])]),smalltalk.send("project", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dproject%5D"), "_asJQuery", []), "_val", [])]),smalltalk.send("body", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dbody%5D"), "_asJQuery", []), "_val", [])])]));
-((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(data, "_at_", ["title"]), "_size", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a title"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a title"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})]));
-smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [unescape("/issues/create"), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(data, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){smalltalk.send(smalltalk.send(".new_issue", "_asJQuery", []), "_dialog_", ["close"]);return smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_refresh", []);})])])]);
-return self;
-} catch(e) {if(e.name === 'stReturn' && e.selector === '_submit'){return e.fn()} throw(e)}},
-args: [],
-source: unescape('submit%0A%09%22Take%20the%20values%20out%20of%20the%20form%20and%20actually%20submit%20them%22%0A%09%7C%20data%20%7C%0A%09data%20%3A%3D%20%23%7B%0A%09%09%27title%27%20-%3E%20%27%3Ainput%5Bname%3Dtitle%5D%27%20asJQuery%20val.%0A%09%09%27assignee%27%20-%3E%20%27%3Ainput%5Bname%3Dassignee%5D%27%20asJQuery%20val.%0A%09%09%27project%27%20-%3E%20%27%3Ainput%5Bname%3Dproject%5D%27%20asJQuery%20val.%0A%09%09%27body%27%20-%3E%20%27%3Ainput%5Bname%3Dbody%5D%27%20asJQuery%20val%0A%09%7D.%0A%0A%09%28%28data%20at%3A%20%27title%27%29%20size%29%20%3D%200%20ifTrue%3A%20%5B%20window%20alert%3A%20%27You%20should%20probably%20add%20a%20title%27.%20%5E%20false%20%5D.%0A%0A%09jQuery%20ajax%3A%20%27/issues/create%27%20options%3A%20%23%7B%27type%27%20-%3E%20%27POST%27.%0A%09%09%09%27dataType%27%20-%3E%20%27json%27.%0A%09%09%09%27data%27%20-%3E%20data%20asJSONString.%0A%09%09%09%27success%27%20-%3E%20%5B%20%27.new_issue%27%20asJQuery%20dialog%3A%20%27close%27.%20HubboardApp%20current%20refresh.%5D%7D.%0A%0A'),
-messageSends: [unescape("-%3E"), "val", "asJQuery", "ifTrue:", unescape("%3D"), "size", "at:", "alert:", "ajax:options:", "asJSONString", "dialog:", "refresh", "current"],
-referencedClasses: ["HubboardApp"]
-}),
-smalltalk.NewIssueDialog);
-
-
-smalltalk.addMethod(
-unescape('_show'),
-smalltalk.method({
-selector: unescape('show'),
-category: 'not yet classified',
-fn: function (){
-var self=this;
-var dialog=nil;
-(dialog=smalltalk.send(self, "_new", [], smalltalk.Widget.klass));
-smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
-return self;},
-args: [],
-source: unescape('show%0A%09%22%20Creates%20and%20adds%20the%20DOM%20elements%20to%20the%20body%20tag%20%22%0A%09%7C%20dialog%20%7C%0A%09dialog%20%3A%3D%20super%20new.%0A%09dialog%20appendToJQuery%3A%20%28%27body%27%20asJQuery%29.'),
-messageSends: ["new", "appendToJQuery:", "asJQuery"],
-referencedClasses: []
-}),
-smalltalk.NewIssueDialog.klass);
-
-
 smalltalk.addClass('IssueTile', smalltalk.Widget, ['raw', 'title', 'body', 'issueId', 'number', 'project', 'projectOwner', 'issueStatus', 'comments', 'fullProjectName', 'elementId', 'model'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_renderOn_'),
@@ -332,20 +257,21 @@ smalltalk.IssueTile);
 
 
 
-smalltalk.addClass('HubboardApp', smalltalk.Object, ['token', 'issueMap', 'issueApi', 'userApi', 'knownRepos', 'userData', 'refreshIntervalId', 'currentProject'], 'Hubboard');
+smalltalk.addClass('HubboardApp', smalltalk.Object, ['token', 'issueMap', 'issueApi', 'userApi', 'knownRepos', 'userData', 'refreshIntervalId', 'currentProject', 'refreshInterval'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_initialize'),
 smalltalk.method({
 selector: unescape('initialize'),
-category: 'not yet classified',
+category: 'initializers',
 fn: function (){
 var self=this;
 (self['@token']=smalltalk.send((typeof window == 'undefined' ? nil : window), "_at_", ["github_access_token"]));
 (self['@issueMap']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 (self['@knownRepos']=smalltalk.send((smalltalk.Set || Set), "_new", []));
+(self['@refreshInterval']=(120000));
 return self;},
 args: [],
-source: unescape('initialize%0A%09token%20%3A%3D%20window%20at%3A%20%27github_access_token%27.%0A%09issueMap%20%3A%3D%20Dictionary%20new.%0A%09knownRepos%20%3A%3D%20Set%20new.'),
+source: unescape('initialize%0A%09token%20%3A%3D%20window%20at%3A%20%27github_access_token%27.%0A%09issueMap%20%3A%3D%20Dictionary%20new.%0A%09knownRepos%20%3A%3D%20Set%20new.%0A%09refreshInterval%20%3A%3D%20120000.'),
 messageSends: ["at:", "new"],
 referencedClasses: ["Dictionary", "Set"]
 }),
@@ -355,19 +281,19 @@ smalltalk.addMethod(
 unescape('_bootstrap'),
 smalltalk.method({
 selector: unescape('bootstrap'),
-category: 'not yet classified',
+category: 'initializers',
 fn: function (){
 var self=this;
 (self['@issueApi']=smalltalk.send(smalltalk.send((smalltalk.Issues || Issues), "_new", []), "_setToken_", [self['@token']]));
 (self['@userApi']=smalltalk.send(smalltalk.send((smalltalk.Users || Users), "_new", []), "_setToken_", [self['@token']]));
 smalltalk.send(self['@userApi'], "_fetchCurrent_", [(function(data){(self['@userData']=data);return smalltalk.send(smalltalk.send(unescape("%23logout-username"), "_asJQuery", []), "_text_", [smalltalk.send(smalltalk.send(unescape("%28"), "__comma", [smalltalk.send(data, "_at_", ["login"])]), "__comma", [unescape("%29")])]);})]);
 smalltalk.send(self, "_refresh", []);
-(self['@refreshIntervalId']=smalltalk.send((typeof window == 'undefined' ? nil : window), "_setInterval_every_", [(function(){return smalltalk.send(self, "_refresh", []);}), (120000)]));
+smalltalk.send(self, "_startRefreshTimer", []);
 smalltalk.send(smalltalk.send(".issuecolumn", "_asJQuery", []), "_droppable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("tolerance", "__minus_gt", ["pointer"]),smalltalk.send("drop", "__minus_gt", [(function(event, ui){return smalltalk.send(self, "_handleDrop_with_", [event, ui]);})])])]);
 return self;},
 args: [],
-source: unescape('bootstrap%0A%09issueApi%20%3A%3D%20Issues%20new%20setToken%3A%20token.%0A%09userApi%20%3A%3D%20Users%20new%20setToken%3A%20token.%0A%09userApi%20fetchCurrent%3A%20%5B%20%3Adata%20%7C%20userData%20%3A%3D%20data.%20%27%23logout-username%27%20asJQuery%20text%3A%20%28%27%28%27%2C%20%28data%20at%3A%20%27login%27%29%2C%20%27%29%27%29%20%5D.%0A%09self%20refresh.%0A%09refreshIntervalId%20%3A%3D%20window%20setInterval%3A%20%5B%20self%20refresh%20%5D%20every%3A%20120000.%0A%09%27.issuecolumn%27%20asJQuery%20droppable%3A%20%23%7B%27tolerance%27%20-%3E%20%27pointer%27.%0A%09%09%27drop%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%20self%20handleDrop%3A%20event%20with%3A%20ui%5D%7D.'),
-messageSends: ["setToken:", "new", "fetchCurrent:", "text:", "asJQuery", unescape("%2C"), "at:", "refresh", "setInterval:every:", "droppable:", unescape("-%3E"), "handleDrop:with:"],
+source: unescape('bootstrap%0A%09issueApi%20%3A%3D%20Issues%20new%20setToken%3A%20token.%0A%09userApi%20%3A%3D%20Users%20new%20setToken%3A%20token.%0A%09userApi%20fetchCurrent%3A%20%5B%20%3Adata%20%7C%20userData%20%3A%3D%20data.%20%27%23logout-username%27%20asJQuery%20text%3A%20%28%27%28%27%2C%20%28data%20at%3A%20%27login%27%29%2C%20%27%29%27%29%20%5D.%0A%09self%20refresh.%0A%09self%20startRefreshTimer.%0A%09%27.issuecolumn%27%20asJQuery%20droppable%3A%20%23%7B%27tolerance%27%20-%3E%20%27pointer%27.%0A%09%09%27drop%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%20self%20handleDrop%3A%20event%20with%3A%20ui%5D%7D.'),
+messageSends: ["setToken:", "new", "fetchCurrent:", "text:", "asJQuery", unescape("%2C"), "at:", "refresh", "startRefreshTimer", "droppable:", unescape("-%3E"), "handleDrop:with:"],
 referencedClasses: ["Issues", "Users"]
 }),
 smalltalk.HubboardApp);
@@ -376,7 +302,7 @@ smalltalk.addMethod(
 unescape('_inProgress_'),
 smalltalk.method({
 selector: unescape('inProgress%3A'),
-category: 'not yet classified',
+category: 'accessors',
 fn: function (arrayOfLabels){
 var self=this;
 try{(($receiver = arrayOfLabels) == nil || $receiver == undefined) ? (function(){return (function(){throw({name: 'stReturn', selector: '_inProgress_', fn: function(){return false}})})();})() : $receiver;
@@ -395,7 +321,7 @@ smalltalk.addMethod(
 unescape('_handleDrop_with_'),
 smalltalk.method({
 selector: unescape('handleDrop%3Awith%3A'),
-category: 'not yet classified',
+category: 'actions',
 fn: function (theEvent, aWidget){
 var self=this;
 try{var tile=nil;
@@ -423,7 +349,7 @@ smalltalk.addMethod(
 unescape('_refresh'),
 smalltalk.method({
 selector: unescape('refresh'),
-category: 'not yet classified',
+category: 'actions',
 fn: function (){
 var self=this;
 smalltalk.send(self, "_flushColumns", []);
@@ -493,7 +419,7 @@ smalltalk.addMethod(
 unescape('_updateFilter'),
 smalltalk.method({
 selector: unescape('updateFilter'),
-category: 'not yet classified',
+category: 'actions',
 fn: function (){
 var self=this;
 try{var element=nil;
@@ -517,7 +443,7 @@ smalltalk.addMethod(
 unescape('_showAll'),
 smalltalk.method({
 selector: unescape('showAll'),
-category: 'not yet classified',
+category: 'ui',
 fn: function (){
 var self=this;
 (self['@currentProject']=nil);
@@ -534,7 +460,7 @@ smalltalk.addMethod(
 unescape('_showOnly_'),
 smalltalk.method({
 selector: unescape('showOnly%3A'),
-category: 'not yet classified',
+category: 'ui',
 fn: function (aProjectName){
 var self=this;
 (self['@currentProject']=aProjectName);
@@ -568,7 +494,7 @@ smalltalk.addMethod(
 unescape('_flushColumns'),
 smalltalk.method({
 selector: unescape('flushColumns'),
-category: 'not yet classified',
+category: 'ui',
 fn: function (){
 var self=this;
 var clearBlock=nil;
@@ -617,6 +543,38 @@ referencedClasses: []
 }),
 smalltalk.HubboardApp);
 
+smalltalk.addMethod(
+unescape('_startRefreshTimer'),
+smalltalk.method({
+selector: unescape('startRefreshTimer'),
+category: 'actions',
+fn: function (){
+var self=this;
+(($receiver = self['@refreshIntervalId']) == nil || $receiver == undefined) ? (function(){return (self['@refreshIntervalId']=smalltalk.send((typeof window == 'undefined' ? nil : window), "_setInterval_every_", [(function(){return smalltalk.send(self, "_refresh", []);}), self['@refreshInterval']]));})() : $receiver;
+return self;},
+args: [],
+source: unescape('startRefreshTimer%0A%09refreshIntervalId%20ifNil%3A%20%5B%0A%09%09refreshIntervalId%20%3A%3D%20window%20setInterval%3A%20%5B%20self%20refresh%20%5D%20every%3A%20refreshInterval.%0A%09%5D.'),
+messageSends: ["ifNil:", "setInterval:every:", "refresh"],
+referencedClasses: []
+}),
+smalltalk.HubboardApp);
+
+smalltalk.addMethod(
+unescape('_stopRefreshTimer'),
+smalltalk.method({
+selector: unescape('stopRefreshTimer'),
+category: 'actions',
+fn: function (){
+var self=this;
+(($receiver = self['@refreshIntervalId']) != nil && $receiver != undefined) ? (function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_clearInterval_", [self['@refreshIntervalId']]);return (self['@refreshIntervalId']=nil);})() : nil;
+return self;},
+args: [],
+source: unescape('stopRefreshTimer%0A%09refreshIntervalId%20ifNotNil%3A%20%5B%0A%09%09window%20clearInterval%3A%20refreshIntervalId.%0A%09%09refreshIntervalId%20%3A%3D%20nil.%0A%09%5D.%0A'),
+messageSends: ["ifNotNil:", "clearInterval:"],
+referencedClasses: []
+}),
+smalltalk.HubboardApp);
+
 
 smalltalk.HubboardApp.klass.iVarNames = ['current'];
 smalltalk.addMethod(
@@ -634,6 +592,226 @@ messageSends: ["ifNil:", "new"],
 referencedClasses: []
 }),
 smalltalk.HubboardApp.klass);
+
+
+smalltalk.addClass('HBDialog', smalltalk.Widget, ['modal', 'minWidth', 'draggable', 'elementId'], 'Hubboard');
+smalltalk.addMethod(
+unescape('_becomeDialog'),
+smalltalk.method({
+selector: unescape('becomeDialog'),
+category: 'dialog-helpers',
+fn: function (){
+var self=this;
+return smalltalk.send(self, "_becomeDialog_", [(function(){return nil;})]);
+return self;},
+args: [],
+source: unescape('becomeDialog%0A%09%5E%20self%20becomeDialog%3A%20%5B%5D.'),
+messageSends: ["becomeDialog:"],
+referencedClasses: []
+}),
+smalltalk.HBDialog);
+
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+category: 'initializers',
+fn: function (){
+var self=this;
+smalltalk.send(self, "_initialize", [], smalltalk.Widget);
+(self['@modal']=true);
+(self['@minWidth']=(500));
+(self['@draggable']=false);
+return self;},
+args: [],
+source: unescape('initialize%0A%09super%20initialize.%0A%09modal%20%3A%3D%20true.%0A%09minWidth%20%3A%3D%20500.%0A%09draggable%20%3A%3D%20false.'),
+messageSends: ["initialize"],
+referencedClasses: []
+}),
+smalltalk.HBDialog);
+
+smalltalk.addMethod(
+unescape('_becomeDialog_'),
+smalltalk.method({
+selector: unescape('becomeDialog%3A'),
+category: 'dialog-helpers',
+fn: function (aBlockCallback){
+var self=this;
+smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [self['@modal']]),smalltalk.send("minWidth", "__minus_gt", [self['@minWidth']]),smalltalk.send("draggable", "__minus_gt", [self['@draggable']]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_remove", []);})])])]);
+smalltalk.send(aBlockCallback, "_value", []);
+return self;},
+args: ["aBlockCallback"],
+source: unescape('becomeDialog%3A%20aBlockCallback%0A%09self%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20modal.%0A%09%09%09%27minWidth%27%20-%3E%20minWidth.%0A%09%09%09%27draggable%27%20-%3E%20draggable.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09self%20asJQuery%20remove.%0A%09%09%09%5D%7D.%0A%09aBlockCallback%20value.'),
+messageSends: ["dialog:", "asJQuery", unescape("-%3E"), "remove", "value"],
+referencedClasses: []
+}),
+smalltalk.HBDialog);
+
+smalltalk.addMethod(
+unescape('_elementId'),
+smalltalk.method({
+selector: unescape('elementId'),
+category: 'accessors',
+fn: function (){
+var self=this;
+return smalltalk.send(unescape("%23"), "__comma", [self['@elementId']]);
+return self;},
+args: [],
+source: unescape('elementId%0A%09%5E%20%28%27%23%27%2C%20elementId%29.'),
+messageSends: [unescape("%2C")],
+referencedClasses: []
+}),
+smalltalk.HBDialog);
+
+smalltalk.addMethod(
+unescape('_asJQuery'),
+smalltalk.method({
+selector: unescape('asJQuery'),
+category: 'accessors',
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(self, "_elementId", []), "_asJQuery", []);
+return self;},
+args: [],
+source: unescape('asJQuery%0A%09%5E%20self%20elementId%20asJQuery.'),
+messageSends: ["asJQuery", "elementId"],
+referencedClasses: []
+}),
+smalltalk.HBDialog);
+
+
+
+smalltalk.addClass('NewIssueDialog', smalltalk.HBDialog, [], 'Hubboard');
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_at_put_", ["title", "Create a new issue"]);smalltalk.send($rec, "_id_", [self['@elementId']]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_name_", ["new_issue_form"]);smalltalk.send($rec, "_onSubmit_", [(function(event){smalltalk.send(self, "_submit", []);return smalltalk.send(event, "_preventDefault", []);})]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_for_", ["assignee"]);return smalltalk.send($rec, "_with_", ["Assign to: "]);})(smalltalk.send(html, "_label", []));(function($rec){smalltalk.send($rec, "_type_", ["hidden"]);smalltalk.send($rec, "_name_", ["assignee"]);return smalltalk.send($rec, "_value_", [smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_user", []), "_at_", ["login"])]);})(smalltalk.send(html, "_input", []));smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", [smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_user", []), "_at_", ["login"])]);smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_for_", ["project"]);return smalltalk.send($rec, "_with_", ["Project: "]);})(smalltalk.send(html, "_label", []));(function($rec){smalltalk.send($rec, "_name_", ["project"]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_knownRepos", []), "_do_", [(function(repo){return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_currentProject", []), "__eq", [repo])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);smalltalk.send($rec, "_with_", [repo]);return smalltalk.send($rec, "_at_put_", ["selected", "true"]);})(smalltalk.send(html, "_option", []));})() : (function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);return smalltalk.send($rec, "_with_", [repo]);})(smalltalk.send(html, "_option", []));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);smalltalk.send($rec, "_with_", [repo]);return smalltalk.send($rec, "_at_put_", ["selected", "true"]);})(smalltalk.send(html, "_option", []));}), (function(){return (function($rec){smalltalk.send($rec, "_value_", [repo]);return smalltalk.send($rec, "_with_", [repo]);})(smalltalk.send(html, "_option", []));})]));})]);})]);})(smalltalk.send(html, "_select", []));smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_for_", ["title"]);return smalltalk.send($rec, "_with_", ["Title: "]);})(smalltalk.send(html, "_label", []));(function($rec){smalltalk.send($rec, "_name_", ["title"]);return smalltalk.send($rec, "_at_put_", ["size", "40"]);})(smalltalk.send(html, "_input", []));smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_with_", ["Add body"]);smalltalk.send($rec, "_class_", [unescape("dialog-add-body")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(smalltalk.send(unescape("%23dialog-body"), "_asJQuery", []), "_show", []);})]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_br", []);(function($rec){smalltalk.send($rec, "_id_", [unescape("dialog-body")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20none%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_name_", ["body"]);smalltalk.send($rec, "_at_put_", ["cols", (40)]);return smalltalk.send($rec, "_at_put_", ["rows", (6)]);})(smalltalk.send(html, "_textarea", []));return smalltalk.send(html, "_br", []);})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);smalltalk.send($rec, "_type_", ["submit"]);return smalltalk.send($rec, "_with_", ["Create"]);})(smalltalk.send(html, "_button", []));})]);})(smalltalk.send(html, "_form", []));})]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_becomeDialog_", [(function(){return smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dtitle%5D"), "_asJQuery", []), "_focus", []);})]);
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27Create%20a%20new%20issue%27%3B%0A%09%09id%3A%20elementId%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20form%20name%3A%20%27new_issue_form%27%3B%20onSubmit%3A%20%5B%20%3Aevent%20%7C%20self%20submit.%20event%20preventDefault%20%5D%3B%20with%3A%20%5B%0A%09%09%09%09html%20label%20for%3A%20%27assignee%27%3B%20with%3A%20%27Assign%20to%3A%20%27.%0A%09%09%09%09html%20input%20type%3A%20%27hidden%27%3B%20name%3A%20%27assignee%27%3B%20value%3A%20%28HubboardApp%20current%20user%20at%3A%20%27login%27%29.%0A%09%09%09%09html%20strong%20with%3A%20%28HubboardApp%20current%20user%20at%3A%20%27login%27%29.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20label%20for%3A%20%27project%27%3B%20with%3A%20%27Project%3A%20%27.%0A%09%09%09%09html%20select%0A%09%09%09%09%09name%3A%20%27project%27%3B%0A%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09HubboardApp%20current%20knownRepos%20do%3A%20%5B%20%3Arepo%20%7C%0A%09%09%09%09%09%09%09%28HubboardApp%20current%20currentProject%29%20%3D%20repo%0A%09%09%09%09%09%09%09%09ifTrue%3A%20%5B%20html%20option%20value%3A%20repo%3B%20with%3A%20repo%3B%20at%3A%20%27selected%27%20put%3A%20%27true%27%20%5D%0A%09%09%09%09%09%09%09%09ifFalse%3A%20%5Bhtml%20option%20value%3A%20repo%3B%20with%3A%20repo%20%5D.%0A%09%09%09%09%09%09%09%5D%0A%09%09%09%09%09%09%5D.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20label%20for%3A%20%27title%27%3B%20with%3A%20%27Title%3A%20%27.%0A%09%09%09%09html%20input%20name%3A%20%27title%27%3B%20at%3A%20%27size%27%20put%3A%20%2740%27.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20a%20with%3A%20%27Add%20body%27%3B%20class%3A%20%27dialog-add-body%27%3B%20onClick%3A%20%5B%20%27%23dialog-body%27%20asJQuery%20show%20%5D.%0A%09%09%09%09html%20br.%0A%09%09%09%09html%20div%0A%09%09%09%09%09id%3A%20%27dialog-body%27%3B%0A%09%09%09%09%09style%3A%20%27display%3A%20none%3B%27%3B%0A%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09html%20textarea%20name%3A%20%27body%27%3B%20at%3A%20%27cols%27%20put%3A%2040%3B%20at%3A%20%27rows%27%20put%3A%206.%0A%09%09%09%09%09%09html%20br.%0A%09%09%09%09%09%5D.%0A%09%09%09%09html%20button%20style%3A%20%27float%3A%20right%3B%27%3B%20type%3A%20%27submit%27%3B%20with%3A%20%27Create%27.%0A%09%09%09%5D%0A%09%5D.%0A%0A%09self%20becomeDialog%3A%20%5B%20%27%3Ainput%5Bname%3Dtitle%5D%27%20asJQuery%20focus%20%5D.'),
+messageSends: ["at:put:", "id:", "with:", "name:", "onSubmit:", "submit", "preventDefault", "for:", "label", "type:", "value:", "at:", "user", "current", "input", "strong", "br", "do:", "knownRepos", "ifTrue:ifFalse:", unescape("%3D"), "currentProject", "option", "select", "class:", "onClick:", "show", "asJQuery", "a", "style:", "textarea", "div", "button", "form", "becomeDialog:", "focus"],
+referencedClasses: ["HubboardApp"]
+}),
+smalltalk.NewIssueDialog);
+
+smalltalk.addMethod(
+unescape('_submit'),
+smalltalk.method({
+selector: unescape('submit'),
+category: 'actions',
+fn: function (){
+var self=this;
+try{var data=nil;
+(data=smalltalk.HashedCollection._fromPairs_([smalltalk.send("title", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dtitle%5D"), "_asJQuery", []), "_val", [])]),smalltalk.send("assignee", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dassignee%5D"), "_asJQuery", []), "_val", [])]),smalltalk.send("project", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dproject%5D"), "_asJQuery", []), "_val", [])]),smalltalk.send("body", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dbody%5D"), "_asJQuery", []), "_val", [])])]));
+((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(data, "_at_", ["title"]), "_size", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a title"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a title"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})]));
+smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [unescape("/issues/create"), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(data, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", ["close"]);return smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_refresh", []);})])])]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_submit'){return e.fn()} throw(e)}},
+args: [],
+source: unescape('submit%0A%09%22Take%20the%20values%20out%20of%20the%20form%20and%20actually%20submit%20them%22%0A%09%7C%20data%20%7C%0A%09data%20%3A%3D%20%23%7B%0A%09%09%27title%27%20-%3E%20%27%3Ainput%5Bname%3Dtitle%5D%27%20asJQuery%20val.%0A%09%09%27assignee%27%20-%3E%20%27%3Ainput%5Bname%3Dassignee%5D%27%20asJQuery%20val.%0A%09%09%27project%27%20-%3E%20%27%3Ainput%5Bname%3Dproject%5D%27%20asJQuery%20val.%0A%09%09%27body%27%20-%3E%20%27%3Ainput%5Bname%3Dbody%5D%27%20asJQuery%20val%0A%09%7D.%0A%0A%09%28%28data%20at%3A%20%27title%27%29%20size%29%20%3D%200%20ifTrue%3A%20%5B%20window%20alert%3A%20%27You%20should%20probably%20add%20a%20title%27.%20%5E%20false%20%5D.%0A%0A%09jQuery%20ajax%3A%20%27/issues/create%27%20options%3A%20%23%7B%27type%27%20-%3E%20%27POST%27.%0A%09%09%09%27dataType%27%20-%3E%20%27json%27.%0A%09%09%09%27data%27%20-%3E%20data%20asJSONString.%0A%09%09%09%27success%27%20-%3E%20%5B%20self%20asJQuery%20dialog%3A%20%27close%27.%20HubboardApp%20current%20refresh.%5D%7D.%0A%0A'),
+messageSends: [unescape("-%3E"), "val", "asJQuery", "ifTrue:", unescape("%3D"), "size", "at:", "alert:", "ajax:options:", "asJSONString", "dialog:", "refresh", "current"],
+referencedClasses: ["HubboardApp"]
+}),
+smalltalk.NewIssueDialog);
+
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+category: 'initializers',
+fn: function (){
+var self=this;
+smalltalk.send(self, "_initialize", [], smalltalk.HBDialog);
+(self['@minWidth']=(450));
+(self['@elementId']="new_issue");
+return self;},
+args: [],
+source: unescape('initialize%0A%09super%20initialize.%0A%09minWidth%20%3A%3D%20450.%0A%09elementId%20%3A%3D%20%27new_issue%27.'),
+messageSends: ["initialize"],
+referencedClasses: []
+}),
+smalltalk.NewIssueDialog);
+
+
+smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+category: 'not yet classified',
+fn: function (){
+var self=this;
+var dialog=nil;
+(dialog=smalltalk.send(self, "_new", [], smalltalk.Widget.klass));
+smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
+return self;},
+args: [],
+source: unescape('show%0A%09%22%20Creates%20and%20adds%20the%20DOM%20elements%20to%20the%20body%20tag%20%22%0A%09%7C%20dialog%20%7C%0A%09dialog%20%3A%3D%20super%20new.%0A%09dialog%20appendToJQuery%3A%20%28%27body%27%20asJQuery%29.'),
+messageSends: ["new", "appendToJQuery:", "asJQuery"],
+referencedClasses: []
+}),
+smalltalk.NewIssueDialog.klass);
+
+
+smalltalk.addClass('IssueDetailDialog', smalltalk.HBDialog, ['model'], 'Hubboard');
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+category: 'initializers',
+fn: function (){
+var self=this;
+smalltalk.send(self, "_initialize", [], smalltalk.HBDialog);
+(self['@minWidth']=(650));
+(self['@elementId']="issue_detail");
+(self['@model']=nil);
+return self;},
+args: [],
+source: unescape('initialize%0A%09super%20initialize.%0A%09minWidth%20%3A%3D%20650.%0A%09elementId%20%3A%3D%20%27issue_detail%27.%0A%09model%20%3A%3D%20nil.'),
+messageSends: ["initialize"],
+referencedClasses: []
+}),
+smalltalk.IssueDetailDialog);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_at_put_", ["title", smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("%20-%20")]), "__comma", [smalltalk.send(self['@model'], "_title", [])])]);smalltalk.send($rec, "_id_", [self['@elementId']]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]);smalltalk.send(html, "_hr", []);return smalltalk.send(smalltalk.send(html, "_div", []), "_id_", ["comments"]);})]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_becomeDialog", []);
+smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(comments, "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [smalltalk.send(comment, "_body", [])]);}), "_appendToJQuery_", [smalltalk.send(unescape("%23comments"), "_asJQuery", [])]);})]);})]);
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27%23%27%2C%20%28model%20number%29%2C%20%27%20-%20%27%2C%20%28model%20title%29%3B%0A%09%09id%3A%20elementId%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20div%20with%3A%20%28model%20body%20asString%29.%0A%09%09%09html%20hr.%0A%09%09%09html%20div%20id%3A%20%27comments%27.%0A%09%5D.%0A%0A%09self%20becomeDialog.%0A%0A%09model%20loadComments%3A%20%5B%20%3Acomments%20%7C%20comments%20do%3A%20%5B%20%3Acomment%20%7C%20%5B%20%3Ahtml%20%7C%20html%20div%20with%3A%20%28comment%20body%29%20%5D%20appendToJQuery%3A%20%27%23comments%27%20asJQuery%20%5D%20%5D.'),
+messageSends: ["at:put:", unescape("%2C"), "number", "title", "id:", "with:", "div", "asString", "body", "hr", "becomeDialog", "loadComments:", "do:", "appendToJQuery:", "asJQuery"],
+referencedClasses: []
+}),
+smalltalk.IssueDetailDialog);
+
+smalltalk.addMethod(
+unescape('_withIssue_'),
+smalltalk.method({
+selector: unescape('withIssue%3A'),
+category: 'initializers',
+fn: function (anIssue){
+var self=this;
+(self['@model']=anIssue);
+return self;
+return self;},
+args: ["anIssue"],
+source: unescape('withIssue%3A%20anIssue%0A%09model%20%3A%3D%20anIssue.%0A%09%5E%20self.'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.IssueDetailDialog);
+
 
 
 smalltalk.addMethod(

@@ -1,93 +1,4 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
-Widget subclass: #NewIssueDialog
-	instanceVariableNames: ''
-	category: 'Hubboard'!
-
-!NewIssueDialog methodsFor: 'actions'!
-
-submit
-	"Take the values out of the form and actually submit them"
-	| data |
-	data := #{
-		'title' -> ':input[name=title]' asJQuery val.
-		'assignee' -> ':input[name=assignee]' asJQuery val.
-		'project' -> ':input[name=project]' asJQuery val.
-		'body' -> ':input[name=body]' asJQuery val
-	}.
-
-	((data at: 'title') size) = 0 ifTrue: [ window alert: 'You should probably add a title'. ^ false ].
-
-	jQuery ajax: '/issues/create' options: #{'type' -> 'POST'.
-			'dataType' -> 'json'.
-			'data' -> data asJSONString.
-			'success' -> [ '.new_issue' asJQuery dialog: 'close'. HubboardApp current refresh.]}.
-! !
-
-!NewIssueDialog methodsFor: 'rendering'!
-
-renderOn: html
-	html div
-		at: 'title' put: 'Create a new issue';
-		class: 'new_issue';
-		with: [
-			html form name: 'new_issue_form'; onSubmit: [ :event | self submit. event preventDefault ]; with: [
-				html label for: 'assignee'; with: 'Assign to: '.
-				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
-				html strong with: (HubboardApp current user at: 'login').
-				html br.
-				html label for: 'project'; with: 'Project: '.
-				html select
-					name: 'project';
-					with: [
-						HubboardApp current knownRepos do: [ :repo |
-							(HubboardApp current currentProject) = repo
-								ifTrue: [ html option value: repo; with: repo; at: 'selected' put: 'true' ]
-								ifFalse: [html option value: repo; with: repo ].
-							]
-						].
-				html br.
-				html label for: 'title'; with: 'Title: '.
-				html input name: 'title'; at: 'size' put: '40'.
-				html br.
-				html a with: 'Add body'; class: 'dialog-add-body'; onClick: [ '#dialog-body' asJQuery show ].
-				html br.
-				html div
-					id: 'dialog-body';
-					style: 'display: none;';
-					with: [
-						html textarea name: 'body'; at: 'cols' put: 40; at: 'rows' put: 6.
-						html br.
-					].
-				html button style: 'float: right;'; type: 'submit'; with: 'Create'.
-			]
-	].
-
-	self becomeDialog.
-!
-
-becomeDialog
-	'.new_issue' asJQuery dialog: #{
-			'modal' -> true.
-			'minWidth' -> '450'.
-			'draggable' -> false.
-			'close' -> [ :event :ui |
-				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
-				'.ui-dialog' asJQuery remove.
-				'.new_issue' asJQuery remove.
-			]}.
-
-	':input[name=title]' asJQuery focus.
-! !
-
-!NewIssueDialog class methodsFor: 'not yet classified'!
-
-show
-	" Creates and adds the DOM elements to the body tag "
-	| dialog |
-	dialog := super new.
-	dialog appendToJQuery: ('body' asJQuery).
-! !
-
 Widget subclass: #IssueTile
 	instanceVariableNames: 'raw title body issueId number project projectOwner issueStatus comments fullProjectName elementId model'
 	category: 'Hubboard'!
@@ -243,10 +154,20 @@ updateHeaderClass
 ! !
 
 Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject'
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval'
 	category: 'Hubboard'!
 
 !HubboardApp methodsFor: 'accessors'!
+
+inProgress: arrayOfLabels
+	"Return true if we find the 'in-progress' label"
+	arrayOfLabels ifNil: [ ^ false ].
+
+	arrayOfLabels do: [ :label |
+		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
+	].
+	^ false.
+!
 
 knownRepos
 	^ knownRepos.
@@ -264,33 +185,7 @@ currentProject
 	^ currentProject.
 ! !
 
-!HubboardApp methodsFor: 'not yet classified'!
-
-initialize
-	token := window at: 'github_access_token'.
-	issueMap := Dictionary new.
-	knownRepos := Set new.
-!
-
-bootstrap
-	issueApi := Issues new setToken: token.
-	userApi := Users new setToken: token.
-	userApi fetchCurrent: [ :data | userData := data. '#logout-username' asJQuery text: ('(', (data at: 'login'), ')') ].
-	self refresh.
-	refreshIntervalId := window setInterval: [ self refresh ] every: 120000.
-	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
-		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
-!
-
-inProgress: arrayOfLabels
-	"Return true if we find the 'in-progress' label"
-	arrayOfLabels ifNil: [ ^ false ].
-
-	arrayOfLabels do: [ :label |
-		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
-	].
-	^ false.
-!
+!HubboardApp methodsFor: 'actions'!
 
 handleDrop: theEvent with: aWidget
 	" This function should handle the initial drop of one IssueTile onto a new column "
@@ -365,6 +260,40 @@ updateFilter
 	].
 !
 
+startRefreshTimer
+	refreshIntervalId ifNil: [
+		refreshIntervalId := window setInterval: [ self refresh ] every: refreshInterval.
+	].
+!
+
+stopRefreshTimer
+	refreshIntervalId ifNotNil: [
+		window clearInterval: refreshIntervalId.
+		refreshIntervalId := nil.
+	].
+! !
+
+!HubboardApp methodsFor: 'initializers'!
+
+initialize
+	token := window at: 'github_access_token'.
+	issueMap := Dictionary new.
+	knownRepos := Set new.
+	refreshInterval := 120000.
+!
+
+bootstrap
+	issueApi := Issues new setToken: token.
+	userApi := Users new setToken: token.
+	userApi fetchCurrent: [ :data | userData := data. '#logout-username' asJQuery text: ('(', (data at: 'login'), ')') ].
+	self refresh.
+	self startRefreshTimer.
+	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
+		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
+! !
+
+!HubboardApp methodsFor: 'ui'!
+
 showAll
 	"Make sure all issue tiles are visible"
 	currentProject := nil.
@@ -389,9 +318,7 @@ flushColumns
 	'#openissues > *' asJQuery each: clearBlock.
 	'#inprogressissues > *' asJQuery each: clearBlock.
 	'#closedissues > *' asJQuery each: clearBlock.
-! !
-
-!HubboardApp methodsFor: 'ui'!
+!
 
 showSpinner
 	'#spinner' asJQuery show.
@@ -407,6 +334,166 @@ HubboardApp class instanceVariableNames: 'current'!
 
 current
 	^ current ifNil: [ current := super new ].
+! !
+
+Widget subclass: #HBDialog
+	instanceVariableNames: 'modal minWidth draggable elementId'
+	category: 'Hubboard'!
+
+!HBDialog methodsFor: 'accessors'!
+
+elementId
+	^ ('#', elementId).
+!
+
+asJQuery
+	^ self elementId asJQuery.
+! !
+
+!HBDialog methodsFor: 'dialog-helpers'!
+
+becomeDialog
+	^ self becomeDialog: [].
+!
+
+becomeDialog: aBlockCallback
+	self asJQuery dialog: #{
+			'modal' -> modal.
+			'minWidth' -> minWidth.
+			'draggable' -> draggable.
+			'close' -> [ :event :ui |
+				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
+				'.ui-dialog' asJQuery remove.
+				self asJQuery remove.
+			]}.
+	aBlockCallback value.
+! !
+
+!HBDialog methodsFor: 'initializers'!
+
+initialize
+	super initialize.
+	modal := true.
+	minWidth := 500.
+	draggable := false.
+! !
+
+HBDialog subclass: #NewIssueDialog
+	instanceVariableNames: ''
+	category: 'Hubboard'!
+
+!NewIssueDialog methodsFor: 'actions'!
+
+submit
+	"Take the values out of the form and actually submit them"
+	| data |
+	data := #{
+		'title' -> ':input[name=title]' asJQuery val.
+		'assignee' -> ':input[name=assignee]' asJQuery val.
+		'project' -> ':input[name=project]' asJQuery val.
+		'body' -> ':input[name=body]' asJQuery val
+	}.
+
+	((data at: 'title') size) = 0 ifTrue: [ window alert: 'You should probably add a title'. ^ false ].
+
+	jQuery ajax: '/issues/create' options: #{'type' -> 'POST'.
+			'dataType' -> 'json'.
+			'data' -> data asJSONString.
+			'success' -> [ self asJQuery dialog: 'close'. HubboardApp current refresh.]}.
+! !
+
+!NewIssueDialog methodsFor: 'initializers'!
+
+initialize
+	super initialize.
+	minWidth := 450.
+	elementId := 'new_issue'.
+! !
+
+!NewIssueDialog methodsFor: 'rendering'!
+
+renderOn: html
+	html div
+		at: 'title' put: 'Create a new issue';
+		id: elementId;
+		with: [
+			html form name: 'new_issue_form'; onSubmit: [ :event | self submit. event preventDefault ]; with: [
+				html label for: 'assignee'; with: 'Assign to: '.
+				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
+				html strong with: (HubboardApp current user at: 'login').
+				html br.
+				html label for: 'project'; with: 'Project: '.
+				html select
+					name: 'project';
+					with: [
+						HubboardApp current knownRepos do: [ :repo |
+							(HubboardApp current currentProject) = repo
+								ifTrue: [ html option value: repo; with: repo; at: 'selected' put: 'true' ]
+								ifFalse: [html option value: repo; with: repo ].
+							]
+						].
+				html br.
+				html label for: 'title'; with: 'Title: '.
+				html input name: 'title'; at: 'size' put: '40'.
+				html br.
+				html a with: 'Add body'; class: 'dialog-add-body'; onClick: [ '#dialog-body' asJQuery show ].
+				html br.
+				html div
+					id: 'dialog-body';
+					style: 'display: none;';
+					with: [
+						html textarea name: 'body'; at: 'cols' put: 40; at: 'rows' put: 6.
+						html br.
+					].
+				html button style: 'float: right;'; type: 'submit'; with: 'Create'.
+			]
+	].
+
+	self becomeDialog: [ ':input[name=title]' asJQuery focus ].
+! !
+
+!NewIssueDialog class methodsFor: 'not yet classified'!
+
+show
+	" Creates and adds the DOM elements to the body tag "
+	| dialog |
+	dialog := super new.
+	dialog appendToJQuery: ('body' asJQuery).
+! !
+
+HBDialog subclass: #IssueDetailDialog
+	instanceVariableNames: 'model'
+	category: 'Hubboard'!
+
+!IssueDetailDialog methodsFor: 'initializers'!
+
+initialize
+	super initialize.
+	minWidth := 650.
+	elementId := 'issue_detail'.
+	model := nil.
+!
+
+withIssue: anIssue
+	model := anIssue.
+	^ self.
+! !
+
+!IssueDetailDialog methodsFor: 'rendering'!
+
+renderOn: html
+	html div
+		at: 'title' put: '#', (model number), ' - ', (model title);
+		id: elementId;
+		with: [
+			html div with: (model body asString).
+			html hr.
+			html div id: 'comments'.
+	].
+
+	self becomeDialog.
+
+	model loadComments: [ :comments | comments do: [ :comment | [ :html | html div with: (comment body) ] appendToJQuery: '#comments' asJQuery ] ].
 ! !
 
 !String methodsFor: '*Hubboard'!
