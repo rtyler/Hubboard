@@ -128,6 +128,14 @@ module Hubboard
       '{}'
     end
 
+    post '/issues/:number/comment' do |number|
+      token = validate_token
+      data = parse_post_json
+      validate_project(data[:data])
+      call_github(token, :post, API_URL + "/repos/#{data[:data][:project]}/issues/#{number}/comments", data[:raw])
+      '{}'
+    end
+
     post '/issues/:number/close' do |number|
       token = validate_token
       data = parse_post_json

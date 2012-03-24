@@ -87,3 +87,9 @@ body {
   font-size: 0.9em;
   text-decoration: underline;
 }
+
+.add_comment {
+  font-size: 0.8em;
+  margin-left: 10px;
+  font-weight: bold;
+}
