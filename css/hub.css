@@ -88,8 +88,16 @@ body {
   text-decoration: underline;
 }
 
+.ui-widget {
+  font-size: 1.0em; /* override jQuery UI's stupid 1.1em */
+}
+
 .add_comment {
   font-size: 0.8em;
   margin-left: 10px;
   font-weight: bold;
+}
+
+.comment_detail {
+  max-height: 300px;
 }
