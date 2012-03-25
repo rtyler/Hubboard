@@ -1,3 +1,6 @@
 [submodule "drops/github"]
 	path = drops/github
 	url = git://github.com/rtyler/github-resindrop.git
+[submodule "drops/markdown"]
+	path = drops/markdown
+	url = git://github.com/rtyler/markdown-resindrop.git

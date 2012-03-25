@@ -111,7 +111,8 @@ refresh
 			currentProject ifNotNil: [
 				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
 			].
-			self updateFilter. "This might prove to be CPU intensive"
+			self updateFilter.
+			self hideSpinner.
 		] loadAll: false.
 
 	issueApi recentlyClosed: [ :issue |
@@ -175,6 +176,7 @@ initialize
 bootstrap
 	issueApi := Issues new setToken: token.
 	userApi := Users new setToken: token.
+	self showSpinner.
 	userApi fetchCurrent: [ :data | userData := data. '#logout-username' asJQuery text: ('(', (data at: 'login'), ')') ].
 	self refresh.
 	self startRefreshTimer.
@@ -266,7 +268,6 @@ viewIssue: onClickEvent
 	| dialog |
 	dialog := IssueDetailDialog new withIssue: model.
 	dialog appendToJQuery: 'body' asJQuery.
-	console log: 'clicked #', (model number).
 ! !
 
 !IssueTile methodsFor: 'initializers'!
@@ -500,7 +501,7 @@ renderOn: html
 		at: 'title' put: '#', (model number), ' - ', (model title);
 		id: elementId;
 		with: [
-			html div with: (model body asString).
+			html div with: (Markdown asTagBrush: (model body asString)).
 			html hr.
 			html strong with: 'Comments:'.
 			html hr.
@@ -521,9 +522,7 @@ renderComment: comment onto: html
 		class: 'comment_detail';
 		with: [
 			html strong with: 'By: ', (comment login).
-			comment body linesDo: [ :line |
-				html p with: line.
-			].
+			html with: (Markdown asTagBrush: (comment body)).
 		].
 
 	html hr.
