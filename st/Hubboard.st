@@ -518,7 +518,7 @@ renderOn: html
 
 	self becomeDialog.
 
-	model loadComments: [ :comments | comments do: [ :comment | [ :html | self renderComment: comment onto: html ] appendToJQuery: '#comments' asJQuery ] ].
+	model loadComments: [ :comments | comments reversed do: [ :comment | [ :html | self renderComment: comment onto: html ] appendToJQuery: '#comments' asJQuery ] ].
 !
 
 renderComment: comment onto: html
