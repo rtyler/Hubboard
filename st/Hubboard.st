@@ -301,8 +301,10 @@ bootstrap
 	userApi fetchCurrent: [ :data | userData := data. '#logout-username' asJQuery text: ('(', (data at: 'login'), ')') ].
 	self refresh.
 	self startRefreshTimer.
-	'.issuecolumn' asJQuery droppable: #{'tolerance' -> 'pointer'.
-		'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
+	'.issuecolumn' asJQuery droppable: #{
+			'tolerance' -> 'pointer'.
+			'accept' -> '.issuetile'.
+			'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
 ! !
 
 !HubboardApp methodsFor: 'ui'!
@@ -487,6 +489,8 @@ initialize
 	minWidth := 650.
 	elementId := 'issue_detail'.
 	model := nil.
+	draggable := true.
+	position := 'top'.
 !
 
 withIssue: anIssue
@@ -504,13 +508,18 @@ renderOn: html
 			| body |
 			body := model body.
 			(body size) = 0
-				ifTrue: [ body := 'No description given' ]
+				ifTrue: [ body := 'No description given'.]
 				ifFalse: [ body := Markdown asTagBrush: (model body asString) ].
 			html div with: body.
-			html hr.
-			html strong with: 'Comments:'.
-			html hr.
-			html div id: 'comments'; style: 'overflow: auto; max-height: 300px'.
+			html div
+				id: 'comments_container';
+				style: 'display: none;';
+				with: [
+					html hr.
+					html strong with: 'Comments:'.
+					html hr.
+					html div id: 'comments'; style: 'overflow: auto; max-height: 300px'.
+				].
 			html div
 				style: 'float: right;';
 				with: [ html a href: (model url); with: 'view on GitHub'].
@@ -531,6 +540,8 @@ renderComment: comment onto: html
 		].
 
 	html hr.
+
+	'#comments_container' asJQuery show.
 ! !
 
 HBDialog subclass: #CommentDialog
