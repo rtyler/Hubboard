@@ -378,8 +378,6 @@ becomeDialog: aBlockCallback
 			'draggable' -> draggable.
 			'position' -> position.
 			'close' -> [ :event :ui |
-				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
-				'.ui-dialog' asJQuery remove.
 				self asJQuery remove.
 			]}.
 	aBlockCallback value.
@@ -467,6 +465,10 @@ renderOn: html
 	].
 
 	self becomeDialog: [ ':input[name=title]' asJQuery focus ].
+!
+
+buttons
+	^ nil.
 ! !
 
 !NewIssueDialog class methodsFor: 'not yet classified'!
@@ -522,7 +524,14 @@ renderOn: html
 				].
 			html div
 				style: 'float: right;';
-				with: [ html a href: (model url); with: 'view on GitHub'].
+				with: [ html a href: (model url); with: 'View on GitHub'].
+			html div
+				style: 'float: right; margin-right: 10px;';
+				with: [ html a href: '#'; with: 'Add Comment'; onClick: [
+						| dialog |
+					dialog := CommentDialog new withIssue: model.
+					dialog appendToJQuery: 'body' asJQuery.
+				]].
 	].
 
 	self becomeDialog.
