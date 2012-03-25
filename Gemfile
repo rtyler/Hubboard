@@ -10,5 +10,6 @@ gem 'foreman'
 group :development do
   gem 'rspec'
   gem 'rack-test'
+  gem 'jsmin'
 end
 
