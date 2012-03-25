@@ -1,6 +1,6 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
 Widget subclass: #HBDialog
-	instanceVariableNames: 'modal minWidth draggable elementId'
+	instanceVariableNames: 'modal minWidth draggable elementId position'
 	category: 'Hubboard'!
 
 !HBDialog methodsFor: 'accessors'!
@@ -24,6 +24,7 @@ becomeDialog: aBlockCallback
 			'modal' -> modal.
 			'minWidth' -> minWidth.
 			'draggable' -> draggable.
+			'position' -> position.
 			'close' -> [ :event :ui |
 				"Ugly hack to make sure we nuke all trash the jQuery UI Dialog leaves around"
 				'.ui-dialog' asJQuery remove.
@@ -39,6 +40,7 @@ initialize
 	modal := true.
 	minWidth := 500.
 	draggable := false.
+	position := 'center'.
 ! !
 
 Object subclass: #HubboardApp
@@ -236,33 +238,13 @@ elementId
 
 model
 	^ model.
+!
+
+asJQuery
+	^ ('#', self elementId) asJQuery.
 ! !
 
-!IssueTile methodsFor: 'not yet classified'!
-
-withData: dataHash
-	"Set up a the tile with data from the GitHub API"
-	| issueInfo |
-	raw := dataHash.
-	issueId := dataHash at: 'id'.
-	number := dataHash at: 'number'.
-	title := dataHash at: 'title'.
-	body := dataHash at: 'body'.
-	comments := dataHash at: 'comments'.
-
-	issueInfo := self parseUrl: (dataHash at: 'html_url').
-	project := issueInfo at: 'project'.
-	projectOwner := issueInfo at: 'owner'.
-!
-
-parseUrl: aUrl
-	"Return a Hash with the 'owner' and 'project' based on the given Issue URL"
-	| parts |
-	parts := <aUrl.split('/')>.
-	
-	^ #{'owner' -> (parts at: 4).
-		'project' -> (parts at: 5)}.
-!
+!IssueTile methodsFor: 'actions'!
 
 setOpen
 	"Set this issue as an open issue"
@@ -274,8 +256,35 @@ setInProgress
 	issueStatus := #inprogress.
 !
 
-asJQuery
-	^ ('#', self elementId) asJQuery.
+setClosed
+	"Set this issue as a closed issue, should not be draggable as a result"
+	issueStatus := #closed.
+	self asJQuery draggable: 'disable'.
+!
+
+viewIssue: onClickEvent
+	| dialog |
+	dialog := IssueDetailDialog new withIssue: model.
+	dialog appendToJQuery: 'body' asJQuery.
+	console log: 'clicked #', (model number).
+! !
+
+!IssueTile methodsFor: 'initializers'!
+
+withModel: anIssue
+	model := anIssue.
+	number := anIssue number.
+! !
+
+!IssueTile methodsFor: 'not yet classified'!
+
+parseUrl: aUrl
+	"Return a Hash with the 'owner' and 'project' based on the given Issue URL"
+	| parts |
+	parts := <aUrl.split('/')>.
+	
+	^ #{'owner' -> (parts at: 4).
+		'project' -> (parts at: 5)}.
 !
 
 moveTo: aColumnId
@@ -315,17 +324,6 @@ moveTo: aColumnId
 		^ true.
 	].
 	^ false.
-!
-
-setClosed
-	"Set this issue as a closed issue, should not be draggable as a result"
-	issueStatus := #closed.
-	self asJQuery draggable: 'disable'.
-!
-
-withModel: anIssue
-	model := anIssue.
-	number := anIssue number.
 ! !
 
 !IssueTile methodsFor: 'rendering'!
@@ -340,7 +338,7 @@ renderOn: html
 			html div
 				class: self numberClass;
 				with: [ 
-					html a href: (model url); target: '_blank'; with: ('#', (model number) asString).
+					html a href: (model url); target: '_blank'; with: ('#', (model number) asString); onClick: [ :event | self viewIssue: event. event preventDefault ].
 					html with: ' in '.
 					html a href: ('https://github.com/', (model projectOwner)); with: (model projectOwner).
 					html with: ' / '.
@@ -376,6 +374,9 @@ postRender
 
 	"Make the tile draggable"
 	issueStatus = #closed ifFalse: [ self asJQuery draggable: #{'zIndex' -> '10000'. 'snap' -> true }].
+
+	"Make ourselves double-clickable"
+	self asJQuery dblclick: [ :event | self viewIssue: event ].
 !
 
 updateHeaderClass
@@ -501,12 +502,31 @@ renderOn: html
 		with: [
 			html div with: (model body asString).
 			html hr.
-			html div id: 'comments'.
+			html strong with: 'Comments:'.
+			html hr.
+			html div id: 'comments'; style: 'overflow: auto; max-height: 300px'.
+			html div
+				style: 'float: right;';
+				with: [ html a href: (model url); with: 'view on GitHub'].
 	].
 
 	self becomeDialog.
 
-	model loadComments: [ :comments | comments do: [ :comment | [ :html | html div with: (comment body) ] appendToJQuery: '#comments' asJQuery ] ].
+	model loadComments: [ :comments | comments do: [ :comment | [ :html | self renderComment: comment onto: html ] appendToJQuery: '#comments' asJQuery ] ].
+!
+
+renderComment: comment onto: html
+
+	html div
+		class: 'comment_detail';
+		with: [
+			html strong with: 'By: ', (comment login).
+			comment body linesDo: [ :line |
+				html p with: line.
+			].
+		].
+
+	html hr.
 ! !
 
 HBDialog subclass: #CommentDialog

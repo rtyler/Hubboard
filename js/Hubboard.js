@@ -1,5 +1,5 @@
 smalltalk.addPackage('Hubboard', {});
-smalltalk.addClass('HBDialog', smalltalk.Widget, ['modal', 'minWidth', 'draggable', 'elementId'], 'Hubboard');
+smalltalk.addClass('HBDialog', smalltalk.Widget, ['modal', 'minWidth', 'draggable', 'elementId', 'position'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_becomeDialog'),
 smalltalk.method({
@@ -27,9 +27,10 @@ smalltalk.send(self, "_initialize", [], smalltalk.Widget);
 (self['@modal']=true);
 (self['@minWidth']=(500));
 (self['@draggable']=false);
+(self['@position']="center");
 return self;},
 args: [],
-source: unescape('initialize%0A%09super%20initialize.%0A%09modal%20%3A%3D%20true.%0A%09minWidth%20%3A%3D%20500.%0A%09draggable%20%3A%3D%20false.'),
+source: unescape('initialize%0A%09super%20initialize.%0A%09modal%20%3A%3D%20true.%0A%09minWidth%20%3A%3D%20500.%0A%09draggable%20%3A%3D%20false.%0A%09position%20%3A%3D%20%27center%27.'),
 messageSends: ["initialize"],
 referencedClasses: []
 }),
@@ -42,11 +43,11 @@ selector: unescape('becomeDialog%3A'),
 category: 'dialog-helpers',
 fn: function (aBlockCallback){
 var self=this;
-smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [self['@modal']]),smalltalk.send("minWidth", "__minus_gt", [self['@minWidth']]),smalltalk.send("draggable", "__minus_gt", [self['@draggable']]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_remove", []);})])])]);
+smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [self['@modal']]),smalltalk.send("minWidth", "__minus_gt", [self['@minWidth']]),smalltalk.send("draggable", "__minus_gt", [self['@draggable']]),smalltalk.send("position", "__minus_gt", [self['@position']]),smalltalk.send("close", "__minus_gt", [(function(event, ui){smalltalk.send(smalltalk.send(unescape(".ui-dialog"), "_asJQuery", []), "_remove", []);return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_remove", []);})])])]);
 smalltalk.send(aBlockCallback, "_value", []);
 return self;},
 args: ["aBlockCallback"],
-source: unescape('becomeDialog%3A%20aBlockCallback%0A%09self%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20modal.%0A%09%09%09%27minWidth%27%20-%3E%20minWidth.%0A%09%09%09%27draggable%27%20-%3E%20draggable.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09self%20asJQuery%20remove.%0A%09%09%09%5D%7D.%0A%09aBlockCallback%20value.'),
+source: unescape('becomeDialog%3A%20aBlockCallback%0A%09self%20asJQuery%20dialog%3A%20%23%7B%0A%09%09%09%27modal%27%20-%3E%20modal.%0A%09%09%09%27minWidth%27%20-%3E%20minWidth.%0A%09%09%09%27draggable%27%20-%3E%20draggable.%0A%09%09%09%27position%27%20-%3E%20position.%0A%09%09%09%27close%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%0A%09%09%09%09%22Ugly%20hack%20to%20make%20sure%20we%20nuke%20all%20trash%20the%20jQuery%20UI%20Dialog%20leaves%20around%22%0A%09%09%09%09%27.ui-dialog%27%20asJQuery%20remove.%0A%09%09%09%09self%20asJQuery%20remove.%0A%09%09%09%5D%7D.%0A%09aBlockCallback%20value.'),
 messageSends: ["dialog:", "asJQuery", unescape("-%3E"), "remove", "value"],
 referencedClasses: []
 }),
@@ -431,37 +432,12 @@ selector: unescape('renderOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_class_", ["issuetile"]);smalltalk.send($rec, "_id_", [smalltalk.send(self, "_elementId", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-project"), smalltalk.send(self['@model'], "_projectName", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-issueid"), smalltalk.send(self['@model'], "_issueId", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [smalltalk.send(self, "_numberClass", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);smalltalk.send($rec, "_target_", ["_blank"]);return smalltalk.send($rec, "_with_", [smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(smalltalk.send(self['@model'], "_number", []), "_asString", [])])]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [" in "]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectOwner", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_projectOwner", [])]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [unescape("%20/%20")]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectName", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_project", [])]);})(smalltalk.send(html, "_a", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3Aright%3B")]);smalltalk.send($rec, "_class_", ["comments"]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_span", []), "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(self['@model'], "_comments", []), "_asString", []), "__comma", [" comments"])]);return (function($rec){smalltalk.send($rec, "_class_", ["add_comment"]);smalltalk.send($rec, "_title_", ["Add Comment"]);smalltalk.send($rec, "_with_", [unescape("+")]);return smalltalk.send($rec, "_onClick_", [(function(event){return smalltalk.send(self, "_addComment_", [event]);})]);})(smalltalk.send(html, "_button", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_class_", ["title"]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_title", [])]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_class_", ["issuetile"]);smalltalk.send($rec, "_id_", [smalltalk.send(self, "_elementId", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-project"), smalltalk.send(self['@model'], "_projectName", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-issueid"), smalltalk.send(self['@model'], "_issueId", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [smalltalk.send(self, "_numberClass", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);smalltalk.send($rec, "_target_", ["_blank"]);smalltalk.send($rec, "_with_", [smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(smalltalk.send(self['@model'], "_number", []), "_asString", [])])]);return smalltalk.send($rec, "_onClick_", [(function(event){smalltalk.send(self, "_viewIssue_", [event]);return smalltalk.send(event, "_preventDefault", []);})]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [" in "]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectOwner", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_projectOwner", [])]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [unescape("%20/%20")]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectName", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_project", [])]);})(smalltalk.send(html, "_a", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3Aright%3B")]);smalltalk.send($rec, "_class_", ["comments"]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_span", []), "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(self['@model'], "_comments", []), "_asString", []), "__comma", [" comments"])]);return (function($rec){smalltalk.send($rec, "_class_", ["add_comment"]);smalltalk.send($rec, "_title_", ["Add Comment"]);smalltalk.send($rec, "_with_", [unescape("+")]);return smalltalk.send($rec, "_onClick_", [(function(event){return smalltalk.send(self, "_addComment_", [event]);})]);})(smalltalk.send(html, "_button", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_class_", ["title"]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_title", [])]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
 smalltalk.send(self, "_postRender", []);
 return self;},
 args: ["html"],
-source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27issuetile%27%3B%0A%09%09id%3A%20self%20elementId%3B%0A%09%09at%3A%20%27data-project%27%20put%3A%20%28model%20projectName%29%3B%0A%09%09at%3A%20%27data-issueid%27%20put%3A%20%28model%20issueId%29%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20div%0A%09%09%09%09class%3A%20self%20numberClass%3B%0A%09%09%09%09with%3A%20%5B%20%0A%09%09%09%09%09html%20a%20href%3A%20%28model%20url%29%3B%20target%3A%20%27_blank%27%3B%20with%3A%20%28%27%23%27%2C%20%28model%20number%29%20asString%29.%0A%09%09%09%09%09html%20with%3A%20%27%20in%20%27.%0A%09%09%09%09%09html%20a%20href%3A%20%28%27https%3A//github.com/%27%2C%20%28model%20projectOwner%29%29%3B%20with%3A%20%28model%20projectOwner%29.%0A%09%09%09%09%09html%20with%3A%20%27%20/%20%27.%0A%09%09%09%09%09html%20%20a%20href%3A%20%28%27https%3A//github.com/%27%2C%20%28model%20projectName%29%29%3B%20with%3A%20%28model%20project%29.%0A%09%09%09%09%09html%20div%0A%09%09%09%09%09%09style%3A%20%27float%3Aright%3B%27%3B%0A%09%09%09%09%09%09class%3A%20%27comments%27%3B%0A%09%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09%09html%20span%20with%3A%20%28model%20comments%20asString%2C%20%27%20comments%27%29.%0A%09%09%09%09%09%09%09html%20button%0A%09%09%09%09%09%09%09%09class%3A%20%27add_comment%27%3B%0A%09%09%09%09%09%09%09%09title%3A%20%27Add%20Comment%27%3B%0A%09%09%09%09%09%09%09%09with%3A%20%27+%27%3B%0A%09%09%09%09%09%09%09%09onClick%3A%20%5B%20%3Aevent%20%7C%20self%20addComment%3A%20event%20%5D.%0A%09%09%09%09%09%09%5D.%0A%09%09%09%09%5D.%0A%09%09%09html%20div%20class%3A%20%27title%27%3B%20with%3A%20%28model%20title%29.%0A%09%09%5D.%0A%09self%20postRender.'),
-messageSends: ["class:", "id:", "elementId", "at:put:", "projectName", "issueId", "with:", "numberClass", "href:", "url", "target:", unescape("%2C"), "asString", "number", "a", "projectOwner", "project", "style:", "span", "comments", "title:", "onClick:", "addComment:", "button", "div", "title", "postRender"],
-referencedClasses: []
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_withData_'),
-smalltalk.method({
-selector: unescape('withData%3A'),
-category: 'not yet classified',
-fn: function (dataHash){
-var self=this;
-var issueInfo=nil;
-(self['@raw']=dataHash);
-(self['@issueId']=smalltalk.send(dataHash, "_at_", ["id"]));
-(self['@number']=smalltalk.send(dataHash, "_at_", ["number"]));
-(self['@title']=smalltalk.send(dataHash, "_at_", ["title"]));
-(self['@body']=smalltalk.send(dataHash, "_at_", ["body"]));
-(self['@comments']=smalltalk.send(dataHash, "_at_", ["comments"]));
-(issueInfo=smalltalk.send(self, "_parseUrl_", [smalltalk.send(dataHash, "_at_", ["html_url"])]));
-(self['@project']=smalltalk.send(issueInfo, "_at_", ["project"]));
-(self['@projectOwner']=smalltalk.send(issueInfo, "_at_", ["owner"]));
-return self;},
-args: ["dataHash"],
-source: unescape('withData%3A%20dataHash%0A%09%22Set%20up%20a%20the%20tile%20with%20data%20from%20the%20GitHub%20API%22%0A%09%7C%20issueInfo%20%7C%0A%09raw%20%3A%3D%20dataHash.%0A%09issueId%20%3A%3D%20dataHash%20at%3A%20%27id%27.%0A%09number%20%3A%3D%20dataHash%20at%3A%20%27number%27.%0A%09title%20%3A%3D%20dataHash%20at%3A%20%27title%27.%0A%09body%20%3A%3D%20dataHash%20at%3A%20%27body%27.%0A%09comments%20%3A%3D%20dataHash%20at%3A%20%27comments%27.%0A%0A%09issueInfo%20%3A%3D%20self%20parseUrl%3A%20%28dataHash%20at%3A%20%27html_url%27%29.%0A%09project%20%3A%3D%20issueInfo%20at%3A%20%27project%27.%0A%09projectOwner%20%3A%3D%20issueInfo%20at%3A%20%27owner%27.'),
-messageSends: ["at:", "parseUrl:"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27issuetile%27%3B%0A%09%09id%3A%20self%20elementId%3B%0A%09%09at%3A%20%27data-project%27%20put%3A%20%28model%20projectName%29%3B%0A%09%09at%3A%20%27data-issueid%27%20put%3A%20%28model%20issueId%29%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20div%0A%09%09%09%09class%3A%20self%20numberClass%3B%0A%09%09%09%09with%3A%20%5B%20%0A%09%09%09%09%09html%20a%20href%3A%20%28model%20url%29%3B%20target%3A%20%27_blank%27%3B%20with%3A%20%28%27%23%27%2C%20%28model%20number%29%20asString%29%3B%20onClick%3A%20%5B%20%3Aevent%20%7C%20self%20viewIssue%3A%20event.%20event%20preventDefault%20%5D.%0A%09%09%09%09%09html%20with%3A%20%27%20in%20%27.%0A%09%09%09%09%09html%20a%20href%3A%20%28%27https%3A//github.com/%27%2C%20%28model%20projectOwner%29%29%3B%20with%3A%20%28model%20projectOwner%29.%0A%09%09%09%09%09html%20with%3A%20%27%20/%20%27.%0A%09%09%09%09%09html%20%20a%20href%3A%20%28%27https%3A//github.com/%27%2C%20%28model%20projectName%29%29%3B%20with%3A%20%28model%20project%29.%0A%09%09%09%09%09html%20div%0A%09%09%09%09%09%09style%3A%20%27float%3Aright%3B%27%3B%0A%09%09%09%09%09%09class%3A%20%27comments%27%3B%0A%09%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09%09html%20span%20with%3A%20%28model%20comments%20asString%2C%20%27%20comments%27%29.%0A%09%09%09%09%09%09%09html%20button%0A%09%09%09%09%09%09%09%09class%3A%20%27add_comment%27%3B%0A%09%09%09%09%09%09%09%09title%3A%20%27Add%20Comment%27%3B%0A%09%09%09%09%09%09%09%09with%3A%20%27+%27%3B%0A%09%09%09%09%09%09%09%09onClick%3A%20%5B%20%3Aevent%20%7C%20self%20addComment%3A%20event%20%5D.%0A%09%09%09%09%09%09%5D.%0A%09%09%09%09%5D.%0A%09%09%09html%20div%20class%3A%20%27title%27%3B%20with%3A%20%28model%20title%29.%0A%09%09%5D.%0A%09self%20postRender.'),
+messageSends: ["class:", "id:", "elementId", "at:put:", "projectName", "issueId", "with:", "numberClass", "href:", "url", "target:", unescape("%2C"), "asString", "number", "onClick:", "viewIssue:", "preventDefault", "a", "projectOwner", "project", "style:", "span", "comments", "title:", "addComment:", "button", "div", "title", "postRender"],
 referencedClasses: []
 }),
 smalltalk.IssueTile);
@@ -488,7 +464,7 @@ smalltalk.addMethod(
 unescape('_setOpen'),
 smalltalk.method({
 selector: unescape('setOpen'),
-category: 'not yet classified',
+category: 'actions',
 fn: function (){
 var self=this;
 (self['@issueStatus']=smalltalk.symbolFor("open"));
@@ -504,7 +480,7 @@ smalltalk.addMethod(
 unescape('_setInProgress'),
 smalltalk.method({
 selector: unescape('setInProgress'),
-category: 'not yet classified',
+category: 'actions',
 fn: function (){
 var self=this;
 (self['@issueStatus']=smalltalk.symbolFor("inprogress"));
@@ -512,22 +488,6 @@ return self;},
 args: [],
 source: unescape('setInProgress%0A%09%22Set%20this%20issue%20as%20an%20inprogress%20issue%22%0A%09issueStatus%20%3A%3D%20%23inprogress.'),
 messageSends: [],
-referencedClasses: []
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_asJQuery'),
-smalltalk.method({
-selector: unescape('asJQuery'),
-category: 'not yet classified',
-fn: function (){
-var self=this;
-return smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self, "_elementId", [])]), "_asJQuery", []);
-return self;},
-args: [],
-source: unescape('asJQuery%0A%09%5E%20%28%27%23%27%2C%20self%20elementId%29%20asJQuery.'),
-messageSends: ["asJQuery", unescape("%2C"), "elementId"],
 referencedClasses: []
 }),
 smalltalk.IssueTile);
@@ -577,7 +537,7 @@ smalltalk.addMethod(
 unescape('_setClosed'),
 smalltalk.method({
 selector: unescape('setClosed'),
-category: 'not yet classified',
+category: 'actions',
 fn: function (){
 var self=this;
 (self['@issueStatus']=smalltalk.symbolFor("closed"));
@@ -619,10 +579,11 @@ category: 'rendering',
 fn: function (){
 var self=this;
 ((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("closed")])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("zIndex", "__minus_gt", ["10000"]),smalltalk.send("snap", "__minus_gt", [true])])]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("zIndex", "__minus_gt", ["10000"]),smalltalk.send("snap", "__minus_gt", [true])])]);})]));
+smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dblclick_", [(function(event){return smalltalk.send(self, "_viewIssue_", [event]);})]);
 return self;},
 args: [],
-source: unescape('postRender%0A%09%22Run%20actions%20after%20we%27ve%20rendered%20the%20DOM%20elements%20%22%0A%0A%09%22Make%20the%20tile%20draggable%22%0A%09issueStatus%20%3D%20%23closed%20ifFalse%3A%20%5B%20self%20asJQuery%20draggable%3A%20%23%7B%27zIndex%27%20-%3E%20%2710000%27.%20%27snap%27%20-%3E%20true%20%7D%5D.'),
-messageSends: ["ifFalse:", unescape("%3D"), "draggable:", "asJQuery", unescape("-%3E")],
+source: unescape('postRender%0A%09%22Run%20actions%20after%20we%27ve%20rendered%20the%20DOM%20elements%20%22%0A%0A%09%22Make%20the%20tile%20draggable%22%0A%09issueStatus%20%3D%20%23closed%20ifFalse%3A%20%5B%20self%20asJQuery%20draggable%3A%20%23%7B%27zIndex%27%20-%3E%20%2710000%27.%20%27snap%27%20-%3E%20true%20%7D%5D.%0A%0A%09%22Make%20ourselves%20double-clickable%22%0A%09self%20asJQuery%20dblclick%3A%20%5B%20%3Aevent%20%7C%20self%20viewIssue%3A%20event%20%5D.'),
+messageSends: ["ifFalse:", unescape("%3D"), "draggable:", "asJQuery", unescape("-%3E"), "dblclick:", "viewIssue:"],
 referencedClasses: []
 }),
 smalltalk.IssueTile);
@@ -650,7 +611,7 @@ smalltalk.addMethod(
 unescape('_withModel_'),
 smalltalk.method({
 selector: unescape('withModel%3A'),
-category: 'not yet classified',
+category: 'initializers',
 fn: function (anIssue){
 var self=this;
 (self['@model']=anIssue);
@@ -694,6 +655,41 @@ args: ["clickEvent"],
 source: unescape('addComment%3A%20clickEvent%0A%09%7C%20dialog%20%7C%0A%09dialog%20%3A%3D%20CommentDialog%20new%20withIssue%3A%20model.%0A%09dialog%20appendToJQuery%3A%20%27body%27%20asJQuery.'),
 messageSends: ["withIssue:", "new", "appendToJQuery:", "asJQuery"],
 referencedClasses: ["CommentDialog"]
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_viewIssue_'),
+smalltalk.method({
+selector: unescape('viewIssue%3A'),
+category: 'actions',
+fn: function (onClickEvent){
+var self=this;
+var dialog=nil;
+(dialog=smalltalk.send(smalltalk.send((smalltalk.IssueDetailDialog || IssueDetailDialog), "_new", []), "_withIssue_", [self['@model']]));
+smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
+smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", [smalltalk.send(unescape("clicked%20%23"), "__comma", [smalltalk.send(self['@model'], "_number", [])])]);
+return self;},
+args: ["onClickEvent"],
+source: unescape('viewIssue%3A%20onClickEvent%0A%09%7C%20dialog%20%7C%0A%09dialog%20%3A%3D%20IssueDetailDialog%20new%20withIssue%3A%20model.%0A%09dialog%20appendToJQuery%3A%20%27body%27%20asJQuery.%0A%09console%20log%3A%20%27clicked%20%23%27%2C%20%28model%20number%29.%0A%09'),
+messageSends: ["withIssue:", "new", "appendToJQuery:", "asJQuery", "log:", unescape("%2C"), "number"],
+referencedClasses: ["IssueDetailDialog"]
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_asJQuery'),
+smalltalk.method({
+selector: unescape('asJQuery'),
+category: 'accessors',
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self, "_elementId", [])]), "_asJQuery", []);
+return self;},
+args: [],
+source: unescape('asJQuery%0A%09%5E%20%28%27%23%27%2C%20self%20elementId%29%20asJQuery.'),
+messageSends: ["asJQuery", unescape("%2C"), "elementId"],
+referencedClasses: []
 }),
 smalltalk.IssueTile);
 
@@ -802,13 +798,13 @@ selector: unescape('renderOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_at_put_", ["title", smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("%20-%20")]), "__comma", [smalltalk.send(self['@model'], "_title", [])])]);smalltalk.send($rec, "_id_", [self['@elementId']]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]);smalltalk.send(html, "_hr", []);return smalltalk.send(smalltalk.send(html, "_div", []), "_id_", ["comments"]);})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_at_put_", ["title", smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("%20-%20")]), "__comma", [smalltalk.send(self['@model'], "_title", [])])]);smalltalk.send($rec, "_id_", [self['@elementId']]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]);smalltalk.send(html, "_hr", []);smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", ["Comments:"]);smalltalk.send(html, "_hr", []);(function($rec){smalltalk.send($rec, "_id_", ["comments"]);return smalltalk.send($rec, "_style_", [unescape("overflow%3A%20auto%3B%20max-height%3A%20300px")]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);return smalltalk.send($rec, "_with_", ["view on GitHub"]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
 smalltalk.send(self, "_becomeDialog", []);
-smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(comments, "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [smalltalk.send(comment, "_body", [])]);}), "_appendToJQuery_", [smalltalk.send(unescape("%23comments"), "_asJQuery", [])]);})]);})]);
+smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(comments, "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(self, "_renderComment_onto_", [comment, html]);}), "_appendToJQuery_", [smalltalk.send(unescape("%23comments"), "_asJQuery", [])]);})]);})]);
 return self;},
 args: ["html"],
-source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27%23%27%2C%20%28model%20number%29%2C%20%27%20-%20%27%2C%20%28model%20title%29%3B%0A%09%09id%3A%20elementId%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20div%20with%3A%20%28model%20body%20asString%29.%0A%09%09%09html%20hr.%0A%09%09%09html%20div%20id%3A%20%27comments%27.%0A%09%5D.%0A%0A%09self%20becomeDialog.%0A%0A%09model%20loadComments%3A%20%5B%20%3Acomments%20%7C%20comments%20do%3A%20%5B%20%3Acomment%20%7C%20%5B%20%3Ahtml%20%7C%20html%20div%20with%3A%20%28comment%20body%29%20%5D%20appendToJQuery%3A%20%27%23comments%27%20asJQuery%20%5D%20%5D.'),
-messageSends: ["at:put:", unescape("%2C"), "number", "title", "id:", "with:", "div", "asString", "body", "hr", "becomeDialog", "loadComments:", "do:", "appendToJQuery:", "asJQuery"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27%23%27%2C%20%28model%20number%29%2C%20%27%20-%20%27%2C%20%28model%20title%29%3B%0A%09%09id%3A%20elementId%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20div%20with%3A%20%28model%20body%20asString%29.%0A%09%09%09html%20hr.%0A%09%09%09html%20strong%20with%3A%20%27Comments%3A%27.%0A%09%09%09html%20hr.%0A%09%09%09html%20div%20id%3A%20%27comments%27%3B%20style%3A%20%27overflow%3A%20auto%3B%20max-height%3A%20300px%27.%0A%09%09%09html%20div%0A%09%09%09%09style%3A%20%27float%3A%20right%3B%27%3B%0A%09%09%09%09with%3A%20%5B%20html%20a%20href%3A%20%28model%20url%29%3B%20with%3A%20%27view%20on%20GitHub%27%5D.%0A%09%5D.%0A%0A%09self%20becomeDialog.%0A%0A%09model%20loadComments%3A%20%5B%20%3Acomments%20%7C%20comments%20do%3A%20%5B%20%3Acomment%20%7C%20%5B%20%3Ahtml%20%7C%20self%20renderComment%3A%20comment%20onto%3A%20html%20%5D%20appendToJQuery%3A%20%27%23comments%27%20asJQuery%20%5D%20%5D.'),
+messageSends: ["at:put:", unescape("%2C"), "number", "title", "id:", "with:", "div", "asString", "body", "hr", "strong", "style:", "href:", "url", "a", "becomeDialog", "loadComments:", "do:", "appendToJQuery:", "renderComment:onto:", "asJQuery"],
 referencedClasses: []
 }),
 smalltalk.IssueDetailDialog);
@@ -826,6 +822,23 @@ return self;},
 args: ["anIssue"],
 source: unescape('withIssue%3A%20anIssue%0A%09model%20%3A%3D%20anIssue.%0A%09%5E%20self.'),
 messageSends: [],
+referencedClasses: []
+}),
+smalltalk.IssueDetailDialog);
+
+smalltalk.addMethod(
+unescape('_renderComment_onto_'),
+smalltalk.method({
+selector: unescape('renderComment%3Aonto%3A'),
+category: 'rendering',
+fn: function (comment, html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_class_", ["comment_detail"]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", [smalltalk.send("By: ", "__comma", [smalltalk.send(comment, "_login", [])])]);return smalltalk.send(smalltalk.send(comment, "_body", []), "_linesDo_", [(function(line){return smalltalk.send(smalltalk.send(html, "_p", []), "_with_", [line]);})]);})]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(html, "_hr", []);
+return self;},
+args: ["comment", "html"],
+source: unescape('renderComment%3A%20comment%20onto%3A%20html%0A%0A%09html%20div%0A%09%09class%3A%20%27comment_detail%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20strong%20with%3A%20%27By%3A%20%27%2C%20%28comment%20login%29.%0A%09%09%09comment%20body%20linesDo%3A%20%5B%20%3Aline%20%7C%0A%09%09%09%09html%20p%20with%3A%20line.%0A%09%09%09%5D.%0A%09%09%5D.%0A%0A%09html%20hr.'),
+messageSends: ["class:", "with:", "strong", unescape("%2C"), "login", "linesDo:", "body", "p", "div", "hr"],
 referencedClasses: []
 }),
 smalltalk.IssueDetailDialog);
