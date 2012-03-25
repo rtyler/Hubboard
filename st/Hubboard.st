@@ -501,7 +501,12 @@ renderOn: html
 		at: 'title' put: '#', (model number), ' - ', (model title);
 		id: elementId;
 		with: [
-			html div with: (Markdown asTagBrush: (model body asString)).
+			| body |
+			body := model body.
+			(body size) = 0
+				ifTrue: [ body := 'No description given' ]
+				ifFalse: [ body := Markdown asTagBrush: (model body asString) ].
+			html div with: body.
 			html hr.
 			html strong with: 'Comments:'.
 			html hr.
