@@ -440,18 +440,22 @@ initialize
 !NewIssueDialog methodsFor: 'rendering'!
 
 renderOn: html
+	| currentUser |
+	currentUser := HubboardApp current user at: 'login'.
+
 	html div
 		at: 'title' put: 'Create a new issue';
 		id: elementId;
 		with: [
 			html form name: 'new_issue_form'; onSubmit: [ :event | self submit. event preventDefault ]; with: [
 				html label for: 'assignee'; with: 'Assign to: '.
-				html input type: 'hidden'; name: 'assignee'; value: (HubboardApp current user at: 'login').
-				html strong with: (HubboardApp current user at: 'login').
+				html select name: 'assignee';
+					with: [ html option value: currentUser; with: currentUser. ].
 				html br.
 				html label for: 'project'; with: 'Project: '.
 				html select
 					name: 'project';
+					onChange: [ :event | self updateCollaborators ];
 					with: [
 						HubboardApp current knownRepos do: [ :repo |
 							(HubboardApp current currentProject) = repo
@@ -481,6 +485,30 @@ renderOn: html
 
 buttons
 	^ nil.
+!
+
+updateCollaborators
+	" Update the <select/> with collaborators from the API"
+	| project assignee |
+	project := ':input[name=project]' asJQuery val.
+	assignee := ':input[name=assignee]' asJQuery.
+
+	project ifNil: [ ^ false ].
+
+	Repo collaboratorsFor: project with: [ :results |
+		| currentUser |
+		currentUser := HubboardApp current user at: 'login'.
+		assignee empty.
+		[ :html |
+			results do: [ :result |
+				| userName |
+				userName := result at: 'login'.
+				html option value: userName; with: userName.
+			].
+		] appendToJQuery: assignee.
+		" Select ourselves after we update the list "
+		assignee val: currentUser.
+	].
 ! !
 
 !NewIssueDialog class methodsFor: 'not yet classified'!
