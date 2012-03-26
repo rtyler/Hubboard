@@ -1,51 +1,42 @@
 smalltalk.addPackage('Hubboard', {});
-smalltalk.addClass('IssueTile', smalltalk.Widget, ['raw', 'title', 'body', 'issueId', 'number', 'project', 'projectOwner', 'issueStatus', 'comments', 'fullProjectName', 'elementId', 'model'], 'Hubboard');
+smalltalk.addClass('HBDialog', smalltalk.Widget, ['modal', 'minWidth', 'draggable', 'elementId', 'position'], 'Hubboard');
 smalltalk.addMethod(
-unescape('_renderOn_'),
+unescape('_becomeDialog'),
 smalltalk.method({
-selector: unescape('renderOn%3A'),
-fn: function (html){
-var self=this;
-(function($rec){smalltalk.send($rec, "_class_", ["issuetile"]);smalltalk.send($rec, "_id_", [smalltalk.send(self, "_elementId", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-project"), smalltalk.send(self['@model'], "_projectName", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-issueid"), smalltalk.send(self['@model'], "_issueId", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [smalltalk.send(self, "_numberClass", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);smalltalk.send($rec, "_target_", ["_blank"]);smalltalk.send($rec, "_with_", [smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(smalltalk.send(self['@model'], "_number", []), "_asString", [])])]);return smalltalk.send($rec, "_onClick_", [(function(event){smalltalk.send(self, "_viewIssue_", [event]);return smalltalk.send(event, "_preventDefault", []);})]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [" in "]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectOwner", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_projectOwner", [])]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [unescape("%20/%20")]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectName", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_project", [])]);})(smalltalk.send(html, "_a", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3Aright%3B")]);smalltalk.send($rec, "_class_", ["comments"]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_span", []), "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(self['@model'], "_comments", []), "_asString", []), "__comma", [" comments"])]);return (function($rec){smalltalk.send($rec, "_class_", ["add_comment"]);smalltalk.send($rec, "_title_", ["Add Comment"]);smalltalk.send($rec, "_with_", [unescape("+")]);return smalltalk.send($rec, "_onClick_", [(function(event){return smalltalk.send(self, "_addComment_", [event]);})]);})(smalltalk.send(html, "_button", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_class_", ["title"]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_title", [])]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
-smalltalk.send(self, "_postRender", []);
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_parseUrl_'),
-smalltalk.method({
-selector: unescape('parseUrl%3A'),
-fn: function (aUrl){
-var self=this;
-var parts=nil;
-(parts=aUrl.split('/'));
-return smalltalk.HashedCollection._fromPairs_([smalltalk.send("owner", "__minus_gt", [smalltalk.send(parts, "_at_", [(4)])]),smalltalk.send("project", "__minus_gt", [smalltalk.send(parts, "_at_", [(5)])])]);
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_setOpen'),
-smalltalk.method({
-selector: unescape('setOpen'),
+selector: unescape('becomeDialog'),
 fn: function (){
 var self=this;
-(self['@issueStatus']=smalltalk.symbolFor("open"));
+return smalltalk.send(self, "_becomeDialog_", [(function(){return nil;})]);
 return self;}
 }),
-smalltalk.IssueTile);
+smalltalk.HBDialog);
 
 smalltalk.addMethod(
-unescape('_setInProgress'),
+unescape('_initialize'),
 smalltalk.method({
-selector: unescape('setInProgress'),
+selector: unescape('initialize'),
 fn: function (){
 var self=this;
-(self['@issueStatus']=smalltalk.symbolFor("inprogress"));
+smalltalk.send(self, "_initialize", [], smalltalk.Widget);
+(self['@modal']=true);
+(self['@minWidth']=(500));
+(self['@draggable']=false);
+(self['@position']="center");
 return self;}
 }),
-smalltalk.IssueTile);
+smalltalk.HBDialog);
+
+smalltalk.addMethod(
+unescape('_becomeDialog_'),
+smalltalk.method({
+selector: unescape('becomeDialog%3A'),
+fn: function (aBlockCallback){
+var self=this;
+smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [self['@modal']]),smalltalk.send("minWidth", "__minus_gt", [self['@minWidth']]),smalltalk.send("draggable", "__minus_gt", [self['@draggable']]),smalltalk.send("position", "__minus_gt", [self['@position']]),smalltalk.send("close", "__minus_gt", [(function(event, ui){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_remove", []);})])])]);
+smalltalk.send(aBlockCallback, "_value", []);
+return self;}
+}),
+smalltalk.HBDialog);
 
 smalltalk.addMethod(
 unescape('_elementId'),
@@ -53,133 +44,10 @@ smalltalk.method({
 selector: unescape('elementId'),
 fn: function (){
 var self=this;
-return (($receiver = self['@elementId']) == nil || $receiver == undefined) ? (function(){return (self['@elementId']=smalltalk.send("issuetile_", "__comma", [smalltalk.send(smalltalk.send(self['@model'], "_issueId", []), "_asString", [])]));})() : $receiver;
+return smalltalk.send(unescape("%23"), "__comma", [self['@elementId']]);
 return self;}
 }),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_moveTo_'),
-smalltalk.method({
-selector: unescape('moveTo%3A'),
-fn: function (aColumnId){
-var self=this;
-try{var postData=nil;
-var successBlock=nil;
-var url=nil;
-(postData=smalltalk.HashedCollection._fromPairs_([smalltalk.send("project", "__minus_gt", [smalltalk.send(self['@model'], "_projectName", [])])]));
-((($receiver = smalltalk.send(aColumnId, "__eq", ["inprogressissues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/label")]));return (successBlock=(function(){return smalltalk.send(self, "_setInProgress", []);}));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/label")]));return (successBlock=(function(){return smalltalk.send(self, "_setInProgress", []);}));})]));
-((($receiver = smalltalk.send(aColumnId, "__eq", ["openissues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/revert")]));return (successBlock=(function(){return smalltalk.send(self, "_setOpen", []);}));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/revert")]));return (successBlock=(function(){return smalltalk.send(self, "_setOpen", []);}));})]));
-((($receiver = smalltalk.send(aColumnId, "__eq", ["closedissues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/close")]));return (successBlock=(function(){return smalltalk.send(self, "_setClosed", []);}));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/close")]));return (successBlock=(function(){return smalltalk.send(self, "_setClosed", []);}));})]));
-(($receiver = url) != nil && $receiver != undefined) ? (function(){smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_showSpinner", []);smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [url, smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(postData, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){(($receiver = successBlock) != nil && $receiver != undefined) ? (function(){return smalltalk.send(successBlock, "_value", []);})() : nil;smalltalk.send(self, "_updateHeaderClass", []);return smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_hideSpinner", []);})]),smalltalk.send("error", "__minus_gt", [(function(){smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_hideSpinner", []);return smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", ["fail"]);})])])]);return (function(){throw({name: 'stReturn', selector: '_moveTo_', fn: function(){return true}})})();})() : nil;
-(function(){throw({name: 'stReturn', selector: '_moveTo_', fn: function(){return false}})})();
-return self;
-} catch(e) {if(e.name === 'stReturn' && e.selector === '_moveTo_'){return e.fn()} throw(e)}}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_setClosed'),
-smalltalk.method({
-selector: unescape('setClosed'),
-fn: function (){
-var self=this;
-(self['@issueStatus']=smalltalk.symbolFor("closed"));
-smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", ["disable"]);
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_numberClass'),
-smalltalk.method({
-selector: unescape('numberClass'),
-fn: function (){
-var self=this;
-var numberClass=nil;
-(numberClass="number");
-((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("open")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" open"]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" open"]));})]));
-((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("inprogress")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" inprogress"]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" inprogress"]));})]));
-((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("closed")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" closed"]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" closed"]));})]));
-return numberClass;
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_postRender'),
-smalltalk.method({
-selector: unescape('postRender'),
-fn: function (){
-var self=this;
-((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("closed")])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("zIndex", "__minus_gt", ["10000"]),smalltalk.send("snap", "__minus_gt", [true])])]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("zIndex", "__minus_gt", ["10000"]),smalltalk.send("snap", "__minus_gt", [true])])]);})]));
-smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dblclick_", [(function(event){return smalltalk.send(self, "_viewIssue_", [event]);})]);
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_updateHeaderClass'),
-smalltalk.method({
-selector: unescape('updateHeaderClass'),
-fn: function (){
-var self=this;
-var element=nil;
-(element=smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self, "_elementId", [])]), "__comma", [unescape("%20%3E%20div.number")]), "_asJQuery", []));
-smalltalk.send(element, "_removeClass", []);
-smalltalk.send(element, "_addClass_", [smalltalk.send(self, "_numberClass", [])]);
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_withModel_'),
-smalltalk.method({
-selector: unescape('withModel%3A'),
-fn: function (anIssue){
-var self=this;
-(self['@model']=anIssue);
-(self['@number']=smalltalk.send(anIssue, "_number", []));
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_model'),
-smalltalk.method({
-selector: unescape('model'),
-fn: function (){
-var self=this;
-return self['@model'];
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_addComment_'),
-smalltalk.method({
-selector: unescape('addComment%3A'),
-fn: function (clickEvent){
-var self=this;
-var dialog=nil;
-(dialog=smalltalk.send(smalltalk.send((smalltalk.CommentDialog || CommentDialog), "_new", []), "_withIssue_", [self['@model']]));
-smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
-return self;}
-}),
-smalltalk.IssueTile);
-
-smalltalk.addMethod(
-unescape('_viewIssue_'),
-smalltalk.method({
-selector: unescape('viewIssue%3A'),
-fn: function (onClickEvent){
-var self=this;
-var dialog=nil;
-(dialog=smalltalk.send(smalltalk.send((smalltalk.IssueDetailDialog || IssueDetailDialog), "_new", []), "_withIssue_", [self['@model']]));
-smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
-return self;}
-}),
-smalltalk.IssueTile);
+smalltalk.HBDialog);
 
 smalltalk.addMethod(
 unescape('_asJQuery'),
@@ -187,10 +55,10 @@ smalltalk.method({
 selector: unescape('asJQuery'),
 fn: function (){
 var self=this;
-return smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self, "_elementId", [])]), "_asJQuery", []);
+return smalltalk.send(smalltalk.send(self, "_elementId", []), "_asJQuery", []);
 return self;}
 }),
-smalltalk.IssueTile);
+smalltalk.HBDialog);
 
 
 
@@ -442,44 +310,53 @@ return self;}
 smalltalk.HubboardApp.klass);
 
 
-smalltalk.addClass('HBDialog', smalltalk.Widget, ['modal', 'minWidth', 'draggable', 'elementId', 'position'], 'Hubboard');
+smalltalk.addClass('IssueTile', smalltalk.Widget, ['raw', 'title', 'body', 'issueId', 'number', 'project', 'projectOwner', 'issueStatus', 'comments', 'fullProjectName', 'elementId', 'model'], 'Hubboard');
 smalltalk.addMethod(
-unescape('_becomeDialog'),
+unescape('_renderOn_'),
 smalltalk.method({
-selector: unescape('becomeDialog'),
-fn: function (){
+selector: unescape('renderOn%3A'),
+fn: function (html){
 var self=this;
-return smalltalk.send(self, "_becomeDialog_", [(function(){return nil;})]);
+(function($rec){smalltalk.send($rec, "_class_", ["issuetile"]);smalltalk.send($rec, "_id_", [smalltalk.send(self, "_elementId", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-project"), smalltalk.send(self['@model'], "_projectName", [])]);smalltalk.send($rec, "_at_put_", [unescape("data-issueid"), smalltalk.send(self['@model'], "_issueId", [])]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(self, "_renderHeader_", [html]);return (function($rec){smalltalk.send($rec, "_class_", ["title"]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_title", [])]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_postRender", []);
 return self;}
 }),
-smalltalk.HBDialog);
+smalltalk.IssueTile);
 
 smalltalk.addMethod(
-unescape('_initialize'),
+unescape('_parseUrl_'),
 smalltalk.method({
-selector: unescape('initialize'),
-fn: function (){
+selector: unescape('parseUrl%3A'),
+fn: function (aUrl){
 var self=this;
-smalltalk.send(self, "_initialize", [], smalltalk.Widget);
-(self['@modal']=true);
-(self['@minWidth']=(500));
-(self['@draggable']=false);
-(self['@position']="center");
+var parts=nil;
+(parts=aUrl.split('/'));
+return smalltalk.HashedCollection._fromPairs_([smalltalk.send("owner", "__minus_gt", [smalltalk.send(parts, "_at_", [(4)])]),smalltalk.send("project", "__minus_gt", [smalltalk.send(parts, "_at_", [(5)])])]);
 return self;}
 }),
-smalltalk.HBDialog);
+smalltalk.IssueTile);
 
 smalltalk.addMethod(
-unescape('_becomeDialog_'),
+unescape('_setOpen'),
 smalltalk.method({
-selector: unescape('becomeDialog%3A'),
-fn: function (aBlockCallback){
+selector: unescape('setOpen'),
+fn: function (){
 var self=this;
-smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("modal", "__minus_gt", [self['@modal']]),smalltalk.send("minWidth", "__minus_gt", [self['@minWidth']]),smalltalk.send("draggable", "__minus_gt", [self['@draggable']]),smalltalk.send("position", "__minus_gt", [self['@position']]),smalltalk.send("close", "__minus_gt", [(function(event, ui){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_remove", []);})])])]);
-smalltalk.send(aBlockCallback, "_value", []);
+(self['@issueStatus']=smalltalk.symbolFor("open"));
 return self;}
 }),
-smalltalk.HBDialog);
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_setInProgress'),
+smalltalk.method({
+selector: unescape('setInProgress'),
+fn: function (){
+var self=this;
+(self['@issueStatus']=smalltalk.symbolFor("inprogress"));
+return self;}
+}),
+smalltalk.IssueTile);
 
 smalltalk.addMethod(
 unescape('_elementId'),
@@ -487,10 +364,133 @@ smalltalk.method({
 selector: unescape('elementId'),
 fn: function (){
 var self=this;
-return smalltalk.send(unescape("%23"), "__comma", [self['@elementId']]);
+return (($receiver = self['@elementId']) == nil || $receiver == undefined) ? (function(){return (self['@elementId']=smalltalk.send("issuetile_", "__comma", [smalltalk.send(smalltalk.send(self['@model'], "_issueId", []), "_asString", [])]));})() : $receiver;
 return self;}
 }),
-smalltalk.HBDialog);
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_moveTo_'),
+smalltalk.method({
+selector: unescape('moveTo%3A'),
+fn: function (aColumnId){
+var self=this;
+try{var postData=nil;
+var successBlock=nil;
+var url=nil;
+(postData=smalltalk.HashedCollection._fromPairs_([smalltalk.send("project", "__minus_gt", [smalltalk.send(self['@model'], "_projectName", [])])]));
+((($receiver = smalltalk.send(aColumnId, "__eq", ["inprogressissues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/label")]));return (successBlock=(function(){return smalltalk.send(self, "_setInProgress", []);}));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/label")]));return (successBlock=(function(){return smalltalk.send(self, "_setInProgress", []);}));})]));
+((($receiver = smalltalk.send(aColumnId, "__eq", ["openissues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/revert")]));return (successBlock=(function(){return smalltalk.send(self, "_setOpen", []);}));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/revert")]));return (successBlock=(function(){return smalltalk.send(self, "_setOpen", []);}));})]));
+((($receiver = smalltalk.send(aColumnId, "__eq", ["closedissues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/close")]));return (successBlock=(function(){return smalltalk.send(self, "_setClosed", []);}));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){(url=smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [self['@number']]), "__comma", [unescape("/close")]));return (successBlock=(function(){return smalltalk.send(self, "_setClosed", []);}));})]));
+(($receiver = url) != nil && $receiver != undefined) ? (function(){smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_showSpinner", []);smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [url, smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(postData, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){(($receiver = successBlock) != nil && $receiver != undefined) ? (function(){return smalltalk.send(successBlock, "_value", []);})() : nil;smalltalk.send(self, "_updateHeaderClass", []);return smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_hideSpinner", []);})]),smalltalk.send("error", "__minus_gt", [(function(){smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_hideSpinner", []);return smalltalk.send((typeof console == 'undefined' ? nil : console), "_log_", ["fail"]);})])])]);return (function(){throw({name: 'stReturn', selector: '_moveTo_', fn: function(){return true}})})();})() : nil;
+(function(){throw({name: 'stReturn', selector: '_moveTo_', fn: function(){return false}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_moveTo_'){return e.fn()} throw(e)}}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_setClosed'),
+smalltalk.method({
+selector: unescape('setClosed'),
+fn: function (){
+var self=this;
+(self['@issueStatus']=smalltalk.symbolFor("closed"));
+smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", ["disable"]);
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_numberClass'),
+smalltalk.method({
+selector: unescape('numberClass'),
+fn: function (){
+var self=this;
+var numberClass=nil;
+(numberClass="number");
+((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("open")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" open"]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" open"]));})]));
+((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("inprogress")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" inprogress"]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" inprogress"]));})]));
+((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("closed")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" closed"]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (numberClass=smalltalk.send(numberClass, "__comma", [" closed"]));})]));
+return numberClass;
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_postRender'),
+smalltalk.method({
+selector: unescape('postRender'),
+fn: function (){
+var self=this;
+((($receiver = smalltalk.send(self['@issueStatus'], "__eq", [smalltalk.symbolFor("closed")])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("zIndex", "__minus_gt", ["10000"]),smalltalk.send("snap", "__minus_gt", [true])])]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_draggable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("zIndex", "__minus_gt", ["10000"]),smalltalk.send("snap", "__minus_gt", [true])])]);})]));
+smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dblclick_", [(function(event){return smalltalk.send(self, "_viewIssue_", [event]);})]);
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_updateHeaderClass'),
+smalltalk.method({
+selector: unescape('updateHeaderClass'),
+fn: function (){
+var self=this;
+var element=nil;
+(element=smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self, "_elementId", [])]), "__comma", [unescape("%20%3E%20div.number")]), "_asJQuery", []));
+smalltalk.send(element, "_removeClass", []);
+smalltalk.send(element, "_addClass_", [smalltalk.send(self, "_numberClass", [])]);
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_withModel_'),
+smalltalk.method({
+selector: unescape('withModel%3A'),
+fn: function (anIssue){
+var self=this;
+(self['@model']=anIssue);
+(self['@number']=smalltalk.send(anIssue, "_number", []));
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_model'),
+smalltalk.method({
+selector: unescape('model'),
+fn: function (){
+var self=this;
+return self['@model'];
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_addComment_'),
+smalltalk.method({
+selector: unescape('addComment%3A'),
+fn: function (clickEvent){
+var self=this;
+var dialog=nil;
+(dialog=smalltalk.send(smalltalk.send((smalltalk.CommentDialog || CommentDialog), "_new", []), "_withIssue_", [self['@model']]));
+smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
+return self;}
+}),
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_viewIssue_'),
+smalltalk.method({
+selector: unescape('viewIssue%3A'),
+fn: function (onClickEvent){
+var self=this;
+var dialog=nil;
+(dialog=smalltalk.send(smalltalk.send((smalltalk.IssueDetailDialog || IssueDetailDialog), "_new", []), "_withIssue_", [self['@model']]));
+smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);
+return self;}
+}),
+smalltalk.IssueTile);
 
 smalltalk.addMethod(
 unescape('_asJQuery'),
@@ -498,10 +498,21 @@ smalltalk.method({
 selector: unescape('asJQuery'),
 fn: function (){
 var self=this;
-return smalltalk.send(smalltalk.send(self, "_elementId", []), "_asJQuery", []);
+return smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self, "_elementId", [])]), "_asJQuery", []);
 return self;}
 }),
-smalltalk.HBDialog);
+smalltalk.IssueTile);
+
+smalltalk.addMethod(
+unescape('_renderHeader_'),
+smalltalk.method({
+selector: unescape('renderHeader%3A'),
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_class_", [smalltalk.send(self, "_numberClass", [])]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);smalltalk.send($rec, "_target_", ["_blank"]);smalltalk.send($rec, "_with_", [smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(smalltalk.send(self['@model'], "_number", []), "_asString", [])])]);return smalltalk.send($rec, "_onClick_", [(function(event){smalltalk.send(self, "_viewIssue_", [event]);return smalltalk.send(event, "_preventDefault", []);})]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [" in "]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectOwner", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_projectOwner", [])]);})(smalltalk.send(html, "_a", []));smalltalk.send(html, "_with_", [unescape("%20/%20")]);(function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(unescape("https%3A//github.com/"), "__comma", [smalltalk.send(self['@model'], "_projectName", [])])]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@model'], "_project", [])]);})(smalltalk.send(html, "_a", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3Aright%3B")]);smalltalk.send($rec, "_class_", ["comments"]);return smalltalk.send($rec, "_with_", [(function(){(($receiver = smalltalk.send(self['@model'], "_pullRequest", [])) != nil && $receiver != undefined) ? (function(){return (function($rec){smalltalk.send($rec, "_class_", ["pull_req"]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_target_", ["_blank"]);smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_pullRequest", [])]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_img", []), "_src_", [unescape("/images/pull_request.png")]);})]);})(smalltalk.send(html, "_a", []));return smalltalk.send(html, "_with_", ["Code Attached"]);})]);})(smalltalk.send(html, "_span", []));})() : nil;smalltalk.send(smalltalk.send(html, "_span", []), "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(self['@model'], "_comments", []), "_asString", []), "__comma", [" comments"])]);return (function($rec){smalltalk.send($rec, "_class_", ["add_comment"]);smalltalk.send($rec, "_title_", ["Add Comment"]);smalltalk.send($rec, "_with_", [unescape("+")]);return smalltalk.send($rec, "_onClick_", [(function(event){return smalltalk.send(self, "_addComment_", [event]);})]);})(smalltalk.send(html, "_button", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
+return self;}
+}),
+smalltalk.IssueTile);
 
 
 

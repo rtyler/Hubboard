@@ -101,3 +101,13 @@ body {
 .comment_detail {
   max-height: 300px;
 }
+
+.pull_req {
+  font-size: 0.7em;
+  margin-right: 10px;
+}
+.pull_req img {
+  margin-bottom: 2px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
