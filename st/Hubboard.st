@@ -567,14 +567,14 @@ renderOn: html
 				with: [ html a href: (model url); with: 'View on GitHub'].
 			html div
 				style: 'float: right; margin-right: 10px;';
-				with: [ html a href: '#'; with: 'Add Comment'; onClick: [
+				with: [ html a href: '#'; id: 'dialog_add_comment'; with: 'Add Comment'; onClick: [
 						| dialog |
 					dialog := CommentDialog new withIssue: model.
 					dialog appendToJQuery: 'body' asJQuery.
 				]].
 	].
 
-	self becomeDialog.
+	self becomeDialog: [ '#dialog_add_comment' asJQuery focus ].
 
 	model loadComments: [ :comments | comments reversed do: [ :comment | [ :html | self renderComment: comment onto: html ] appendToJQuery: '#comments' asJQuery ] ].
 !
