@@ -55,4 +55,9 @@
         Closed/Resolved
       %div.issuecolumn#closedissues
 
-    = embed_amber(:on_ready => 'smalltalk.HubboardApp._current()._bootstrap();')
+    - if Resin.development?
+      = embed_amber(:on_ready => 'smalltalk.HubboardApp._current()._bootstrap();')
+    - else
+      %script{:type => 'text/javascript', :src => '/js/resin-app.deploy.js'}
+      %script{:type => 'text/javascript'}
+        smalltalk.HubboardApp._current()._bootstrap();
