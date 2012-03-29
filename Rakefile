@@ -9,6 +9,7 @@ def diaf!(fname)
   end
 end
 
+desc "Compile the single JavaScript file for the application"
 task :compile do
   additional_files = ['jquery-ui-1.8.18.custom.min.js']
   fname = 'resin-app.deploy.js'
@@ -24,6 +25,7 @@ task :compile do
 end
 
 
+desc "Deploy to heroku"
 task :deploy => [:compile] do
   sh "git commit js/resin-app.deploy.js -m 'Committing the production .js file for deployment'"
   sh "git push heroku master"
