@@ -605,14 +605,13 @@ renderOn: html
 				style: 'float: right; margin-right: 10px;';
 				with: [ html a href: '#'; id: 'dialog_add_comment'; with: 'Add Comment'; onClick: [
 						| dialog |
-					dialog := CommentDialog new withIssue: model.
+					dialog := CommentDialog new withIssue: model; finally: [ self loadComments ].
 					dialog appendToJQuery: 'body' asJQuery.
 				]].
 	].
 
 	self becomeDialog: [ '#dialog_add_comment' asJQuery focus ].
-
-	model loadComments: [ :comments | comments reversed do: [ :comment | [ :html | self renderComment: comment onto: html ] appendToJQuery: '#comments' asJQuery ] ].
+	self loadComments.
 !
 
 renderComment: comment onto: html
@@ -627,10 +626,23 @@ renderComment: comment onto: html
 	html hr.
 
 	'#comments_container' asJQuery show.
+!
+
+loadComments
+	" Empty out the comments container and dump some fresh comments into there "
+	| container |
+	container := '#comments' asJQuery.
+	container empty.
+
+	model loadComments: [ :comments |
+		comments reversed do: [ :comment |
+			[ :html | self renderComment: comment onto: html ] appendToJQuery: container
+		]
+	].
 ! !
 
 HBDialog subclass: #CommentDialog
-	instanceVariableNames: 'model'
+	instanceVariableNames: 'model closingBlock'
 	category: 'Hubboard'!
 
 !CommentDialog methodsFor: 'actions'!
@@ -648,7 +660,14 @@ submit
 	jQuery ajax: '/issues/', (model number), '/comment' options: #{'type' -> 'POST'.
 			'dataType' -> 'json'.
 			'data' -> data asJSONString.
-			'success' -> [ self asJQuery dialog: 'close'. HubboardApp current refresh.]}.
+			'success' -> [
+				self asJQuery dialog: 'close'. HubboardApp current refresh.
+				closingBlock ifNotNil: [ closingBlock value ].
+			]}.
+!
+
+finally: aClosingBlock
+	closingBlock := aClosingBlock.
 ! !
 
 !CommentDialog methodsFor: 'initializers'!

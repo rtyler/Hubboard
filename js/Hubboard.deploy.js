@@ -667,9 +667,9 @@ fn: function (html){
 var self=this;
 (function($rec){smalltalk.send($rec, "_at_put_", ["title", smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("%20-%20")]), "__comma", [smalltalk.send(self['@model'], "_title", [])])]);smalltalk.send($rec, "_id_", [self['@elementId']]);return smalltalk.send($rec, "_with_", [(function(){var body=nil;
 (body=smalltalk.send(self['@model'], "_body", []));((($receiver = smalltalk.send(smalltalk.send(body, "_size", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (body="No description given");})() : (function(){return (body=smalltalk.send((smalltalk.Markdown || Markdown), "_asTagBrush_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (body="No description given");}), (function(){return (body=smalltalk.send((smalltalk.Markdown || Markdown), "_asTagBrush_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]));})]));smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [body]);(function($rec){smalltalk.send($rec, "_id_", ["comments_container"]);smalltalk.send($rec, "_style_", [unescape("display%3A%20none%3B")]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(html, "_hr", []);smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", ["Comments:"]);smalltalk.send(html, "_hr", []);return (function($rec){smalltalk.send($rec, "_id_", ["comments"]);return smalltalk.send($rec, "_style_", [unescape("overflow%3A%20auto%3B%20max-height%3A%20300px")]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));(function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);smalltalk.send($rec, "_target_", ["_blank"]);return smalltalk.send($rec, "_with_", ["View on GitHub"]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B%20margin-right%3A%2010px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_id_", ["dialog_add_comment"]);smalltalk.send($rec, "_with_", ["Add Comment"]);return smalltalk.send($rec, "_onClick_", [(function(){var dialog=nil;
-(dialog=smalltalk.send(smalltalk.send((smalltalk.CommentDialog || CommentDialog), "_new", []), "_withIssue_", [self['@model']]));return smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
+(dialog=(function($rec){smalltalk.send($rec, "_withIssue_", [self['@model']]);return smalltalk.send($rec, "_finally_", [(function(){return smalltalk.send(self, "_loadComments", []);})]);})(smalltalk.send((smalltalk.CommentDialog || CommentDialog), "_new", [])));return smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
 smalltalk.send(self, "_becomeDialog_", [(function(){return smalltalk.send(smalltalk.send(unescape("%23dialog_add_comment"), "_asJQuery", []), "_focus", []);})]);
-smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(smalltalk.send(comments, "_reversed", []), "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(self, "_renderComment_onto_", [comment, html]);}), "_appendToJQuery_", [smalltalk.send(unescape("%23comments"), "_asJQuery", [])]);})]);})]);
+smalltalk.send(self, "_loadComments", []);
 return self;}
 }),
 smalltalk.IssueDetailDialog);
@@ -699,9 +699,23 @@ return self;}
 }),
 smalltalk.IssueDetailDialog);
 
+smalltalk.addMethod(
+unescape('_loadComments'),
+smalltalk.method({
+selector: unescape('loadComments'),
+fn: function (){
+var self=this;
+var container=nil;
+(container=smalltalk.send(unescape("%23comments"), "_asJQuery", []));
+smalltalk.send(container, "_empty", []);
+smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(smalltalk.send(comments, "_reversed", []), "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(self, "_renderComment_onto_", [comment, html]);}), "_appendToJQuery_", [container]);})]);})]);
+return self;}
+}),
+smalltalk.IssueDetailDialog);
 
 
-smalltalk.addClass('CommentDialog', smalltalk.HBDialog, ['model'], 'Hubboard');
+
+smalltalk.addClass('CommentDialog', smalltalk.HBDialog, ['model', 'closingBlock'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_initialize'),
 smalltalk.method({
@@ -747,9 +761,20 @@ var self=this;
 try{var data=nil;
 (data=smalltalk.HashedCollection._fromPairs_([smalltalk.send("project", "__minus_gt", [smalltalk.send(self['@model'], "_projectName", [])]),smalltalk.send("body", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dbody%5D"), "_asJQuery", []), "_val", [])])]));
 ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(data, "_at_", ["body"]), "_size", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a comment"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a comment"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})]));
-smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("/comment")]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(data, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", ["close"]);return smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_refresh", []);})])])]);
+smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("/comment")]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(data, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", ["close"]);smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_refresh", []);return (($receiver = self['@closingBlock']) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self['@closingBlock'], "_value", []);})() : nil;})])])]);
 return self;
 } catch(e) {if(e.name === 'stReturn' && e.selector === '_submit'){return e.fn()} throw(e)}}
+}),
+smalltalk.CommentDialog);
+
+smalltalk.addMethod(
+unescape('_finally_'),
+smalltalk.method({
+selector: unescape('finally%3A'),
+fn: function (aClosingBlock){
+var self=this;
+(self['@closingBlock']=aClosingBlock);
+return self;}
 }),
 smalltalk.CommentDialog);
 

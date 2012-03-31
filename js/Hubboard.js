@@ -913,13 +913,13 @@ fn: function (html){
 var self=this;
 (function($rec){smalltalk.send($rec, "_at_put_", ["title", smalltalk.send(smalltalk.send(smalltalk.send(unescape("%23"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("%20-%20")]), "__comma", [smalltalk.send(self['@model'], "_title", [])])]);smalltalk.send($rec, "_id_", [self['@elementId']]);return smalltalk.send($rec, "_with_", [(function(){var body=nil;
 (body=smalltalk.send(self['@model'], "_body", []));((($receiver = smalltalk.send(smalltalk.send(body, "_size", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (body="No description given");})() : (function(){return (body=smalltalk.send((smalltalk.Markdown || Markdown), "_asTagBrush_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (body="No description given");}), (function(){return (body=smalltalk.send((smalltalk.Markdown || Markdown), "_asTagBrush_", [smalltalk.send(smalltalk.send(self['@model'], "_body", []), "_asString", [])]));})]));smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [body]);(function($rec){smalltalk.send($rec, "_id_", ["comments_container"]);smalltalk.send($rec, "_style_", [unescape("display%3A%20none%3B")]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(html, "_hr", []);smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", ["Comments:"]);smalltalk.send(html, "_hr", []);return (function($rec){smalltalk.send($rec, "_id_", ["comments"]);return smalltalk.send($rec, "_style_", [unescape("overflow%3A%20auto%3B%20max-height%3A%20300px")]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));(function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [smalltalk.send(self['@model'], "_url", [])]);smalltalk.send($rec, "_target_", ["_blank"]);return smalltalk.send($rec, "_with_", ["View on GitHub"]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));return (function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B%20margin-right%3A%2010px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_id_", ["dialog_add_comment"]);smalltalk.send($rec, "_with_", ["Add Comment"]);return smalltalk.send($rec, "_onClick_", [(function(){var dialog=nil;
-(dialog=smalltalk.send(smalltalk.send((smalltalk.CommentDialog || CommentDialog), "_new", []), "_withIssue_", [self['@model']]));return smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
+(dialog=(function($rec){smalltalk.send($rec, "_withIssue_", [self['@model']]);return smalltalk.send($rec, "_finally_", [(function(){return smalltalk.send(self, "_loadComments", []);})]);})(smalltalk.send((smalltalk.CommentDialog || CommentDialog), "_new", [])));return smalltalk.send(dialog, "_appendToJQuery_", [smalltalk.send("body", "_asJQuery", [])]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_div", []));})]);})(smalltalk.send(html, "_div", []));
 smalltalk.send(self, "_becomeDialog_", [(function(){return smalltalk.send(smalltalk.send(unescape("%23dialog_add_comment"), "_asJQuery", []), "_focus", []);})]);
-smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(smalltalk.send(comments, "_reversed", []), "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(self, "_renderComment_onto_", [comment, html]);}), "_appendToJQuery_", [smalltalk.send(unescape("%23comments"), "_asJQuery", [])]);})]);})]);
+smalltalk.send(self, "_loadComments", []);
 return self;},
 args: ["html"],
-source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27%23%27%2C%20%28model%20number%29%2C%20%27%20-%20%27%2C%20%28model%20title%29%3B%0A%09%09id%3A%20elementId%3B%0A%09%09with%3A%20%5B%0A%09%09%09%7C%20body%20%7C%0A%09%09%09body%20%3A%3D%20model%20body.%0A%09%09%09%28body%20size%29%20%3D%200%0A%09%09%09%09ifTrue%3A%20%5B%20body%20%3A%3D%20%27No%20description%20given%27.%5D%0A%09%09%09%09ifFalse%3A%20%5B%20body%20%3A%3D%20Markdown%20asTagBrush%3A%20%28model%20body%20asString%29%20%5D.%0A%09%09%09html%20div%20with%3A%20body.%0A%09%09%09html%20div%0A%09%09%09%09id%3A%20%27comments_container%27%3B%0A%09%09%09%09style%3A%20%27display%3A%20none%3B%27%3B%0A%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09html%20hr.%0A%09%09%09%09%09html%20strong%20with%3A%20%27Comments%3A%27.%0A%09%09%09%09%09html%20hr.%0A%09%09%09%09%09html%20div%20id%3A%20%27comments%27%3B%20style%3A%20%27overflow%3A%20auto%3B%20max-height%3A%20300px%27.%0A%09%09%09%09%5D.%0A%09%09%09html%20div%0A%09%09%09%09style%3A%20%27float%3A%20right%3B%27%3B%0A%09%09%09%09with%3A%20%5B%20html%20a%20href%3A%20%28model%20url%29%3B%20target%3A%20%27_blank%27%3B%20with%3A%20%27View%20on%20GitHub%27%5D.%0A%09%09%09html%20div%0A%09%09%09%09style%3A%20%27float%3A%20right%3B%20margin-right%3A%2010px%3B%27%3B%0A%09%09%09%09with%3A%20%5B%20html%20a%20href%3A%20%27%23%27%3B%20id%3A%20%27dialog_add_comment%27%3B%20with%3A%20%27Add%20Comment%27%3B%20onClick%3A%20%5B%0A%09%09%09%09%09%09%7C%20dialog%20%7C%0A%09%09%09%09%09dialog%20%3A%3D%20CommentDialog%20new%20withIssue%3A%20model.%0A%09%09%09%09%09dialog%20appendToJQuery%3A%20%27body%27%20asJQuery.%0A%09%09%09%09%5D%5D.%0A%09%5D.%0A%0A%09self%20becomeDialog%3A%20%5B%20%27%23dialog_add_comment%27%20asJQuery%20focus%20%5D.%0A%0A%09model%20loadComments%3A%20%5B%20%3Acomments%20%7C%20comments%20reversed%20do%3A%20%5B%20%3Acomment%20%7C%20%5B%20%3Ahtml%20%7C%20self%20renderComment%3A%20comment%20onto%3A%20html%20%5D%20appendToJQuery%3A%20%27%23comments%27%20asJQuery%20%5D%20%5D.'),
-messageSends: ["at:put:", unescape("%2C"), "number", "title", "id:", "with:", "body", "ifTrue:ifFalse:", unescape("%3D"), "size", "asTagBrush:", "asString", "div", "style:", "hr", "strong", "href:", "url", "target:", "a", "onClick:", "withIssue:", "new", "appendToJQuery:", "asJQuery", "becomeDialog:", "focus", "loadComments:", "do:", "reversed", "renderComment:onto:"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09at%3A%20%27title%27%20put%3A%20%27%23%27%2C%20%28model%20number%29%2C%20%27%20-%20%27%2C%20%28model%20title%29%3B%0A%09%09id%3A%20elementId%3B%0A%09%09with%3A%20%5B%0A%09%09%09%7C%20body%20%7C%0A%09%09%09body%20%3A%3D%20model%20body.%0A%09%09%09%28body%20size%29%20%3D%200%0A%09%09%09%09ifTrue%3A%20%5B%20body%20%3A%3D%20%27No%20description%20given%27.%5D%0A%09%09%09%09ifFalse%3A%20%5B%20body%20%3A%3D%20Markdown%20asTagBrush%3A%20%28model%20body%20asString%29%20%5D.%0A%09%09%09html%20div%20with%3A%20body.%0A%09%09%09html%20div%0A%09%09%09%09id%3A%20%27comments_container%27%3B%0A%09%09%09%09style%3A%20%27display%3A%20none%3B%27%3B%0A%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09html%20hr.%0A%09%09%09%09%09html%20strong%20with%3A%20%27Comments%3A%27.%0A%09%09%09%09%09html%20hr.%0A%09%09%09%09%09html%20div%20id%3A%20%27comments%27%3B%20style%3A%20%27overflow%3A%20auto%3B%20max-height%3A%20300px%27.%0A%09%09%09%09%5D.%0A%09%09%09html%20div%0A%09%09%09%09style%3A%20%27float%3A%20right%3B%27%3B%0A%09%09%09%09with%3A%20%5B%20html%20a%20href%3A%20%28model%20url%29%3B%20target%3A%20%27_blank%27%3B%20with%3A%20%27View%20on%20GitHub%27%5D.%0A%09%09%09html%20div%0A%09%09%09%09style%3A%20%27float%3A%20right%3B%20margin-right%3A%2010px%3B%27%3B%0A%09%09%09%09with%3A%20%5B%20html%20a%20href%3A%20%27%23%27%3B%20id%3A%20%27dialog_add_comment%27%3B%20with%3A%20%27Add%20Comment%27%3B%20onClick%3A%20%5B%0A%09%09%09%09%09%09%7C%20dialog%20%7C%0A%09%09%09%09%09dialog%20%3A%3D%20CommentDialog%20new%20withIssue%3A%20model%3B%20finally%3A%20%5B%20self%20loadComments%20%5D.%0A%09%09%09%09%09dialog%20appendToJQuery%3A%20%27body%27%20asJQuery.%0A%09%09%09%09%5D%5D.%0A%09%5D.%0A%0A%09self%20becomeDialog%3A%20%5B%20%27%23dialog_add_comment%27%20asJQuery%20focus%20%5D.%0A%09self%20loadComments.'),
+messageSends: ["at:put:", unescape("%2C"), "number", "title", "id:", "with:", "body", "ifTrue:ifFalse:", unescape("%3D"), "size", "asTagBrush:", "asString", "div", "style:", "hr", "strong", "href:", "url", "target:", "a", "onClick:", "withIssue:", "finally:", "loadComments", "new", "appendToJQuery:", "asJQuery", "becomeDialog:", "focus"],
 referencedClasses: ["Markdown", "CommentDialog"]
 }),
 smalltalk.IssueDetailDialog);
@@ -959,9 +959,28 @@ referencedClasses: ["Markdown"]
 }),
 smalltalk.IssueDetailDialog);
 
+smalltalk.addMethod(
+unescape('_loadComments'),
+smalltalk.method({
+selector: unescape('loadComments'),
+category: 'rendering',
+fn: function (){
+var self=this;
+var container=nil;
+(container=smalltalk.send(unescape("%23comments"), "_asJQuery", []));
+smalltalk.send(container, "_empty", []);
+smalltalk.send(self['@model'], "_loadComments_", [(function(comments){return smalltalk.send(smalltalk.send(comments, "_reversed", []), "_do_", [(function(comment){return smalltalk.send((function(html){return smalltalk.send(self, "_renderComment_onto_", [comment, html]);}), "_appendToJQuery_", [container]);})]);})]);
+return self;},
+args: [],
+source: unescape('loadComments%0A%09%22%20Empty%20out%20the%20comments%20container%20and%20dump%20some%20fresh%20comments%20into%20there%20%22%0A%09%7C%20container%20%7C%0A%09container%20%3A%3D%20%27%23comments%27%20asJQuery.%0A%09container%20empty.%0A%0A%09model%20loadComments%3A%20%5B%20%3Acomments%20%7C%0A%09%09comments%20reversed%20do%3A%20%5B%20%3Acomment%20%7C%0A%09%09%09%5B%20%3Ahtml%20%7C%20self%20renderComment%3A%20comment%20onto%3A%20html%20%5D%20appendToJQuery%3A%20container%0A%09%09%5D%0A%09%5D.'),
+messageSends: ["asJQuery", "empty", "loadComments:", "do:", "reversed", "appendToJQuery:", "renderComment:onto:"],
+referencedClasses: []
+}),
+smalltalk.IssueDetailDialog);
 
 
-smalltalk.addClass('CommentDialog', smalltalk.HBDialog, ['model'], 'Hubboard');
+
+smalltalk.addClass('CommentDialog', smalltalk.HBDialog, ['model', 'closingBlock'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_initialize'),
 smalltalk.method({
@@ -1023,13 +1042,29 @@ var self=this;
 try{var data=nil;
 (data=smalltalk.HashedCollection._fromPairs_([smalltalk.send("project", "__minus_gt", [smalltalk.send(self['@model'], "_projectName", [])]),smalltalk.send("body", "__minus_gt", [smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dbody%5D"), "_asJQuery", []), "_val", [])])]));
 ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(data, "_at_", ["body"]), "_size", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a comment"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){smalltalk.send((typeof window == 'undefined' ? nil : window), "_alert_", ["You should probably add a comment"]);return (function(){throw({name: 'stReturn', selector: '_submit', fn: function(){return false}})})();})]));
-smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("/comment")]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(data, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", ["close"]);return smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_refresh", []);})])])]);
+smalltalk.send((typeof jQuery == 'undefined' ? nil : jQuery), "_ajax_options_", [smalltalk.send(smalltalk.send(unescape("/issues/"), "__comma", [smalltalk.send(self['@model'], "_number", [])]), "__comma", [unescape("/comment")]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["POST"]),smalltalk.send("dataType", "__minus_gt", ["json"]),smalltalk.send("data", "__minus_gt", [smalltalk.send(data, "_asJSONString", [])]),smalltalk.send("success", "__minus_gt", [(function(){smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_dialog_", ["close"]);smalltalk.send(smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_current", []), "_refresh", []);return (($receiver = self['@closingBlock']) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self['@closingBlock'], "_value", []);})() : nil;})])])]);
 return self;
 } catch(e) {if(e.name === 'stReturn' && e.selector === '_submit'){return e.fn()} throw(e)}},
 args: [],
-source: unescape('submit%0A%09%22Take%20the%20values%20out%20of%20the%20form%20and%20actually%20submit%20them%22%0A%09%7C%20data%20%7C%0A%09data%20%3A%3D%20%23%7B%0A%09%09%27project%27%20-%3E%20model%20projectName.%0A%09%09%27body%27%20-%3E%20%27%3Ainput%5Bname%3Dbody%5D%27%20asJQuery%20val%0A%09%7D.%0A%0A%09%28%28data%20at%3A%20%27body%27%29%20size%29%20%3D%200%20ifTrue%3A%20%5B%20window%20alert%3A%20%27You%20should%20probably%20add%20a%20comment%27.%20%5E%20false%20%5D.%0A%0A%09jQuery%20ajax%3A%20%27/issues/%27%2C%20%28model%20number%29%2C%20%27/comment%27%20options%3A%20%23%7B%27type%27%20-%3E%20%27POST%27.%0A%09%09%09%27dataType%27%20-%3E%20%27json%27.%0A%09%09%09%27data%27%20-%3E%20data%20asJSONString.%0A%09%09%09%27success%27%20-%3E%20%5B%20self%20asJQuery%20dialog%3A%20%27close%27.%20HubboardApp%20current%20refresh.%5D%7D.%0A'),
-messageSends: [unescape("-%3E"), "projectName", "val", "asJQuery", "ifTrue:", unescape("%3D"), "size", "at:", "alert:", "ajax:options:", unescape("%2C"), "number", "asJSONString", "dialog:", "refresh", "current"],
+source: unescape('submit%0A%09%22Take%20the%20values%20out%20of%20the%20form%20and%20actually%20submit%20them%22%0A%09%7C%20data%20%7C%0A%09data%20%3A%3D%20%23%7B%0A%09%09%27project%27%20-%3E%20model%20projectName.%0A%09%09%27body%27%20-%3E%20%27%3Ainput%5Bname%3Dbody%5D%27%20asJQuery%20val%0A%09%7D.%0A%0A%09%28%28data%20at%3A%20%27body%27%29%20size%29%20%3D%200%20ifTrue%3A%20%5B%20window%20alert%3A%20%27You%20should%20probably%20add%20a%20comment%27.%20%5E%20false%20%5D.%0A%0A%09jQuery%20ajax%3A%20%27/issues/%27%2C%20%28model%20number%29%2C%20%27/comment%27%20options%3A%20%23%7B%27type%27%20-%3E%20%27POST%27.%0A%09%09%09%27dataType%27%20-%3E%20%27json%27.%0A%09%09%09%27data%27%20-%3E%20data%20asJSONString.%0A%09%09%09%27success%27%20-%3E%20%5B%0A%09%09%09%09self%20asJQuery%20dialog%3A%20%27close%27.%20HubboardApp%20current%20refresh.%0A%09%09%09%09closingBlock%20ifNotNil%3A%20%5B%20closingBlock%20value%20%5D.%0A%09%09%09%5D%7D.%0A'),
+messageSends: [unescape("-%3E"), "projectName", "val", "asJQuery", "ifTrue:", unescape("%3D"), "size", "at:", "alert:", "ajax:options:", unescape("%2C"), "number", "asJSONString", "dialog:", "refresh", "current", "ifNotNil:", "value"],
 referencedClasses: ["HubboardApp"]
+}),
+smalltalk.CommentDialog);
+
+smalltalk.addMethod(
+unescape('_finally_'),
+smalltalk.method({
+selector: unescape('finally%3A'),
+category: 'actions',
+fn: function (aClosingBlock){
+var self=this;
+(self['@closingBlock']=aClosingBlock);
+return self;},
+args: ["aClosingBlock"],
+source: unescape('finally%3A%20aClosingBlock%0A%09closingBlock%20%3A%3D%20aClosingBlock.'),
+messageSends: [],
+referencedClasses: []
 }),
 smalltalk.CommentDialog);
 
