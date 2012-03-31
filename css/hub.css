@@ -113,3 +113,14 @@ body {
   margin-right: 5px;
   vertical-align: middle;
 }
+
+.issuetile .labels li {
+  list-style-type: none;
+  font-size: 0.7em;
+  float: left;
+}
+
+.issuetile .labels span {
+  padding-left: 5px;
+  padding-right: 5px;
+}
