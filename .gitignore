@@ -1,1 +1,3 @@
 config/config.yml.prod
+.rvmrc
+compiler.jar
