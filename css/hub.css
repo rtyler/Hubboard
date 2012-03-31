@@ -21,8 +21,9 @@ body {
 
 .column {
   width: 33%;
-  height: 95%;
+  height: 93%;
   float: left;
+  overflow-y: auto;
   border-right: 1px solid #333;
 }
 
