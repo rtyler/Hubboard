@@ -181,9 +181,11 @@ bootstrap
 		" Once we have information about the user, let's fire up our repo backfill "	
 		Repo reposFor: (data at: 'login') with: [ :results |
 			results do: [ :result |
-				| owner |
-				owner := ((result at: 'owner') at: 'login').
-				knownRepos add: owner, '/', (result at: 'name').
+				result at: 'has_issues' ifTrue: [ 
+					| owner |
+					owner := ((result at: 'owner') at: 'login').
+					knownRepos add: owner, '/', (result at: 'name').
+				].
 		]].
 	].
 	self refresh.
@@ -622,6 +624,7 @@ submit
 
 	jQuery ajax: '/issues/', (model number), '/comment' options: #{'type' -> 'POST'.
 			'dataType' -> 'json'.
+			'contentType' -> 'text/json'.
 			'data' -> data asJSONString.
 			'success' -> [ self asJQuery dialog: 'close'. HubboardApp current refresh.]}.
 ! !
