@@ -21,7 +21,7 @@ GEM
     rack-test (0.6.1)
       rack (>= 1.0)
     rake (0.9.2.2)
-    resin (0.2.0)
+    resin (0.2.1)
       haml
       json
       sinatra
@@ -55,5 +55,5 @@ DEPENDENCIES
   jsmin
   rack-test
   rake
-  resin (~> 0.2.0)
+  resin (~> 0.2.1)
   rspec
