@@ -31,7 +31,9 @@
             Known Issues
 
       %span.logo
-        %a{:href => '/about', :target => '_blank'}
+        %a{:aref => '/about',
+           :target => '_blank',
+           :onclick => 'smalltalk.AboutDialog._show();'}
           %img{:src => '/images/logo.png', :alt => 'Hub board', :title => 'Hub board'}
 
       %button{:onclick => 'smalltalk.HubboardApp._current()._refresh()'}
