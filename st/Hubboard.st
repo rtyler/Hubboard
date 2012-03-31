@@ -124,8 +124,8 @@ refresh
 			currentProject ifNotNil: [
 				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
 			].
-			self updateFilter.
 			self hideSpinner.
+			self updateFilter.
 		] loadAll: false.
 
 	issueApi recentlyClosed: [ :issue |
@@ -142,7 +142,8 @@ refresh
 !
 
 updateFilter
-	| element |
+	| element assignedProjects |
+	assignedProjects := Set new.
 
 	" If we have a currently selected project, no sense in running the rest of this code "
 	currentProject ifNotNil: [ ^ true ].
@@ -159,8 +160,9 @@ updateFilter
 	element empty.
 
 	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
-	knownRepos do: [ :project |
-		[ :html | html option value: project; with: project ] appendToJQuery: element.
+	self issueMap values do: [ :issue | assignedProjects add: (issue model projectName) ].
+	assignedProjects do: [ :project |
+			[ :html | html option value: project; with: project ] appendToJQuery: element.
 	].
 !
 
