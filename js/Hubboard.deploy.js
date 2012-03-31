@@ -205,7 +205,7 @@ smalltalk.IssueTile);
 
 
 
-smalltalk.addClass('HubboardApp', smalltalk.Object, ['token', 'issueMap', 'issueApi', 'userApi', 'knownRepos', 'userData', 'refreshIntervalId', 'currentProject', 'refreshInterval', 'sortedRepos'], 'Hubboard');
+smalltalk.addClass('HubboardApp', smalltalk.Object, ['token', 'issueMap', 'issueApi', 'userApi', 'knownRepos', 'userData', 'refreshIntervalId', 'currentProject', 'refreshInterval', 'sortedRepos', 'assignedProjects'], 'Hubboard');
 smalltalk.addMethod(
 unescape('_initialize'),
 smalltalk.method({
@@ -215,6 +215,7 @@ var self=this;
 (self['@token']=smalltalk.send((typeof window == 'undefined' ? nil : window), "_at_", ["github_access_token"]));
 (self['@issueMap']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 (self['@knownRepos']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+(self['@assignedProjects']=smalltalk.send((smalltalk.Set || Set), "_new", []));
 (self['@refreshInterval']=(120000));
 return self;}
 }),
@@ -285,7 +286,7 @@ var self=this;
 smalltalk.send(self, "_flushColumns", []);
 smalltalk.send(self['@issueApi'], "_issues_loadAll_", [(function(issue){var tile=nil;
 var issueId=nil;
-(issueId=smalltalk.send(issue, "_issueId", []));(tile=smalltalk.send(self['@issueMap'], "_at_ifAbsent_", [issueId, (function(){return smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []);})]));smalltalk.send(tile, "_withModel_", [issue]);smalltalk.send(self['@issueMap'], "_at_put_", [issueId, tile]);((($receiver = smalltalk.send(self, "_inProgress_", [smalltalk.send(issue, "_labels", [])])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){smalltalk.send(tile, "_setOpen", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23openissues"), "_asJQuery", [])]);})() : (function(){smalltalk.send(tile, "_setInProgress", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23inprogressissues"), "_asJQuery", [])]);})()) : smalltalk.send($receiver, "_ifFalse_ifTrue_", [(function(){smalltalk.send(tile, "_setOpen", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23openissues"), "_asJQuery", [])]);}), (function(){smalltalk.send(tile, "_setInProgress", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23inprogressissues"), "_asJQuery", [])]);})]));(($receiver = self['@currentProject']) != nil && $receiver != undefined) ? (function(){return ((($receiver = smalltalk.send(self['@currentProject'], "__eq", [smalltalk.send(issue, "_projectName", [])])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(smalltalk.send(tile, "_asJQuery", []), "_hide", []);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(smalltalk.send(tile, "_asJQuery", []), "_hide", []);})]));})() : nil;smalltalk.send(self, "_hideSpinner", []);return smalltalk.send(self, "_updateFilter", []);}), false]);
+(issueId=smalltalk.send(issue, "_issueId", []));(tile=smalltalk.send(self['@issueMap'], "_at_ifAbsent_", [issueId, (function(){return smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []);})]));smalltalk.send(tile, "_withModel_", [issue]);smalltalk.send(self['@assignedProjects'], "_add_", [smalltalk.send(issue, "_projectName", [])]);smalltalk.send(self['@issueMap'], "_at_put_", [issueId, tile]);((($receiver = smalltalk.send(self, "_inProgress_", [smalltalk.send(issue, "_labels", [])])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){smalltalk.send(tile, "_setOpen", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23openissues"), "_asJQuery", [])]);})() : (function(){smalltalk.send(tile, "_setInProgress", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23inprogressissues"), "_asJQuery", [])]);})()) : smalltalk.send($receiver, "_ifFalse_ifTrue_", [(function(){smalltalk.send(tile, "_setOpen", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23openissues"), "_asJQuery", [])]);}), (function(){smalltalk.send(tile, "_setInProgress", []);return smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23inprogressissues"), "_asJQuery", [])]);})]));(($receiver = self['@currentProject']) != nil && $receiver != undefined) ? (function(){return ((($receiver = smalltalk.send(self['@currentProject'], "__eq", [smalltalk.send(issue, "_projectName", [])])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(smalltalk.send(tile, "_asJQuery", []), "_hide", []);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(smalltalk.send(tile, "_asJQuery", []), "_hide", []);})]));})() : nil;smalltalk.send(self, "_hideSpinner", []);return smalltalk.send(self, "_updateFilter", []);}), false]);
 smalltalk.send(self['@issueApi'], "_recentlyClosed_loadAll_", [(function(issue){var tile=nil;
 var issueId=nil;
 (issueId=smalltalk.send(issue, "_issueId", []));(tile=smalltalk.send(self['@issueMap'], "_at_ifAbsent_", [issueId, (function(){return smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []);})]));smalltalk.send(tile, "_withModel_", [issue]);smalltalk.send(tile, "_setClosed", []);smalltalk.send(tile, "_appendToJQuery_", [smalltalk.send(unescape("%23closedissues"), "_asJQuery", [])]);return (($receiver = self['@currentProject']) != nil && $receiver != undefined) ? (function(){return ((($receiver = smalltalk.send(self['@currentProject'], "__eq", [smalltalk.send(issue, "_projectName", [])])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(smalltalk.send(tile, "_asJQuery", []), "_hide", []);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(smalltalk.send(tile, "_asJQuery", []), "_hide", []);})]));})() : nil;}), false]);
@@ -333,16 +334,14 @@ selector: unescape('updateFilter'),
 fn: function (){
 var self=this;
 try{var element=nil;
-var assignedProjects=nil;
-(assignedProjects=smalltalk.send((smalltalk.Set || Set), "_new", []));
 (($receiver = self['@currentProject']) != nil && $receiver != undefined) ? (function(){return (function(){throw({name: 'stReturn', selector: '_updateFilter', fn: function(){return true}})})();})() : nil;
 (element=smalltalk.send(".projectselect", "_asJQuery", []));
 smalltalk.send(element, "_change_", [(function(event){var project=nil;
 (project=smalltalk.send(element, "_val", []));return ((($receiver = smalltalk.send(project, "__eq", ["All"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_showAll", []);})() : (function(){return smalltalk.send(self, "_showOnly_", [project]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self, "_showAll", []);}), (function(){return smalltalk.send(self, "_showOnly_", [project]);})]));})]);
 smalltalk.send(element, "_empty", []);
 smalltalk.send((function(html){return (function($rec){smalltalk.send($rec, "_value_", ["All"]);return smalltalk.send($rec, "_with_", ["View All Projects"]);})(smalltalk.send(html, "_option", []));}), "_appendToJQuery_", [element]);
-smalltalk.send(smalltalk.send(smalltalk.send(self, "_issueMap", []), "_values", []), "_do_", [(function(issue){return smalltalk.send(assignedProjects, "_add_", [smalltalk.send(smalltalk.send(issue, "_model", []), "_projectName", [])]);})]);
-smalltalk.send(assignedProjects, "_do_", [(function(project){return smalltalk.send((function(html){return (function($rec){smalltalk.send($rec, "_value_", [project]);return smalltalk.send($rec, "_with_", [project]);})(smalltalk.send(html, "_option", []));}), "_appendToJQuery_", [element]);})]);
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_issueMap", []), "_values", []), "_do_", [(function(issue){return smalltalk.send(self['@assignedProjects'], "_add_", [smalltalk.send(smalltalk.send(issue, "_model", []), "_projectName", [])]);})]);
+smalltalk.send(self['@assignedProjects'], "_do_", [(function(project){return smalltalk.send((function(html){return (function($rec){smalltalk.send($rec, "_value_", [project]);return smalltalk.send($rec, "_with_", [project]);})(smalltalk.send(html, "_option", []));}), "_appendToJQuery_", [element]);})]);
 return self;
 } catch(e) {if(e.name === 'stReturn' && e.selector === '_updateFilter'){return e.fn()} throw(e)}}
 }),
@@ -463,6 +462,17 @@ selector: unescape('setKnownRepos%3A'),
 fn: function (newKnownRepos){
 var self=this;
 (self['@knownRepos']=newKnownRepos);
+return self;}
+}),
+smalltalk.HubboardApp);
+
+smalltalk.addMethod(
+unescape('_assignedProjects'),
+smalltalk.method({
+selector: unescape('assignedProjects'),
+fn: function (){
+var self=this;
+return self['@assignedProjects'];
 return self;}
 }),
 smalltalk.HubboardApp);

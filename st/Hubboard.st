@@ -177,7 +177,7 @@ renderHeader: html
 ! !
 
 Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval sortedRepos'
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval sortedRepos assignedProjects'
 	category: 'Hubboard'!
 
 !HubboardApp methodsFor: 'accessors'!
@@ -222,6 +222,10 @@ sortedRepos
 setKnownRepos: newKnownRepos
 	" Ideally, this method should not really be used outside of test cases "
 	knownRepos := newKnownRepos.
+!
+
+assignedProjects
+	^ assignedProjects.
 ! !
 
 !HubboardApp methodsFor: 'actions'!
@@ -252,6 +256,7 @@ refresh
 			issueId := issue issueId.
 			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
 			tile withModel: issue.
+			assignedProjects add: (issue projectName).
 			issueMap at: issueId put: tile.
 			(self inProgress: (issue labels))
 					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
@@ -277,9 +282,7 @@ refresh
 !
 
 updateFilter
-	| element assignedProjects |
-	assignedProjects := Set new.
-
+	| element |
 	" If we have a currently selected project, no sense in running the rest of this code "
 	currentProject ifNotNil: [ ^ true ].
 
@@ -291,7 +294,6 @@ updateFilter
 			ifTrue: [ self showAll ]
 			ifFalse: [ self showOnly: project ].
 	].
-
 	element empty.
 
 	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
@@ -320,6 +322,7 @@ initialize
 	token := window at: 'github_access_token'.
 	issueMap := Dictionary new.
 	knownRepos := Dictionary new.
+	assignedProjects := Set new.
 	refreshInterval := 120000.
 !
 
