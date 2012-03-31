@@ -1,24 +1,40 @@
 smalltalk.addPackage('Hubboard-Tests', {});
-smalltalk.addClass('StringAdditionsTests', smalltalk.TestCase, [], 'Hubboard-Tests');
+smalltalk.addClass('IssueTileTests', smalltalk.TestCase, ['object'], 'Hubboard-Tests');
 smalltalk.addMethod(
-unescape('_testSpliting'),
+unescape('_testParsingProjectFromUrl'),
 smalltalk.method({
-selector: unescape('testSpliting'),
+selector: unescape('testParsingProjectFromUrl'),
 category: 'testcases',
 fn: function (){
 var self=this;
-var result=nil;
-(result=smalltalk.send(unescape("part1/part2"), "_split_", [unescape("/")]));
-smalltalk.send(self, "_assert_equals_", [(2), smalltalk.send(result, "_size", [])]);
-smalltalk.send(self, "_assert_equals_", ["part1", smalltalk.send(result, "_at_", [(1)])]);
-smalltalk.send(self, "_assert_equals_", ["part2", smalltalk.send(result, "_at_", [(2)])]);
+var url=nil;
+(url=unescape("https%3A//github.com/rtyler/resin/issues/1"));
+(result=smalltalk.send(self['@object'], "_parseUrl_", [url]));
+smalltalk.send(self, "_assert_equals_", ["rtyler", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["owner"])]);
+smalltalk.send(self, "_assert_equals_", ["resin", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["project"])]);
 return self;},
 args: [],
-source: unescape('testSpliting%0A%09%22Verify%20that%20we%20can%20split%20a%20string%20using%20the%20native%20JavaScript%20function%22%0A%09%7C%20result%20%7C%0A%09result%20%3A%3D%20%27part1/part2%27%20split%3A%20%27/%27.%0A%09self%20assert%3A%202%20equals%3A%20%28result%20size%29.%0A%09self%20assert%3A%20%27part1%27%20equals%3A%20%28result%20at%3A%201%29.%0A%09self%20assert%3A%20%27part2%27%20equals%3A%20%28result%20at%3A%202%29.'),
-messageSends: ["split:", "assert:equals:", "size", "at:"],
+source: unescape('testParsingProjectFromUrl%0A%09%22Verify%20we%20can%20parse%20the%20html_url%20for%20an%20issue%20into%20the%20owner/project%20pairs%22%0A%09%7C%20url%20%7C%0A%09url%20%3A%3D%20%27https%3A//github.com/rtyler/resin/issues/1%27.%0A%09result%20%3A%3D%20object%20parseUrl%3A%20url.%0A%09self%20assert%3A%20%27rtyler%27%20equals%3A%20%28result%20at%3A%20%27owner%27%29.%0A%09self%20assert%3A%20%27resin%27%20equals%3A%20%28result%20at%3A%20%27project%27%29.%0A%09'),
+messageSends: ["parseUrl:", "assert:equals:", "at:"],
 referencedClasses: []
 }),
-smalltalk.StringAdditionsTests);
+smalltalk.IssueTileTests);
+
+smalltalk.addMethod(
+unescape('_setUp'),
+smalltalk.method({
+selector: unescape('setUp'),
+category: 'scaffolding',
+fn: function (){
+var self=this;
+(self['@object']=smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []));
+return self;},
+args: [],
+source: unescape('setUp%0A%09object%20%3A%3D%20IssueTile%20new.'),
+messageSends: ["new"],
+referencedClasses: ["IssueTile"]
+}),
+smalltalk.IssueTileTests);
 
 
 
@@ -61,44 +77,52 @@ referencedClasses: ["Dictionary", "HubboardApp", "Array"]
 }),
 smalltalk.HubboardAppTests);
 
-
-
-smalltalk.addClass('IssueTileTests', smalltalk.TestCase, ['object'], 'Hubboard-Tests');
 smalltalk.addMethod(
-unescape('_testParsingProjectFromUrl'),
+unescape('_testSortingRepos'),
 smalltalk.method({
-selector: unescape('testParsingProjectFromUrl'),
+selector: unescape('testSortingRepos'),
 category: 'testcases',
 fn: function (){
 var self=this;
-var url=nil;
-(url=unescape("https%3A//github.com/rtyler/resin/issues/1"));
-(result=smalltalk.send(self['@object'], "_parseUrl_", [url]));
-smalltalk.send(self, "_assert_equals_", ["rtyler", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["owner"])]);
-smalltalk.send(self, "_assert_equals_", ["resin", smalltalk.send((typeof result == 'undefined' ? nil : result), "_at_", ["project"])]);
+var repos=nil;
+var result=nil;
+var app=nil;
+(repos=smalltalk.HashedCollection._fromPairs_([smalltalk.send("repo1", "__minus_gt", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("updated_at", "__minus_gt", [(1)])])]),smalltalk.send("repo2", "__minus_gt", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("updated_at", "__minus_gt", [(2)])])])]));
+(app=smalltalk.send((smalltalk.HubboardApp || HubboardApp), "_new", []));
+smalltalk.send(app, "_setKnownRepos_", [repos]);
+(result=smalltalk.send(app, "_sortedRepos", []));
+smalltalk.send(self, "_assert_equals_", [smalltalk.send(result, "_at_", [(1)]), "repo2"]);
+smalltalk.send(self, "_assert_equals_", [smalltalk.send(result, "_at_", [(2)]), "repo1"]);
 return self;},
 args: [],
-source: unescape('testParsingProjectFromUrl%0A%09%22Verify%20we%20can%20parse%20the%20html_url%20for%20an%20issue%20into%20the%20owner/project%20pairs%22%0A%09%7C%20url%20%7C%0A%09url%20%3A%3D%20%27https%3A//github.com/rtyler/resin/issues/1%27.%0A%09result%20%3A%3D%20object%20parseUrl%3A%20url.%0A%09self%20assert%3A%20%27rtyler%27%20equals%3A%20%28result%20at%3A%20%27owner%27%29.%0A%09self%20assert%3A%20%27resin%27%20equals%3A%20%28result%20at%3A%20%27project%27%29.%0A%09'),
-messageSends: ["parseUrl:", "assert:equals:", "at:"],
-referencedClasses: []
+source: unescape('testSortingRepos%0A%09%22%20Verify%20that%20we%20sort%20our%20stupid%20knownRepos%20dictionary%20properly%20%22%0A%09%7C%20repos%20result%20%20app%20%7C%0A%09repos%20%3A%3D%20%23%7B%20%27repo1%27%20-%3E%20%23%7B%20%27updated_at%27%20-%3E%201%20%7D.%0A%09%09%09%09%27repo2%27%20-%3E%20%23%7B%27updated_at%27%20-%3E%202%7D%0A%09%09%09%7D.%0A%09app%20%3A%3D%20HubboardApp%20new.%0A%09app%20setKnownRepos%3A%20repos.%0A%0A%09result%20%3A%3D%20app%20sortedRepos.%0A%0A%09self%20assert%3A%20%28result%20at%3A%201%29%20equals%3A%20%27repo2%27.%0A%09self%20assert%3A%20%28result%20at%3A%202%29%20equals%3A%20%27repo1%27.'),
+messageSends: [unescape("-%3E"), "new", "setKnownRepos:", "sortedRepos", "assert:equals:", "at:"],
+referencedClasses: ["HubboardApp"]
 }),
-smalltalk.IssueTileTests);
+smalltalk.HubboardAppTests);
 
+
+
+smalltalk.addClass('StringAdditionsTests', smalltalk.TestCase, [], 'Hubboard-Tests');
 smalltalk.addMethod(
-unescape('_setUp'),
+unescape('_testSpliting'),
 smalltalk.method({
-selector: unescape('setUp'),
-category: 'scaffolding',
+selector: unescape('testSpliting'),
+category: 'testcases',
 fn: function (){
 var self=this;
-(self['@object']=smalltalk.send((smalltalk.IssueTile || IssueTile), "_new", []));
+var result=nil;
+(result=smalltalk.send(unescape("part1/part2"), "_split_", [unescape("/")]));
+smalltalk.send(self, "_assert_equals_", [(2), smalltalk.send(result, "_size", [])]);
+smalltalk.send(self, "_assert_equals_", ["part1", smalltalk.send(result, "_at_", [(1)])]);
+smalltalk.send(self, "_assert_equals_", ["part2", smalltalk.send(result, "_at_", [(2)])]);
 return self;},
 args: [],
-source: unescape('setUp%0A%09object%20%3A%3D%20IssueTile%20new.'),
-messageSends: ["new"],
-referencedClasses: ["IssueTile"]
+source: unescape('testSpliting%0A%09%22Verify%20that%20we%20can%20split%20a%20string%20using%20the%20native%20JavaScript%20function%22%0A%09%7C%20result%20%7C%0A%09result%20%3A%3D%20%27part1/part2%27%20split%3A%20%27/%27.%0A%09self%20assert%3A%202%20equals%3A%20%28result%20size%29.%0A%09self%20assert%3A%20%27part1%27%20equals%3A%20%28result%20at%3A%201%29.%0A%09self%20assert%3A%20%27part2%27%20equals%3A%20%28result%20at%3A%202%29.'),
+messageSends: ["split:", "assert:equals:", "size", "at:"],
+referencedClasses: []
 }),
-smalltalk.IssueTileTests);
+smalltalk.StringAdditionsTests);
 
 
 

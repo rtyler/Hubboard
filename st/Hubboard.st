@@ -42,7 +42,7 @@ initialize
 ! !
 
 Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval'
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval sortedRepos'
 	category: 'Hubboard'!
 
 !HubboardApp methodsFor: 'accessors'!
@@ -71,6 +71,22 @@ user
 
 currentProject
 	^ currentProject.
+!
+
+sortedRepos
+	" Return an Array of repos (owner/reponame) sorted by the most recently updated "
+	^ sortedRepos ifNil: [
+		| names |
+		names := knownRepos keys.
+		sortedRepos := names sort: [ :left :right |
+			((knownRepos at: left) at: 'updated_at') > ((knownRepos at: right) at: 'updated_at')
+		].
+	].
+!
+
+setKnownRepos: newKnownRepos
+	" Ideally, this method should not really be used outside of test cases "
+	knownRepos := newKnownRepos.
 ! !
 
 !HubboardApp methodsFor: 'actions'!
@@ -102,7 +118,6 @@ refresh
 			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
 			tile withModel: issue.
 			issueMap at: issueId put: tile.
-			knownRepos add: (issue projectName).
 			(self inProgress: (issue labels))
 					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
 					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ].
@@ -167,7 +182,7 @@ stopRefreshTimer
 initialize
 	token := window at: 'github_access_token'.
 	issueMap := Dictionary new.
-	knownRepos := Set new.
+	knownRepos := Dictionary new.
 	refreshInterval := 120000.
 !
 
@@ -176,17 +191,22 @@ bootstrap
 	userApi := Users new setToken: token.
 	self showSpinner.
 	userApi fetchCurrent: [ :data |
+		| allRepos |
+		allRepos := Array new.
 		userData := data.
 		'#logout-username' asJQuery text: ('(', (data at: 'login'), ')').
 		" Once we have information about the user, let's fire up our repo backfill "	
-		Repo reposFor: (data at: 'login') with: [ :results |
-			results do: [ :result |
-				result at: 'has_issues' ifTrue: [ 
+		Repo fetchReposFor: (data at: 'login')
+			withEachDo: [ :result | (result at: 'has_issues') ifTrue: [ allRepos add: result ] ]
+			finally: [
+				allRepos do: [ :item |
 					| owner |
-					owner := ((result at: 'owner') at: 'login').
-					knownRepos add: owner, '/', (result at: 'name').
+					owner := ((item at: 'owner') at: 'login').
+					knownRepos at: (owner, '/', (item at: 'name')) put: item.
 				].
-		]].
+				self sortedRepos. "Pre-sort our repos just to make things easier on the user"
+				':input[name=create_issue]' asJQuery removeAttr: 'disabled'.
+		].
 	].
 	self refresh.
 	self startRefreshTimer.
@@ -437,7 +457,6 @@ submit
 
 	jQuery ajax: '/issues/create' options: #{'type' -> 'POST'.
 			'dataType' -> 'json'.
-			'contentType' -> 'text/json'.
 			'data' -> data asJSONString.
 			'success' -> [ self asJQuery dialog: 'close'. HubboardApp current refresh.]}.
 ! !
@@ -470,7 +489,7 @@ renderOn: html
 					name: 'project';
 					onChange: [ :event | self updateCollaborators ];
 					with: [
-						HubboardApp current knownRepos do: [ :repo |
+						HubboardApp current sortedRepos do: [ :repo |
 							(HubboardApp current currentProject) = repo
 								ifTrue: [ html option value: repo; with: repo; at: 'selected' put: 'true' ]
 								ifFalse: [html option value: repo; with: repo ].
@@ -624,7 +643,6 @@ submit
 
 	jQuery ajax: '/issues/', (model number), '/comment' options: #{'type' -> 'POST'.
 			'dataType' -> 'json'.
-			'contentType' -> 'text/json'.
 			'data' -> data asJSONString.
 			'success' -> [ self asJQuery dialog: 'close'. HubboardApp current refresh.]}.
 ! !

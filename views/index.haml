@@ -36,7 +36,9 @@
 
       %button{:onclick => 'smalltalk.HubboardApp._current()._refresh()'}
         Refresh
-      %button{:onclick => 'smalltalk.NewIssueDialog._show();'}
+      %button{:onclick => 'smalltalk.NewIssueDialog._show();',
+              :disabled => 'true',
+              :name => 'create_issue'}
         Create Issue
       %select.projectselect
       %img#spinner{:style => 'vertical-align: middle; margin-left: 20px; height: 28px;',
