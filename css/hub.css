@@ -69,10 +69,12 @@ body {
 
 .issuetile .open {
   background: #B7CDE5;
+  border-bottom: 1px solid #3B6695;
 }
 
 .issuetile .inprogress {
   background: #bbefbe;
+  border-bottom: 1px solid #3D9B43;
 }
 
 #closedissues .issuetile {
