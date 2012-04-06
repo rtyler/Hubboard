@@ -27,6 +27,6 @@ end
 
 desc "Deploy to heroku"
 task :deploy => [:compile] do
-  sh "git commit js/resin-app.deploy.js -m 'Committing the production .js file for deployment'"
+  sh "git commit js/resin-app.deploy.js -m 'Committing the production .js file for deployment' || true"
   sh "git push heroku master"
 end
