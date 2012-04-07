@@ -1,201 +1,55 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
-Widget subclass: #IssueTile
-	instanceVariableNames: 'raw title body issueId number project projectOwner issueStatus comments fullProjectName elementId model'
+Widget subclass: #HBDialog
+	instanceVariableNames: 'modal minWidth draggable elementId position maxHeight'
 	category: 'Hubboard'!
 
-!IssueTile methodsFor: 'accessors'!
+!HBDialog methodsFor: 'accessors'!
 
 elementId
-	^ elementId ifNil: [ elementId := 'issuetile_', (model issueId asString) ].
-!
-
-model
-	^ model.
+	^ ('#', elementId).
 !
 
 asJQuery
-	^ ('#', self elementId) asJQuery.
+	^ self elementId asJQuery.
 ! !
 
-!IssueTile methodsFor: 'actions'!
+!HBDialog methodsFor: 'dialog-helpers'!
 
-setOpen
-	"Set this issue as an open issue"
-	issueStatus := #open.
+becomeDialog
+	^ self becomeDialog: [].
 !
 
-setInProgress
-	"Set this issue as an inprogress issue"
-	issueStatus := #inprogress.
-!
+becomeDialog: aBlockCallback
+	self asJQuery dialog: #{
+			'modal' -> modal.
+			'minWidth' -> minWidth.
+			'maxHeight' -> maxHeight.
+			'draggable' -> draggable.
+			'position' -> position.
+			'close' -> [ :event :ui |
+				self asJQuery remove.
+			]}.
+	aBlockCallback value.
+! !
 
-setClosed
-	"Set this issue as a closed issue, should not be draggable as a result"
-	issueStatus := #closed.
-	self asJQuery draggable: 'disable'.
-!
+!HBDialog methodsFor: 'initializers'!
 
-viewIssue: onClickEvent
+initialize
+	super initialize.
+	modal := true.
+	minWidth := 500.
+	maxHeight := 500.
+	draggable := false.
+	position := 'center'.
+! !
+
+!HBDialog class methodsFor: 'not yet classified'!
+
+show
+	" Creates and adds the DOM elements to the body tag "
 	| dialog |
-	dialog := IssueDetailDialog new withIssue: model.
-	dialog appendToJQuery: 'body' asJQuery.
-! !
-
-!IssueTile methodsFor: 'initializers'!
-
-withModel: anIssue
-	model := anIssue.
-	number := anIssue number.
-! !
-
-!IssueTile methodsFor: 'not yet classified'!
-
-parseUrl: aUrl
-	"Return a Hash with the 'owner' and 'project' based on the given Issue URL"
-	| parts |
-	parts := <aUrl.split('/')>.
-	
-	^ #{'owner' -> (parts at: 4).
-		'project' -> (parts at: 5)}.
-!
-
-moveTo: aColumnId
-	"Handle the invocation of the right callbacks when we move from one column to another
-	 The lines blur a bit here on 'view' versus 'controller'"
-	| postData successBlock url |
-	postData := #{'project' -> model projectName }.
-
-
-	aColumnId = 'inprogressissues' ifTrue: [
-		url := '/issues/', number, '/label'.
-		successBlock := [ self setInProgress. ].
-	].
-	aColumnId = 'openissues' ifTrue: [
-		url := '/issues/', number, '/revert'.
-		successBlock := [ self setOpen ]
-	].
-	aColumnId = 'closedissues' ifTrue: [
-		url := '/issues/', number, '/close'.
-		successBlock := [ self setClosed ].
-	].
-	
-	url ifNotNil: [
-		HubboardApp current showSpinner.
-		jQuery ajax: url
-				options: #{
-					'type' -> 'POST'.
-					'dataType' -> 'json'.
-					'data' -> postData asJSONString.
-					'success' -> [
-						successBlock ifNotNil: [ successBlock value ].
-						self updateHeaderClass.
-						HubboardApp current hideSpinner.
-					].
-					'error' -> [ HubboardApp current hideSpinner. console log: 'fail']
-					}.
-		^ true.
-	].
-	^ false.
-! !
-
-!IssueTile methodsFor: 'rendering'!
-
-renderOn: html
-	html div
-		class: 'issuetile';
-		id: self elementId;
-		at: 'data-project' put: (model projectName);
-		at: 'data-issueid' put: (model issueId);
-		with: [
-			self renderHeader: html.
-			html div class: 'title'; with: (model title).
-			html div class: 'labels'; with: [ self renderLabels: html ]
-		].
-	self postRender.
-!
-
-numberClass
-	| numberClass |
-	numberClass := 'number'.
-	issueStatus = #open ifTrue: [ numberClass := numberClass, ' open' ]. 
-	issueStatus = #inprogress ifTrue: [ numberClass := numberClass, ' inprogress' ]. 
-	issueStatus = #closed ifTrue: [ numberClass := numberClass, ' closed'].
-	^ numberClass.
-!
-
-postRender
-	"Run actions after we've rendered the DOM elements "
-
-	"Make the tile draggable"
-	issueStatus = #closed ifFalse: [ self asJQuery draggable: #{'zIndex' -> '10000'. 'snap' -> true }].
-
-	"Make ourselves double-clickable"
-	self asJQuery dblclick: [ :event | self viewIssue: event ].
-!
-
-updateHeaderClass
-	|element |
-	element := ('#', self elementId, ' > div.number') asJQuery.
-	element removeClass.
-	element addClass: (self numberClass).
-!
-
-addComment: clickEvent
-	| dialog |
-	dialog := CommentDialog new withIssue: model.
-	dialog appendToJQuery: 'body' asJQuery.
-!
-
-renderHeader: html
-	html div
-		class: self numberClass;
-		with: [ 
-			html a href: (model url); target: '_blank'; with: ('#', (model number) asString); onClick: [ :event | self viewIssue: event. event preventDefault ].
-			html with: ' in '.
-			html a href: ('https://github.com/', (model projectOwner)); with: (model projectOwner).
-			html with: ' / '.
-			html  a href: ('https://github.com/', (model projectName)); with: (model project).
-			html div
-				style: 'float:right;';
-				class: 'comments';
-				with: [
-					model pullRequest ifNotNil: [
-						html span
-							class: 'pull_req';
-							with: [
-								html a target: '_blank'; href: (model pullRequest); with: [ html img src: '/images/pull_request.png' ].
-								html with: 'Code Attached'.
-							].
-						].
-					html span with: (model comments asString, ' comments').
-					html button
-						class: 'add_comment';
-						title: 'Add Comment';
-						with: '+';
-						onClick: [ :event | self addComment: event ].
-				].
-		].
-!
-
-renderLabels: html
-	" Render any labels other than our own 'in-progress' label"
-	| rendered |
-	rendered := false.
-	(model labels size) = 0 ifTrue: [ ^ false ].
-
-	model labels do: [ :label |
-		| labelName |
-		labelName := label at: 'name'.
-		labelName = 'in-progress' ifFalse: [
-			rendered := true.
-			html li with: [
-				html span
-					style: 'background-color: #', (label at: 'color');
-					with: labelName
-			].
-		].
-	].
-	rendered ifTrue: [ html br at: 'clear' put: 'left' ].
+	dialog := super new.
+	dialog appendToJQuery: ('body' asJQuery).
 ! !
 
 Object subclass: #HubboardApp
@@ -421,57 +275,203 @@ current
 	^ current ifNil: [ current := super new ].
 ! !
 
-Widget subclass: #HBDialog
-	instanceVariableNames: 'modal minWidth draggable elementId position maxHeight'
+Widget subclass: #IssueTile
+	instanceVariableNames: 'raw title body issueId number project projectOwner issueStatus comments fullProjectName elementId model'
 	category: 'Hubboard'!
 
-!HBDialog methodsFor: 'accessors'!
+!IssueTile methodsFor: 'accessors'!
 
 elementId
-	^ ('#', elementId).
+	^ elementId ifNil: [ elementId := 'issuetile_', (model issueId asString) ].
+!
+
+model
+	^ model.
 !
 
 asJQuery
-	^ self elementId asJQuery.
+	^ ('#', self elementId) asJQuery.
 ! !
 
-!HBDialog methodsFor: 'dialog-helpers'!
+!IssueTile methodsFor: 'actions'!
 
-becomeDialog
-	^ self becomeDialog: [].
+setOpen
+	"Set this issue as an open issue"
+	issueStatus := #open.
 !
 
-becomeDialog: aBlockCallback
-	self asJQuery dialog: #{
-			'modal' -> modal.
-			'minWidth' -> minWidth.
-			'maxHeight' -> maxHeight.
-			'draggable' -> draggable.
-			'position' -> position.
-			'close' -> [ :event :ui |
-				self asJQuery remove.
-			]}.
-	aBlockCallback value.
-! !
+setInProgress
+	"Set this issue as an inprogress issue"
+	issueStatus := #inprogress.
+!
 
-!HBDialog methodsFor: 'initializers'!
+setClosed
+	"Set this issue as a closed issue, should not be draggable as a result"
+	issueStatus := #closed.
+	self asJQuery draggable: 'disable'.
+!
 
-initialize
-	super initialize.
-	modal := true.
-	minWidth := 500.
-	maxHeight := 500.
-	draggable := false.
-	position := 'center'.
-! !
-
-!HBDialog class methodsFor: 'not yet classified'!
-
-show
-	" Creates and adds the DOM elements to the body tag "
+viewIssue: onClickEvent
 	| dialog |
-	dialog := super new.
-	dialog appendToJQuery: ('body' asJQuery).
+	dialog := IssueDetailDialog new withIssue: model.
+	dialog appendToJQuery: 'body' asJQuery.
+! !
+
+!IssueTile methodsFor: 'initializers'!
+
+withModel: anIssue
+	model := anIssue.
+	number := anIssue number.
+! !
+
+!IssueTile methodsFor: 'not yet classified'!
+
+parseUrl: aUrl
+	"Return a Hash with the 'owner' and 'project' based on the given Issue URL"
+	| parts |
+	parts := <aUrl.split('/')>.
+	
+	^ #{'owner' -> (parts at: 4).
+		'project' -> (parts at: 5)}.
+!
+
+moveTo: aColumnId
+	"Handle the invocation of the right callbacks when we move from one column to another
+	 The lines blur a bit here on 'view' versus 'controller'"
+	| postData successBlock url |
+	postData := #{'project' -> model projectName }.
+
+
+	aColumnId = 'inprogressissues' ifTrue: [
+		url := '/issues/', number, '/label'.
+		successBlock := [ self setInProgress. ].
+	].
+	aColumnId = 'openissues' ifTrue: [
+		url := '/issues/', number, '/revert'.
+		successBlock := [ self setOpen ]
+	].
+	aColumnId = 'closedissues' ifTrue: [
+		url := '/issues/', number, '/close'.
+		successBlock := [ self setClosed ].
+	].
+	
+	url ifNotNil: [
+		HubboardApp current showSpinner.
+		jQuery ajax: url
+				options: #{
+					'type' -> 'POST'.
+					'dataType' -> 'json'.
+					'data' -> postData asJSONString.
+					'success' -> [
+						successBlock ifNotNil: [ successBlock value ].
+						self updateHeaderClass.
+						HubboardApp current hideSpinner.
+					].
+					'error' -> [ HubboardApp current hideSpinner. console log: 'fail']
+					}.
+		^ true.
+	].
+	^ false.
+! !
+
+!IssueTile methodsFor: 'rendering'!
+
+renderOn: html
+	html div
+		class: 'issuetile';
+		id: self elementId;
+		at: 'data-project' put: (model projectName);
+		at: 'data-issueid' put: (model issueId);
+		with: [
+			self renderHeader: html.
+			html div class: 'title'; with: (model title).
+			html div class: 'labels'; with: [ self renderLabels: html ]
+		].
+	self postRender.
+!
+
+numberClass
+	| numberClass |
+	numberClass := 'number'.
+	issueStatus = #open ifTrue: [ numberClass := numberClass, ' open' ]. 
+	issueStatus = #inprogress ifTrue: [ numberClass := numberClass, ' inprogress' ]. 
+	issueStatus = #closed ifTrue: [ numberClass := numberClass, ' closed'].
+	^ numberClass.
+!
+
+postRender
+	"Run actions after we've rendered the DOM elements "
+
+	"Make the tile draggable"
+	issueStatus = #closed ifFalse: [ self asJQuery draggable: #{'zIndex' -> '10000'. 'snap' -> true }].
+
+	"Make ourselves double-clickable"
+	self asJQuery dblclick: [ :event | self viewIssue: event ].
+!
+
+updateHeaderClass
+	|element |
+	element := ('#', self elementId, ' > div.number') asJQuery.
+	element removeClass.
+	element addClass: (self numberClass).
+!
+
+addComment: clickEvent
+	| dialog |
+	dialog := CommentDialog new withIssue: model.
+	dialog appendToJQuery: 'body' asJQuery.
+!
+
+renderHeader: html
+	html div
+		class: self numberClass;
+		with: [ 
+			html a href: (model url); target: '_blank'; with: ('#', (model number) asString); onClick: [ :event | self viewIssue: event. event preventDefault ].
+			html with: ' in '.
+			html a href: ('https://github.com/', (model projectOwner)); target: '_blank'; with: (model projectOwner).
+			html with: ' / '.
+			html  a href: ('https://github.com/', (model projectName)); target: '_blank'; with: (model project).
+			html div
+				style: 'float:right;';
+				class: 'comments';
+				with: [
+					model pullRequest ifNotNil: [
+						html span
+							class: 'pull_req';
+							with: [
+								html a target: '_blank'; href: (model pullRequest); with: [ html img src: '/images/pull_request.png' ].
+								html with: 'Code Attached'.
+							].
+						].
+					html span with: (model comments asString, ' comments').
+					html button
+						class: 'add_comment';
+						title: 'Add Comment';
+						with: '+';
+						onClick: [ :event | self addComment: event ].
+				].
+		].
+!
+
+renderLabels: html
+	" Render any labels other than our own 'in-progress' label"
+	| rendered |
+	rendered := false.
+	(model labels size) = 0 ifTrue: [ ^ false ].
+
+	model labels do: [ :label |
+		| labelName |
+		labelName := label at: 'name'.
+		labelName = 'in-progress' ifFalse: [
+			rendered := true.
+			html li with: [
+				html span
+					style: 'background-color: #', (label at: 'color');
+					with: labelName
+			].
+		].
+	].
+	rendered ifTrue: [ html br at: 'clear' put: 'left' ].
 ! !
 
 HBDialog subclass: #NewIssueDialog
