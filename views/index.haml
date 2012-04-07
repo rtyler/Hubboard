@@ -42,6 +42,9 @@
               :disabled => 'true',
               :name => 'create_issue'}
         Create Issue
+      %button{:onclick => 'smalltalk.IssueNavigatorDialog._show();',
+              :name => 'issue_navigator'}
+        Find Issues
       %select.projectselect
       %img#spinner{:style => 'vertical-align: middle; margin-left: 20px; height: 28px;',
           :src => '/images/octocat-spinner-32.gif'}

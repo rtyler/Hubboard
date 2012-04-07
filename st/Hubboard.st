@@ -219,8 +219,8 @@ bootstrap
 					owner := ((item at: 'owner') at: 'login').
 					knownRepos at: (owner, '/', (item at: 'name')) put: item.
 				].
-				self sortedRepos. "Pre-sort our repos just to make things easier on the user"
 				':input[name=create_issue]' asJQuery removeAttr: 'disabled'.
+				self sortedRepos. "Pre-sort our repos just to make things easier on the user"
 		].
 	].
 	self refresh.
@@ -552,10 +552,6 @@ renderOn: html
 	self becomeDialog: [ ':input[name=title]' asJQuery focus ].
 !
 
-buttons
-	^ nil.
-!
-
 updateCollaborators
 	" Update the <select/> with collaborators from the API"
 	| project assignee |
@@ -749,6 +745,29 @@ renderOn: html
 			html img src: '/images/logo.png'.
 			html p with: 'Hub board is a fairly straight-foward kan ban board, built on top of the GitHub v3 API . '.
 			html p with: 'The goal of Hub board is to help you rapidly interact with issues assigned to you in the various repositories you may work with.'.
+		].
+
+	self becomeDialog.
+! !
+
+HBDialog subclass: #IssueNavigatorDialog
+	instanceVariableNames: ''
+	category: 'Hubboard'!
+
+!IssueNavigatorDialog methodsFor: 'not yet classified'!
+
+initialize
+	super initialize.
+	minWidth := 500.
+	elementId := 'issue_navigator'.
+!
+
+renderOn: html
+	html div
+		id: elementId;
+		at: 'title' put: 'Find Issues';
+		with: [
+			html with: 'hello'.
 		].
 
 	self becomeDialog.

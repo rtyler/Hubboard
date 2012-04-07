@@ -103,7 +103,7 @@ var self=this;
 smalltalk.send(self, "_showSpinner", []);
 smalltalk.send(self['@userApi'], "_fetchCurrent_", [(function(data){var allRepos=nil;
 (allRepos=smalltalk.send((smalltalk.Array || Array), "_new", []));(self['@userData']=data);smalltalk.send(smalltalk.send(unescape("%23logout-username"), "_asJQuery", []), "_text_", [smalltalk.send(smalltalk.send(unescape("%28"), "__comma", [smalltalk.send(data, "_at_", ["login"])]), "__comma", [unescape("%29")])]);return smalltalk.send((smalltalk.Repo || Repo), "_fetchReposForToken_withEachDo_finally_", [self['@token'], (function(result){return ((($receiver = smalltalk.send(result, "_at_", ["has_issues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(allRepos, "_add_", [result]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(allRepos, "_add_", [result]);})]));}), (function(){smalltalk.send(allRepos, "_do_", [(function(item){var owner=nil;
-(owner=smalltalk.send(smalltalk.send(item, "_at_", ["owner"]), "_at_", ["login"]));return smalltalk.send(self['@knownRepos'], "_at_put_", [smalltalk.send(smalltalk.send(owner, "__comma", [unescape("/")]), "__comma", [smalltalk.send(item, "_at_", ["name"])]), item]);})]);smalltalk.send(self, "_sortedRepos", []);return smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dcreate_issue%5D"), "_asJQuery", []), "_removeAttr_", ["disabled"]);})]);})]);
+(owner=smalltalk.send(smalltalk.send(item, "_at_", ["owner"]), "_at_", ["login"]));return smalltalk.send(self['@knownRepos'], "_at_put_", [smalltalk.send(smalltalk.send(owner, "__comma", [unescape("/")]), "__comma", [smalltalk.send(item, "_at_", ["name"])]), item]);})]);smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dcreate_issue%5D"), "_asJQuery", []), "_removeAttr_", ["disabled"]);return smalltalk.send(self, "_sortedRepos", []);})]);})]);
 smalltalk.send(self, "_refresh", []);
 smalltalk.send(self, "_startRefreshTimer", []);
 smalltalk.send(smalltalk.send(".issuecolumn", "_asJQuery", []), "_droppable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("tolerance", "__minus_gt", ["pointer"]),smalltalk.send("accept", "__minus_gt", [".issuetile"]),smalltalk.send("drop", "__minus_gt", [(function(event, ui){return smalltalk.send(self, "_handleDrop_with_", [event, ui]);})])])]);
@@ -629,17 +629,6 @@ return self;}
 smalltalk.NewIssueDialog);
 
 smalltalk.addMethod(
-unescape('_buttons'),
-smalltalk.method({
-selector: unescape('buttons'),
-fn: function (){
-var self=this;
-return nil;
-return self;}
-}),
-smalltalk.NewIssueDialog);
-
-smalltalk.addMethod(
 unescape('_updateCollaborators'),
 smalltalk.method({
 selector: unescape('updateCollaborators'),
@@ -823,6 +812,34 @@ smalltalk.send(self, "_becomeDialog", []);
 return self;}
 }),
 smalltalk.AboutDialog);
+
+
+
+smalltalk.addClass('IssueNavigatorDialog', smalltalk.HBDialog, [], 'Hubboard');
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+fn: function (){
+var self=this;
+smalltalk.send(self, "_initialize", [], smalltalk.HBDialog);
+(self['@minWidth']=(500));
+(self['@elementId']="issue_navigator");
+return self;}
+}),
+smalltalk.IssueNavigatorDialog);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_id_", [self['@elementId']]);smalltalk.send($rec, "_at_put_", ["title", "Find Issues"]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(html, "_with_", ["hello"]);})]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_becomeDialog", []);
+return self;}
+}),
+smalltalk.IssueNavigatorDialog);
 
 
 

@@ -139,14 +139,14 @@ var self=this;
 smalltalk.send(self, "_showSpinner", []);
 smalltalk.send(self['@userApi'], "_fetchCurrent_", [(function(data){var allRepos=nil;
 (allRepos=smalltalk.send((smalltalk.Array || Array), "_new", []));(self['@userData']=data);smalltalk.send(smalltalk.send(unescape("%23logout-username"), "_asJQuery", []), "_text_", [smalltalk.send(smalltalk.send(unescape("%28"), "__comma", [smalltalk.send(data, "_at_", ["login"])]), "__comma", [unescape("%29")])]);return smalltalk.send((smalltalk.Repo || Repo), "_fetchReposForToken_withEachDo_finally_", [self['@token'], (function(result){return ((($receiver = smalltalk.send(result, "_at_", ["has_issues"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(allRepos, "_add_", [result]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(allRepos, "_add_", [result]);})]));}), (function(){smalltalk.send(allRepos, "_do_", [(function(item){var owner=nil;
-(owner=smalltalk.send(smalltalk.send(item, "_at_", ["owner"]), "_at_", ["login"]));return smalltalk.send(self['@knownRepos'], "_at_put_", [smalltalk.send(smalltalk.send(owner, "__comma", [unescape("/")]), "__comma", [smalltalk.send(item, "_at_", ["name"])]), item]);})]);smalltalk.send(self, "_sortedRepos", []);return smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dcreate_issue%5D"), "_asJQuery", []), "_removeAttr_", ["disabled"]);})]);})]);
+(owner=smalltalk.send(smalltalk.send(item, "_at_", ["owner"]), "_at_", ["login"]));return smalltalk.send(self['@knownRepos'], "_at_put_", [smalltalk.send(smalltalk.send(owner, "__comma", [unescape("/")]), "__comma", [smalltalk.send(item, "_at_", ["name"])]), item]);})]);smalltalk.send(smalltalk.send(unescape("%3Ainput%5Bname%3Dcreate_issue%5D"), "_asJQuery", []), "_removeAttr_", ["disabled"]);return smalltalk.send(self, "_sortedRepos", []);})]);})]);
 smalltalk.send(self, "_refresh", []);
 smalltalk.send(self, "_startRefreshTimer", []);
 smalltalk.send(smalltalk.send(".issuecolumn", "_asJQuery", []), "_droppable_", [smalltalk.HashedCollection._fromPairs_([smalltalk.send("tolerance", "__minus_gt", ["pointer"]),smalltalk.send("accept", "__minus_gt", [".issuetile"]),smalltalk.send("drop", "__minus_gt", [(function(event, ui){return smalltalk.send(self, "_handleDrop_with_", [event, ui]);})])])]);
 return self;},
 args: [],
-source: unescape('bootstrap%0A%09issueApi%20%3A%3D%20Issues%20new%20setToken%3A%20token.%0A%09userApi%20%3A%3D%20Users%20new%20setToken%3A%20token.%0A%09self%20showSpinner.%0A%09userApi%20fetchCurrent%3A%20%5B%20%3Adata%20%7C%0A%09%09%7C%20allRepos%20%7C%0A%09%09allRepos%20%3A%3D%20Array%20new.%0A%09%09userData%20%3A%3D%20data.%0A%09%09%27%23logout-username%27%20asJQuery%20text%3A%20%28%27%28%27%2C%20%28data%20at%3A%20%27login%27%29%2C%20%27%29%27%29.%0A%09%09%22%20Once%20we%20have%20information%20about%20the%20user%2C%20let%27s%20fire%20up%20our%20repo%20backfill%20%22%09%0A%09%09Repo%20fetchReposForToken%3A%20token%20withEachDo%3A%20%5B%20%3Aresult%20%7C%20%28result%20at%3A%20%27has_issues%27%29%20ifTrue%3A%20%5B%20allRepos%20add%3A%20result%20%5D%20%5D%0A%09%09%09finally%3A%20%5B%0A%09%09%09%09allRepos%20do%3A%20%5B%20%3Aitem%20%7C%0A%09%09%09%09%09%7C%20owner%20%7C%0A%09%09%09%09%09owner%20%3A%3D%20%28%28item%20at%3A%20%27owner%27%29%20at%3A%20%27login%27%29.%0A%09%09%09%09%09knownRepos%20at%3A%20%28owner%2C%20%27/%27%2C%20%28item%20at%3A%20%27name%27%29%29%20put%3A%20item.%0A%09%09%09%09%5D.%0A%09%09%09%09self%20sortedRepos.%20%22Pre-sort%20our%20repos%20just%20to%20make%20things%20easier%20on%20the%20user%22%0A%09%09%09%09%27%3Ainput%5Bname%3Dcreate_issue%5D%27%20asJQuery%20removeAttr%3A%20%27disabled%27.%0A%09%09%5D.%0A%09%5D.%0A%09self%20refresh.%0A%09self%20startRefreshTimer.%0A%09%27.issuecolumn%27%20asJQuery%20droppable%3A%20%23%7B%0A%09%09%09%27tolerance%27%20-%3E%20%27pointer%27.%0A%09%09%09%27accept%27%20-%3E%20%27.issuetile%27.%0A%09%09%09%27drop%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%20self%20handleDrop%3A%20event%20with%3A%20ui%5D%7D.'),
-messageSends: ["setToken:", "new", "showSpinner", "fetchCurrent:", "text:", "asJQuery", unescape("%2C"), "at:", "fetchReposForToken:withEachDo:finally:", "ifTrue:", "add:", "do:", "at:put:", "sortedRepos", "removeAttr:", "refresh", "startRefreshTimer", "droppable:", unescape("-%3E"), "handleDrop:with:"],
+source: unescape('bootstrap%0A%09issueApi%20%3A%3D%20Issues%20new%20setToken%3A%20token.%0A%09userApi%20%3A%3D%20Users%20new%20setToken%3A%20token.%0A%09self%20showSpinner.%0A%09userApi%20fetchCurrent%3A%20%5B%20%3Adata%20%7C%0A%09%09%7C%20allRepos%20%7C%0A%09%09allRepos%20%3A%3D%20Array%20new.%0A%09%09userData%20%3A%3D%20data.%0A%09%09%27%23logout-username%27%20asJQuery%20text%3A%20%28%27%28%27%2C%20%28data%20at%3A%20%27login%27%29%2C%20%27%29%27%29.%0A%09%09%22%20Once%20we%20have%20information%20about%20the%20user%2C%20let%27s%20fire%20up%20our%20repo%20backfill%20%22%09%0A%09%09Repo%20fetchReposForToken%3A%20token%20withEachDo%3A%20%5B%20%3Aresult%20%7C%20%28result%20at%3A%20%27has_issues%27%29%20ifTrue%3A%20%5B%20allRepos%20add%3A%20result%20%5D%20%5D%0A%09%09%09finally%3A%20%5B%0A%09%09%09%09allRepos%20do%3A%20%5B%20%3Aitem%20%7C%0A%09%09%09%09%09%7C%20owner%20%7C%0A%09%09%09%09%09owner%20%3A%3D%20%28%28item%20at%3A%20%27owner%27%29%20at%3A%20%27login%27%29.%0A%09%09%09%09%09knownRepos%20at%3A%20%28owner%2C%20%27/%27%2C%20%28item%20at%3A%20%27name%27%29%29%20put%3A%20item.%0A%09%09%09%09%5D.%0A%09%09%09%09%27%3Ainput%5Bname%3Dcreate_issue%5D%27%20asJQuery%20removeAttr%3A%20%27disabled%27.%0A%09%09%09%09self%20sortedRepos.%20%22Pre-sort%20our%20repos%20just%20to%20make%20things%20easier%20on%20the%20user%22%0A%09%09%5D.%0A%09%5D.%0A%09self%20refresh.%0A%09self%20startRefreshTimer.%0A%09%27.issuecolumn%27%20asJQuery%20droppable%3A%20%23%7B%0A%09%09%09%27tolerance%27%20-%3E%20%27pointer%27.%0A%09%09%09%27accept%27%20-%3E%20%27.issuetile%27.%0A%09%09%09%27drop%27%20-%3E%20%5B%20%3Aevent%20%3Aui%20%7C%20self%20handleDrop%3A%20event%20with%3A%20ui%5D%7D.'),
+messageSends: ["setToken:", "new", "showSpinner", "fetchCurrent:", "text:", "asJQuery", unescape("%2C"), "at:", "fetchReposForToken:withEachDo:finally:", "ifTrue:", "add:", "do:", "at:put:", "removeAttr:", "sortedRepos", "refresh", "startRefreshTimer", "droppable:", unescape("-%3E"), "handleDrop:with:"],
 referencedClasses: ["Issues", "Users", "Array", "Repo"]
 }),
 smalltalk.HubboardApp);
@@ -864,22 +864,6 @@ referencedClasses: []
 smalltalk.NewIssueDialog);
 
 smalltalk.addMethod(
-unescape('_buttons'),
-smalltalk.method({
-selector: unescape('buttons'),
-category: 'rendering',
-fn: function (){
-var self=this;
-return nil;
-return self;},
-args: [],
-source: unescape('buttons%0A%09%5E%20nil.'),
-messageSends: [],
-referencedClasses: []
-}),
-smalltalk.NewIssueDialog);
-
-smalltalk.addMethod(
 unescape('_updateCollaborators'),
 smalltalk.method({
 selector: unescape('updateCollaborators'),
@@ -1128,6 +1112,44 @@ messageSends: ["id:", "with:", "src:", "img", "p", "div", "becomeDialog"],
 referencedClasses: []
 }),
 smalltalk.AboutDialog);
+
+
+
+smalltalk.addClass('IssueNavigatorDialog', smalltalk.HBDialog, [], 'Hubboard');
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+category: 'not yet classified',
+fn: function (){
+var self=this;
+smalltalk.send(self, "_initialize", [], smalltalk.HBDialog);
+(self['@minWidth']=(500));
+(self['@elementId']="issue_navigator");
+return self;},
+args: [],
+source: unescape('initialize%0A%09super%20initialize.%0A%09minWidth%20%3A%3D%20500.%0A%09elementId%20%3A%3D%20%27issue_navigator%27.'),
+messageSends: ["initialize"],
+referencedClasses: []
+}),
+smalltalk.IssueNavigatorDialog);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'not yet classified',
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_id_", [self['@elementId']]);smalltalk.send($rec, "_at_put_", ["title", "Find Issues"]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(html, "_with_", ["hello"]);})]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_becomeDialog", []);
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09id%3A%20elementId%3B%0A%09%09at%3A%20%27title%27%20put%3A%20%27Find%20Issues%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20with%3A%20%27hello%27.%0A%09%09%5D.%0A%0A%09self%20becomeDialog.'),
+messageSends: ["id:", "at:put:", "with:", "div", "becomeDialog"],
+referencedClasses: []
+}),
+smalltalk.IssueNavigatorDialog);
 
 
 
