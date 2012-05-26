@@ -87,7 +87,7 @@ var self=this;
 (self['@issueMap']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 (self['@knownRepos']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 (self['@assignedProjects']=smalltalk.send((smalltalk.Set || Set), "_new", []));
-(self['@refreshInterval']=(120000));
+(self['@refreshInterval']=(300000));
 return self;}
 }),
 smalltalk.HubboardApp);

@@ -118,10 +118,10 @@ var self=this;
 (self['@issueMap']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 (self['@knownRepos']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 (self['@assignedProjects']=smalltalk.send((smalltalk.Set || Set), "_new", []));
-(self['@refreshInterval']=(120000));
+(self['@refreshInterval']=(300000));
 return self;},
 args: [],
-source: unescape('initialize%0A%09token%20%3A%3D%20window%20at%3A%20%27github_access_token%27.%0A%09issueMap%20%3A%3D%20Dictionary%20new.%0A%09knownRepos%20%3A%3D%20Dictionary%20new.%0A%09assignedProjects%20%3A%3D%20Set%20new.%0A%09refreshInterval%20%3A%3D%20120000.'),
+source: unescape('initialize%0A%09token%20%3A%3D%20window%20at%3A%20%27github_access_token%27.%0A%09issueMap%20%3A%3D%20Dictionary%20new.%0A%09knownRepos%20%3A%3D%20Dictionary%20new.%0A%09assignedProjects%20%3A%3D%20Set%20new.%0A%09refreshInterval%20%3A%3D%20300000.'),
 messageSends: ["at:", "new"],
 referencedClasses: ["Dictionary", "Set"]
 }),

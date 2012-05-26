@@ -201,7 +201,7 @@ initialize
 	issueMap := Dictionary new.
 	knownRepos := Dictionary new.
 	assignedProjects := Set new.
-	refreshInterval := 120000.
+	refreshInterval := 300000.
 !
 
 bootstrap
