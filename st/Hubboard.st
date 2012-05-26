@@ -1,4 +1,293 @@
 Smalltalk current createPackage: 'Hubboard' properties: #{}!
+Widget subclass: #HBDialog
+	instanceVariableNames: 'modal minWidth draggable elementId position maxHeight'
+	category: 'Hubboard'!
+
+!HBDialog methodsFor: 'accessors'!
+
+elementId
+	^ ('#', elementId).
+!
+
+asJQuery
+	^ self elementId asJQuery.
+! !
+
+!HBDialog methodsFor: 'dialog-helpers'!
+
+becomeDialog
+	^ self becomeDialog: [].
+!
+
+becomeDialog: aBlockCallback
+	self asJQuery dialog: #{
+			'modal' -> modal.
+			'minWidth' -> minWidth.
+			'maxHeight' -> maxHeight.
+			'draggable' -> draggable.
+			'position' -> position.
+			'close' -> [ :event :ui |
+				self asJQuery remove.
+			]}.
+	aBlockCallback value.
+! !
+
+!HBDialog methodsFor: 'initializers'!
+
+initialize
+	super initialize.
+	modal := true.
+	minWidth := 500.
+	maxHeight := 500.
+	draggable := false.
+	position := 'center'.
+! !
+
+!HBDialog class methodsFor: 'not yet classified'!
+
+show
+	" Creates and adds the DOM elements to the body tag "
+	| dialog |
+	dialog := super new.
+	dialog appendToJQuery: ('body' asJQuery).
+! !
+
+Object subclass: #HubboardApp
+	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval sortedRepos assignedProjects alphasortedRepos'
+	category: 'Hubboard'!
+
+!HubboardApp methodsFor: 'accessors'!
+
+inProgress: arrayOfLabels
+	"Return true if we find the 'in-progress' label"
+	arrayOfLabels ifNil: [ ^ false ].
+
+	arrayOfLabels do: [ :label |
+		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
+	].
+	^ false.
+!
+
+knownRepos
+	^ knownRepos.
+!
+
+issueMap
+	^ issueMap.
+!
+
+user
+	^ userData.
+!
+
+currentProject
+	^ currentProject.
+!
+
+sortedRepos
+	" Return an Array of repos (owner/reponame) sorted by the most recently updated "
+	^ sortedRepos ifNil: [
+		| names |
+		names := knownRepos keys.
+		sortedRepos := names sort: [ :left :right |
+			((knownRepos at: left) at: 'updated_at') > ((knownRepos at: right) at: 'updated_at')
+		].
+	].
+!
+
+setKnownRepos: newKnownRepos
+	" Ideally, this method should not really be used outside of test cases "
+	knownRepos := newKnownRepos.
+!
+
+assignedProjects
+	^ assignedProjects.
+!
+
+issueApi
+	^ issueApi.
+!
+
+alphasortedRepos
+	" Return an Array of repos (owner/reponame) sorted by the most recently updated "
+	^ alphasortedRepos ifNil: [
+		| names |
+		names := knownRepos keys.
+		alphasortedRepos := names sort: [ :left :right |
+			((knownRepos at: left) at: 'name') asLowercase < ((knownRepos at: right) at: 'name') asLowercase
+		].
+	].
+! !
+
+!HubboardApp methodsFor: 'actions'!
+
+handleDrop: theEvent with: aWidget
+	" This function should handle the initial drop of one IssueTile onto a new column "
+	| tile currentParent newParent issueId |
+	issueId := ((aWidget draggable at: 0) at: 'id').
+	tile := issueMap at: (((issueId split: 'issuetile_') at: 2) asNumber).
+	"jQuery is going to give this to us in an array, how annoying"
+	currentParent := (tile asJQuery parent at: 0) at: 'id'. 
+	newParent := theEvent target at: 'id'.
+
+	tile asJQuery css: 'position' is:'static'.
+
+	"We will receive drag events onto the same column, don't do anything in that case"
+	currentParent = newParent ifTrue: [ ^ true ].
+	('#', newParent) asJQuery append: (tile asJQuery detach).
+
+	tile moveTo: newParent.
+!
+
+refresh
+	self flushColumns.
+	issueApi issues: [ :issue |
+			| tile issueId |
+			issueId := issue issueId.
+			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
+			tile withModel: issue.
+			assignedProjects add: (issue projectName).
+			issueMap at: issueId put: tile.
+			(self inProgress: (issue labels))
+					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
+					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ].
+			currentProject ifNotNil: [
+				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
+			].
+			self updateFilter.
+		] finally: [ self hideSpinner ].
+
+	issueApi recentlyClosed: [ :issue |
+			| tile issueId |
+			issueId := issue issueId.
+			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
+			tile withModel: issue.
+			tile setClosed.
+			tile appendToJQuery: ('#closedissues' asJQuery).
+			currentProject ifNotNil: [
+				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
+			]
+	] loadAll: false.
+!
+
+updateFilter
+	| element |
+	" If we have a currently selected project, no sense in running the rest of this code "
+	currentProject ifNotNil: [ ^ true ].
+
+	element := '.projectselect' asJQuery.
+	element change: [ :event |
+		| project |
+		project := element val.
+		project = 'All'
+			ifTrue: [ self showAll ]
+			ifFalse: [ self showOnly: project ].
+	].
+	element empty.
+
+	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
+	self issueMap values do: [ :issue | assignedProjects add: (issue model projectName) ].
+	assignedProjects do: [ :project |
+			[ :html | html option value: project; with: project ] appendToJQuery: element.
+	].
+!
+
+startRefreshTimer
+	refreshIntervalId ifNil: [
+		refreshIntervalId := window setInterval: [ self refresh ] every: refreshInterval.
+	].
+!
+
+stopRefreshTimer
+	refreshIntervalId ifNotNil: [
+		window clearInterval: refreshIntervalId.
+		refreshIntervalId := nil.
+	].
+! !
+
+!HubboardApp methodsFor: 'initializers'!
+
+initialize
+	token := window at: 'github_access_token'.
+	issueMap := Dictionary new.
+	knownRepos := Dictionary new.
+	assignedProjects := Set new.
+	refreshInterval := 300000.
+!
+
+bootstrap
+	issueApi := Issues new setToken: token.
+	userApi := Users new setToken: token.
+	self showSpinner.
+	userApi fetchCurrent: [ :data |
+		| allRepos |
+		allRepos := Array new.
+		userData := data.
+		'#logout-username' asJQuery text: ('(', (data at: 'login'), ')').
+		" Once we have information about the user, let's fire up our repo backfill "	
+		Repo fetchReposForToken: token withEachDo: [ :result | (result at: 'has_issues') ifTrue: [ allRepos add: result ] ]
+			finally: [
+				allRepos do: [ :item |
+					| owner |
+					owner := ((item at: 'owner') at: 'login').
+					knownRepos at: (owner, '/', (item at: 'name')) put: item.
+				].
+				':input[name=create_issue]' asJQuery removeAttr: 'disabled'.
+				self sortedRepos. "Pre-sort our repos just to make things easier on the user"
+		].
+	].
+	self refresh.
+	self startRefreshTimer.
+	'.issuecolumn' asJQuery droppable: #{
+			'tolerance' -> 'pointer'.
+			'accept' -> '.issuetile'.
+			'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
+! !
+
+!HubboardApp methodsFor: 'ui'!
+
+showAll
+	"Make sure all issue tiles are visible"
+	currentProject := nil.
+	'.issuetile' asJQuery show.
+!
+
+showOnly: aProjectName
+	"Only show tiles with data-project=aProjectName"
+	currentProject := aProjectName.
+	'.issuetile' asJQuery hide.
+	('.issuetile[data-project="', aProjectName, '"]') asJQuery show.
+!
+
+flushColumns
+	| clearBlock |
+	clearBlock := [ :index :element |
+		| item |
+		item := window jQuery: element.
+		item draggable: 'destroy'.
+		item remove removeData.
+	].
+	'#openissues > *' asJQuery each: clearBlock.
+	'#inprogressissues > *' asJQuery each: clearBlock.
+	'#closedissues > *' asJQuery each: clearBlock.
+!
+
+showSpinner
+	'#spinner' asJQuery show.
+!
+
+hideSpinner
+	'#spinner' asJQuery hide.
+! !
+
+HubboardApp class instanceVariableNames: 'current'!
+
+!HubboardApp class methodsFor: 'not yet classified'!
+
+current
+	^ current ifNil: [ current := super new ].
+! !
+
 Widget subclass: #IssueTile
 	instanceVariableNames: 'raw title body issueId number project projectOwner issueStatus comments fullProjectName elementId model'
 	category: 'Hubboard'!
@@ -198,284 +487,6 @@ renderLabels: html
 	rendered ifTrue: [ html br at: 'clear' put: 'left' ].
 ! !
 
-Object subclass: #HubboardApp
-	instanceVariableNames: 'token issueMap issueApi userApi knownRepos userData refreshIntervalId currentProject refreshInterval sortedRepos assignedProjects'
-	category: 'Hubboard'!
-
-!HubboardApp methodsFor: 'accessors'!
-
-inProgress: arrayOfLabels
-	"Return true if we find the 'in-progress' label"
-	arrayOfLabels ifNil: [ ^ false ].
-
-	arrayOfLabels do: [ :label |
-		(label at: 'name') = 'in-progress' ifTrue: [ ^ true ].
-	].
-	^ false.
-!
-
-knownRepos
-	^ knownRepos.
-!
-
-issueMap
-	^ issueMap.
-!
-
-user
-	^ userData.
-!
-
-currentProject
-	^ currentProject.
-!
-
-sortedRepos
-	" Return an Array of repos (owner/reponame) sorted by the most recently updated "
-	^ sortedRepos ifNil: [
-		| names |
-		names := knownRepos keys.
-		sortedRepos := names sort: [ :left :right |
-			((knownRepos at: left) at: 'updated_at') > ((knownRepos at: right) at: 'updated_at')
-		].
-	].
-!
-
-setKnownRepos: newKnownRepos
-	" Ideally, this method should not really be used outside of test cases "
-	knownRepos := newKnownRepos.
-!
-
-assignedProjects
-	^ assignedProjects.
-!
-
-issueApi
-	^ issueApi.
-! !
-
-!HubboardApp methodsFor: 'actions'!
-
-handleDrop: theEvent with: aWidget
-	" This function should handle the initial drop of one IssueTile onto a new column "
-	| tile currentParent newParent issueId |
-	issueId := ((aWidget draggable at: 0) at: 'id').
-	tile := issueMap at: (((issueId split: 'issuetile_') at: 2) asNumber).
-	"jQuery is going to give this to us in an array, how annoying"
-	currentParent := (tile asJQuery parent at: 0) at: 'id'. 
-	newParent := theEvent target at: 'id'.
-
-	tile asJQuery css: 'position' is:'static'.
-
-	"We will receive drag events onto the same column, don't do anything in that case"
-	currentParent = newParent ifTrue: [ ^ true ].
-	('#', newParent) asJQuery append: (tile asJQuery detach).
-
-	tile moveTo: newParent.
-!
-
-refresh
-	self flushColumns.
-	issueApi issues: [ :issue |
-			| tile issueId |
-			issueId := issue issueId.
-			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
-			tile withModel: issue.
-			assignedProjects add: (issue projectName).
-			issueMap at: issueId put: tile.
-			(self inProgress: (issue labels))
-					ifFalse: [ tile setOpen. tile appendToJQuery: ('#openissues' asJQuery) ]
-					ifTrue: [ tile setInProgress. tile appendToJQuery: ('#inprogressissues' asJQuery) ].
-			currentProject ifNotNil: [
-				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
-			].
-			self updateFilter.
-		] finally: [ self hideSpinner ].
-
-	issueApi recentlyClosed: [ :issue |
-			| tile issueId |
-			issueId := issue issueId.
-			tile := issueMap at: issueId ifAbsent: [ IssueTile new ].
-			tile withModel: issue.
-			tile setClosed.
-			tile appendToJQuery: ('#closedissues' asJQuery).
-			currentProject ifNotNil: [
-				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
-			]
-	] loadAll: false.
-!
-
-updateFilter
-	| element |
-	" If we have a currently selected project, no sense in running the rest of this code "
-	currentProject ifNotNil: [ ^ true ].
-
-	element := '.projectselect' asJQuery.
-	element change: [ :event |
-		| project |
-		project := element val.
-		project = 'All'
-			ifTrue: [ self showAll ]
-			ifFalse: [ self showOnly: project ].
-	].
-	element empty.
-
-	[ :html | html option value: 'All'; with: 'View All Projects' ] appendToJQuery: element.
-	self issueMap values do: [ :issue | assignedProjects add: (issue model projectName) ].
-	assignedProjects do: [ :project |
-			[ :html | html option value: project; with: project ] appendToJQuery: element.
-	].
-!
-
-startRefreshTimer
-	refreshIntervalId ifNil: [
-		refreshIntervalId := window setInterval: [ self refresh ] every: refreshInterval.
-	].
-!
-
-stopRefreshTimer
-	refreshIntervalId ifNotNil: [
-		window clearInterval: refreshIntervalId.
-		refreshIntervalId := nil.
-	].
-! !
-
-!HubboardApp methodsFor: 'initializers'!
-
-initialize
-	token := window at: 'github_access_token'.
-	issueMap := Dictionary new.
-	knownRepos := Dictionary new.
-	assignedProjects := Set new.
-	refreshInterval := 300000.
-!
-
-bootstrap
-	issueApi := Issues new setToken: token.
-	userApi := Users new setToken: token.
-	self showSpinner.
-	userApi fetchCurrent: [ :data |
-		| allRepos |
-		allRepos := Array new.
-		userData := data.
-		'#logout-username' asJQuery text: ('(', (data at: 'login'), ')').
-		" Once we have information about the user, let's fire up our repo backfill "	
-		Repo fetchReposForToken: token withEachDo: [ :result | (result at: 'has_issues') ifTrue: [ allRepos add: result ] ]
-			finally: [
-				allRepos do: [ :item |
-					| owner |
-					owner := ((item at: 'owner') at: 'login').
-					knownRepos at: (owner, '/', (item at: 'name')) put: item.
-				].
-				':input[name=create_issue]' asJQuery removeAttr: 'disabled'.
-				self sortedRepos. "Pre-sort our repos just to make things easier on the user"
-		].
-	].
-	self refresh.
-	self startRefreshTimer.
-	'.issuecolumn' asJQuery droppable: #{
-			'tolerance' -> 'pointer'.
-			'accept' -> '.issuetile'.
-			'drop' -> [ :event :ui | self handleDrop: event with: ui]}.
-! !
-
-!HubboardApp methodsFor: 'ui'!
-
-showAll
-	"Make sure all issue tiles are visible"
-	currentProject := nil.
-	'.issuetile' asJQuery show.
-!
-
-showOnly: aProjectName
-	"Only show tiles with data-project=aProjectName"
-	currentProject := aProjectName.
-	'.issuetile' asJQuery hide.
-	('.issuetile[data-project="', aProjectName, '"]') asJQuery show.
-!
-
-flushColumns
-	| clearBlock |
-	clearBlock := [ :index :element |
-		| item |
-		item := window jQuery: element.
-		item draggable: 'destroy'.
-		item remove removeData.
-	].
-	'#openissues > *' asJQuery each: clearBlock.
-	'#inprogressissues > *' asJQuery each: clearBlock.
-	'#closedissues > *' asJQuery each: clearBlock.
-!
-
-showSpinner
-	'#spinner' asJQuery show.
-!
-
-hideSpinner
-	'#spinner' asJQuery hide.
-! !
-
-HubboardApp class instanceVariableNames: 'current'!
-
-!HubboardApp class methodsFor: 'not yet classified'!
-
-current
-	^ current ifNil: [ current := super new ].
-! !
-
-Widget subclass: #HBDialog
-	instanceVariableNames: 'modal minWidth draggable elementId position maxHeight'
-	category: 'Hubboard'!
-
-!HBDialog methodsFor: 'accessors'!
-
-elementId
-	^ ('#', elementId).
-!
-
-asJQuery
-	^ self elementId asJQuery.
-! !
-
-!HBDialog methodsFor: 'dialog-helpers'!
-
-becomeDialog
-	^ self becomeDialog: [].
-!
-
-becomeDialog: aBlockCallback
-	self asJQuery dialog: #{
-			'modal' -> modal.
-			'minWidth' -> minWidth.
-			'maxHeight' -> maxHeight.
-			'draggable' -> draggable.
-			'position' -> position.
-			'close' -> [ :event :ui |
-				self asJQuery remove.
-			]}.
-	aBlockCallback value.
-! !
-
-!HBDialog methodsFor: 'initializers'!
-
-initialize
-	super initialize.
-	modal := true.
-	minWidth := 500.
-	maxHeight := 500.
-	draggable := false.
-	position := 'center'.
-! !
-
-!HBDialog class methodsFor: 'not yet classified'!
-
-show
-	" Creates and adds the DOM elements to the body tag "
-	| dialog |
-	dialog := super new.
-	dialog appendToJQuery: ('body' asJQuery).
-! !
-
 HBDialog subclass: #NewIssueDialog
 	instanceVariableNames: ''
 	category: 'Hubboard'!
@@ -529,7 +540,7 @@ renderOn: html
 					name: 'project';
 					onChange: [ :event | self updateCollaborators ];
 					with: [
-						HubboardApp current sortedRepos do: [ :repo |
+						HubboardApp current alphasortedRepos do: [ :repo |
 							(HubboardApp current currentProject) = repo
 								ifTrue: [ html option value: repo; with: repo; at: 'selected' put: 'true' ]
 								ifFalse: [html option value: repo; with: repo ].
