@@ -102,6 +102,10 @@ setKnownRepos: newKnownRepos
 
 assignedProjects
 	^ assignedProjects.
+!
+
+issueApi
+	^ issueApi.
 ! !
 
 !HubboardApp methodsFor: 'actions'!
@@ -126,7 +130,6 @@ handleDrop: theEvent with: aWidget
 
 refresh
 	self flushColumns.
-
 	issueApi issues: [ :issue |
 			| tile issueId |
 			issueId := issue issueId.
@@ -140,9 +143,8 @@ refresh
 			currentProject ifNotNil: [
 				currentProject = (issue projectName) ifFalse: [tile asJQuery hide].
 			].
-			self hideSpinner.
 			self updateFilter.
-		] loadAll: false.
+		] finally: [ self hideSpinner ].
 
 	issueApi recentlyClosed: [ :issue |
 			| tile issueId |
