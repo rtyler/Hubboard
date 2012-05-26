@@ -74,7 +74,7 @@ module Hubboard
     set :sessions, true
     set :session_secret, 'the-secret-hubboard-project'
 
-    get '/oauth' do
+    get '/oauth/?' do
       unless params.has_key? 'code'
         halt 401, 'Failed to receive a valid OAuth code from GitHub'
       end
@@ -98,7 +98,7 @@ module Hubboard
       redirect '/'
     end
 
-    get '/login' do
+    get '/login/?' do
       token = session[:access_token]
       if token.nil? or token.empty?
         redirect "https://github.com/login/oauth/authorize?client_id=#{$config['github']['id']}&scope=public_repo&redirect_uri=#{MYSELF}/oauth"
@@ -106,7 +106,7 @@ module Hubboard
       redirect '/'
     end
 
-    get '/logout' do
+    get '/logout/?' do
       session[:access_token] = nil
       redirect '/intro'
     end
